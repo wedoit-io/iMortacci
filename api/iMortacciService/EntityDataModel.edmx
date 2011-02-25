@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="IMortacciModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="IMortacciModelStoreContainer">
+          <EntitySet Name="main_config" EntityType="IMortacciModel.Store.main_config" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="recordlabel_album" EntityType="IMortacciModel.Store.recordlabel_album" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="recordlabel_history" EntityType="IMortacciModel.Store.recordlabel_history" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="recordlabel_track" EntityType="IMortacciModel.Store.recordlabel_track" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_recordlabel_track_recordlabel_album" Association="IMortacciModel.Store.FK_recordlabel_track_recordlabel_album">
+            <End Role="recordlabel_album" EntitySet="recordlabel_album" />
+            <End Role="recordlabel_track" EntitySet="recordlabel_track" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="main_config">
+          <Key>
+            <PropertyRef Name="key" />
+          </Key>
+          <Property Name="key" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="value" Type="nvarchar" Nullable="false" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="recordlabel_album">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="slug" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="text" />
+          <Property Name="alternate_desc" Type="text" />
+          <Property Name="created_at" Type="datetime" Nullable="false" />
+          <Property Name="release_at" Type="date" />
+          <Property Name="artwork_url" Type="nvarchar" MaxLength="255" />
+          <Property Name="status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="recordlabel_history">
+          <Key>
+            <PropertyRef Name="hash" />
+          </Key>
+          <Property Name="hash" Type="nvarchar" Nullable="false" MaxLength="32" />
+          <Property Name="created_at" Type="datetime" Nullable="false" />
+          <Property Name="object_count" Type="int" Nullable="false" />
+          <Property Name="download_url" Type="nvarchar" Nullable="false" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="recordlabel_track">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="album_id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="slug" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="text" />
+          <Property Name="alternate_desc" Type="text" />
+          <Property Name="created_at" Type="datetime" Nullable="false" />
+          <Property Name="release_at" Type="date" />
+          <Property Name="playback_count" Type="int" Nullable="false" />
+          <Property Name="download_url" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="waveform_url" Type="nvarchar" MaxLength="255" />
+          <Property Name="status" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_recordlabel_track_recordlabel_album">
+          <End Role="recordlabel_album" Type="IMortacciModel.Store.recordlabel_album" Multiplicity="1" />
+          <End Role="recordlabel_track" Type="IMortacciModel.Store.recordlabel_track" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recordlabel_album">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="recordlabel_track">
+              <PropertyRef Name="album_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IMortacciModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="IMortacciEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="configuration" EntityType="IMortacciModel.configuration" />
+          <EntitySet Name="album" EntityType="IMortacciModel.album" />
+          <EntitySet Name="version" EntityType="IMortacciModel.version" />
+          <EntitySet Name="track" EntityType="IMortacciModel.track" />
+          <AssociationSet Name="FK_recordlabel_track_recordlabel_album" Association="IMortacciModel.FK_recordlabel_track_recordlabel_album">
+            <End Role="recordlabel_album" EntitySet="album" />
+            <End Role="recordlabel_track" EntitySet="track" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="configuration">
+          <Key>
+            <PropertyRef Name="key" />
+          </Key>
+          <Property Name="key" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="value" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="album">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="slug" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="description" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="alternate_desc" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="release_at" Type="DateTime" />
+          <Property Name="artwork_url" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tracks" Relationship="IMortacciModel.FK_recordlabel_track_recordlabel_album" FromRole="recordlabel_album" ToRole="recordlabel_track" />
+        </EntityType>
+        <EntityType Name="version">
+          <Key>
+            <PropertyRef Name="hash" />
+          </Key>
+          <Property Name="hash" Type="String" Nullable="false" MaxLength="32" Unicode="true" FixedLength="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="object_count" Type="Int32" Nullable="false" />
+          <Property Type="String" Name="download_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="track">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="album_id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="slug" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="description" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="alternate_desc" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="release_at" Type="DateTime" />
+          <Property Name="playback_count" Type="Int32" Nullable="false" />
+          <Property Name="download_url" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="waveform_url" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_recordlabel_track_recordlabel_album">
+          <End Role="recordlabel_album" Type="IMortacciModel.album" Multiplicity="1" />
+          <End Role="recordlabel_track" Type="IMortacciModel.track" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recordlabel_album">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="recordlabel_track">
+              <PropertyRef Name="album_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IMortacciModelStoreContainer" CdmEntityContainer="IMortacciEntities">
+          <EntitySetMapping Name="configuration"><EntityTypeMapping TypeName="IMortacciModel.configuration"><MappingFragment StoreEntitySet="main_config">
+            <ScalarProperty Name="key" ColumnName="key" />
+            <ScalarProperty Name="value" ColumnName="value" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="album"><EntityTypeMapping TypeName="IMortacciModel.album"><MappingFragment StoreEntitySet="recordlabel_album">
+            <ScalarProperty Name="id" ColumnName="id" />
+            <ScalarProperty Name="slug" ColumnName="slug" />
+            <ScalarProperty Name="title" ColumnName="title" />
+            <ScalarProperty Name="description" ColumnName="description" />
+            <ScalarProperty Name="alternate_desc" ColumnName="alternate_desc" />
+            <ScalarProperty Name="created_at" ColumnName="created_at" />
+            <ScalarProperty Name="release_at" ColumnName="release_at" />
+            <ScalarProperty Name="artwork_url" ColumnName="artwork_url" />
+            <ScalarProperty Name="status" ColumnName="status" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="version"><EntityTypeMapping TypeName="IMortacciModel.version"><MappingFragment StoreEntitySet="recordlabel_history">
+            <ScalarProperty Name="download_url" ColumnName="download_url" />
+                <ScalarProperty Name="hash" ColumnName="hash" />
+            <ScalarProperty Name="created_at" ColumnName="created_at" />
+            <ScalarProperty Name="object_count" ColumnName="object_count" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="track"><EntityTypeMapping TypeName="IMortacciModel.track"><MappingFragment StoreEntitySet="recordlabel_track">
+            <ScalarProperty Name="album_id" ColumnName="album_id" />
+            <ScalarProperty Name="id" ColumnName="id" />
+            <ScalarProperty Name="slug" ColumnName="slug" />
+            <ScalarProperty Name="title" ColumnName="title" />
+            <ScalarProperty Name="description" ColumnName="description" />
+            <ScalarProperty Name="alternate_desc" ColumnName="alternate_desc" />
+            <ScalarProperty Name="created_at" ColumnName="created_at" />
+            <ScalarProperty Name="release_at" ColumnName="release_at" />
+            <ScalarProperty Name="playback_count" ColumnName="playback_count" />
+            <ScalarProperty Name="download_url" ColumnName="download_url" />
+            <ScalarProperty Name="waveform_url" ColumnName="waveform_url" />
+            <ScalarProperty Name="status" ColumnName="status" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="EntityDataModel">
+        <EntityTypeShape EntityType="IMortacciModel.configuration" Width="1.5" PointX="8.625" PointY="1.5" Height="1.4033821614583333" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.album" Width="1.5" PointX="0.875" PointY="1" Height="2.9417936197916656" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.version" Width="1.5" PointX="2" PointY="5" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.track" Width="1.5" PointX="3.125" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
+        <AssociationConnector Association="IMortacciModel.FK_recordlabel_track_recordlabel_album" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.375" PointY="2.4708968098958328" />
+          <ConnectorPoint PointX="3.125" PointY="2.4708968098958328" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

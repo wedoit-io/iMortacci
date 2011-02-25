@@ -1,1 +1,1 @@
-<%@ Application Codebehind="Global.asax.cs" Inherits="iMortacciService.Global" Language="C#" %>
+<%@ Application Codebehind="Global.asax.cs" Inherits="iMortacci.Global" Language="C#" %>
