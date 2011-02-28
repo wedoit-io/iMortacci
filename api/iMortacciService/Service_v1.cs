@@ -215,7 +215,7 @@
         #region Show/hide
 
         [WebGet(UriTemplate = "{format}/reload?force={forceReload}")]
-        public string Reload(string format, string forceReload)
+        public version Reload(string format, string forceReload)
         {
             this._SetOutgoingResponseFormat(format);
 
@@ -264,6 +264,7 @@
         }
 
         #endregion
+
         // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         // __INTERNAL_METHODS__
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -323,7 +324,7 @@
             }
         }
 
-        private string _Reload(bool forceReload = false)
+        private version _Reload(bool forceReload = false)
         {
             WebClient client = new WebClient();
 
@@ -365,7 +366,22 @@
                 offset += this._settings.SCCollectionPartitionMaxItemNumber;
             }
 
-            string serializedPlaylists = JsonConvert.SerializeObject(playlists);
+            // Filter SoundCloud response in this way:
+            // * Remove any playlist or track that is not downloadable
+            // * Remove any playlist that doesn't have at least one downloadable track in it
+            List<SCPlaylist> filteredPlaylists = new List<SCPlaylist>();
+
+            playlists.RemoveAll(p => !p.downloadable.GetValueOrDefault(true));
+            foreach (SCPlaylist p in playlists)
+            {
+                p.tracks.RemoveAll(t => string.IsNullOrWhiteSpace(t.download_url));
+                if (p.tracks.Count > 0)
+                {
+                    filteredPlaylists.Add(p);
+                }
+            }
+
+            string serializedPlaylists = JsonConvert.SerializeObject(filteredPlaylists);
             string currChecksum = serializedPlaylists.GetMD5Hash().ToLower();
 
             // Update either if latest version information is empty or latest checksum won't much the current one
@@ -377,10 +393,10 @@
                 {
                     context.ContextOptions.ProxyCreationEnabled = false;
 
-                    // Take downloadable playlists only
-                    #region
+                    // Insert/update albums and playlists
+                    #region Show/hide
 
-                    foreach (SCPlaylist plist in playlists.Where(p => !p.downloadable.HasValue || p.downloadable == true))
+                    foreach (SCPlaylist plist in filteredPlaylists)
                     {
                         album _album;
 
@@ -422,10 +438,7 @@
 
                         _album.artwork_url = plist.artwork_url;
 
-                        // Take downloable tracks only
-                        #region
-
-                        foreach (SCTrack track in plist.tracks.Where(t => t.download_url != null))
+                        foreach (SCTrack track in plist.tracks)
                         {
                             track _track;
 
@@ -469,57 +482,56 @@
                             _track.download_url = track.download_url;
                             _track.waveform_url = track.waveform_url;
                         }
-
-                        #endregion
                     }
 
                     #endregion
 
-                    string filename = string.Format("{0}.json", currChecksum);
-                    string savePath = Path.Combine(this._settings.HistoryDirectory, filename);
-
                     try
                     {
-                        // Before saving any changes to the database, we try to save latest content
-                        File.WriteAllText(savePath, serializedPlaylists, Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
-                    }
-
-                    version newVersion = new version();
-
-                    try
-                    {
-                        context.SaveChanges();
-
-                        // If changes to database are succeeded, we add a new version to history
-                        newVersion.hash = currChecksum;
-                        newVersion.created_at = DateTime.Now;
-                        newVersion.object_count = context.track.Count();
-                        newVersion.download_url = "{baseUri}/{filename}".HaackFormat(new
-                        {
-                            baseUri = this._settings.BaseDownloadUri,
-                            filename = filename
-                        });
-                        context.version.AddObject(newVersion);
-
                         context.SaveChanges();
                     }
                     catch (UpdateException ex)
                     {
-                        try
-                        {
-                            // There was a problem with updates to the database, therefore we must delete previously created file
-                            File.Delete(savePath);
-                        }
-                        catch (Exception)
-                        {
-                            throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
-                        }
-
                         throw new WebFaultException<string>(ex.InnerException.Message, HttpStatusCode.InternalServerError);
+                    }
+
+                    string filename = string.Format("{0}.json", currChecksum);
+                    string savePath = Path.Combine(this._settings.HistoryDirectory, filename);
+
+                    // Add a new version to history
+                    version newVersion = new version();
+                    newVersion.hash = currChecksum;
+                    newVersion.created_at = DateTime.Now;
+                    newVersion.object_count = context.track.Count();
+                    newVersion.download_url = "{baseUri}/{filename}".HaackFormat(new
+                    {
+                        baseUri = this._settings.BaseDownloadUri,
+                        filename = filename
+                    });
+                    context.version.AddObject(newVersion);
+
+                    try
+                    {
+                        context.SaveChanges();
+                    }
+                    catch (UpdateException ex)
+                    {
+                        throw new WebFaultException<string>(ex.InnerException.Message, HttpStatusCode.InternalServerError);
+                    }
+
+                    string latestVersion = JsonConvert.SerializeObject(context.album.Include("tracks"));
+
+                    try
+                    {
+                        // Save latest content to file
+                        File.WriteAllText(savePath, latestVersion, Encoding.UTF8);
+                    }
+                    catch (Exception ex)
+                    {
+                        // If save fails we should delete previously added last version 
+                        context.version.DeleteObject(context.version.Where(v => v.hash == currChecksum).FirstOrDefault());
+
+                        throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
                     }
 
                     // Update application state to match with the current values
@@ -527,7 +539,7 @@
                 }
             }
 
-            return this._settings.SuccessResponseMessage;
+            return this._GetLatestVersion();
         }
 
         private string _UpdatePlaybackCount(uint trackId, uint count)
