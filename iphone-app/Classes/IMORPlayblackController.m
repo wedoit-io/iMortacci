@@ -8,7 +8,7 @@
 
 #import "IMORPlayblackController.h"
 #import "iMortacciAppDelegate.h"
-
+#import "SHK.h"
 
 @implementation IMORPlayblackController
 
@@ -73,6 +73,18 @@
     player = [[AVAudioPlayer alloc] initWithData:[appDelegate getTrackWithId:[[item valueForKey:@"id"] intValue]]
                                            error:nil];
     [player play];
+}
+
+- (IBAction)share {
+    // Create the item to share (in this example, a url)
+	NSURL *url = [NSURL URLWithString:@"http://getsharekit.com"];
+	SHKItem *shareItem = [SHKItem URL:url title:@"ShareKit is Awesome!"];
+    
+	// Get the ShareKit action sheet
+	SHKActionSheet *actionSheet = [SHKActionSheet actionSheetForItem:shareItem];
+    
+	// Display the action sheet
+	[actionSheet showFromToolbar:self.navigationController.toolbar];
 }
 
 

@@ -27,5 +27,6 @@
 @property (nonatomic, assign) AVAudioPlayer *player;
 
 - (IBAction)playTrack;
+- (IBAction)share;
 
 @end

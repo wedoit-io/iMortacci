@@ -9,6 +9,7 @@
 #import "iMortacciAppDelegate.h"
 #import "NSFileManager+DirectoryLocations.h"
 #import "JSON.h"
+#import "SHK.h"
 
 
 @implementation iMortacciAppDelegate
@@ -32,6 +33,13 @@
     }
     
     [self loadLatestData];
+    
+    // Most ShareKit services support offline sharing. This means when a user
+    // shares something while they are disconnected, ShareKit will store it and
+    // wait to send until they are connected again.
+    // Simply add this line when you want ShareKit to try resending the items:
+    // Ref.: http://getsharekit.com/install (Step 5: Offline Sharing)
+    [SHK flushOfflineQueue];
     
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
