@@ -7,12 +7,16 @@
 //
 
 #import "iMortacciAppDelegate.h"
+#import "NSFileManager+DirectoryLocations.h"
+#import "JSON.h"
 
 
 @implementation iMortacciAppDelegate
 
 @synthesize window;
 @synthesize tabBarController;
+@synthesize latestVersion;
+@synthesize albums;
 
 
 #pragma mark -
@@ -22,6 +26,13 @@
     
     // Override point for customization after application launch.
 
+    if ([self applicationWillLaunchFirstTime]) {
+        // This will copy initial data from bundle
+        [self saveLatestVersion:nil WithAlbums:nil];
+    }
+    
+    [self loadLatestData];
+    
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
     [self.window makeKeyAndVisible];
@@ -97,8 +108,125 @@
 - (void)dealloc {
     [tabBarController release];
     [window release];
+    [latestVersion release];
+    [albums release];
     [super dealloc];
 }
 
-@end
 
+#pragma -
+#pragma mark Internal methods
+
+- (BOOL) applicationWillLaunchFirstTime {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // This will look like:
+    // /User/Applications/<APP_UUID>/Library/Application Support/<APP_NAME>/<FILENAME>
+    NSString *_latestVersion = [((NSString *)[fileManager applicationSupportDirectory])
+                               stringByAppendingPathComponent:kLatestVersionFileName];
+    NSString *_albums = [((NSString *)[fileManager applicationSupportDirectory])
+                        stringByAppendingPathComponent:kAlbumsFileName];
+    
+    return ![fileManager fileExistsAtPath:_latestVersion] || ![fileManager fileExistsAtPath:_albums];
+}
+
+- (void) saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums {
+    
+    // Either if both 'latestVersion' and 'albums' are empty strings( or nil),
+    // or they both are non-empty strings:
+    if (([_latestVersion length] == 0 && [_albums length] == 0) ||
+        ([_latestVersion length] > 0 && [_albums length] > 0))
+    {
+        [self writeLatestVersion:_latestVersion];
+        [self writeAlbums:_albums];
+    }
+    else
+    {
+        NSLog(@"Wrong usage of 'saveLatestVersion:WithAlbums:' method.");
+    }
+}
+
+- (void) writeLatestVersion:(NSString *)jsonContent {
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([jsonContent length] == 0) {
+        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kLatestVersionFileName ofType:nil]
+                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
+                                                    stringByAppendingPathComponent:kLatestVersionFileName]
+                                             error:&error];
+        if (!success) {
+            NSLog(@"Unable to copy latest version file:\n%@", error);
+        }
+    }
+    else {
+        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                 stringByAppendingPathComponent:kLatestVersionFileName]
+                                     atomically:YES
+                                       encoding:NSUTF8StringEncoding
+                                          error:&error];
+        if (!success) {
+            NSLog(@"Unable to write latest version data:\n%@", error);
+        }
+    }
+}
+
+- (void) writeAlbums:(NSString *)jsonContent {
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([jsonContent length] == 0) {
+        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kAlbumsFileName ofType:nil]
+                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
+                                                    stringByAppendingPathComponent:kAlbumsFileName]
+                                             error:&error];
+        if (!success) {
+            NSLog(@"Unable to copy albums file:\n%@", error);
+        }
+    }
+    else {
+        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                 stringByAppendingPathComponent:kAlbumsFileName]
+                                     atomically:YES
+                                       encoding:NSUTF8StringEncoding
+                                          error:&error];
+        if (!success) {
+            NSLog(@"Unable to write albums data:\n%@", error);
+        }
+    }
+}
+
+- (void) loadLatestData {
+    NSError *error = nil;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    self.latestVersion = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                               stringByAppendingPathComponent:kLatestVersionFileName]
+                                                     encoding:NSUTF8StringEncoding
+                                                        error:&error]
+                           JSONValue] retain];
+    self.albums = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                        stringByAppendingPathComponent:kAlbumsFileName]
+                                              encoding:NSUTF8StringEncoding
+                                                 error:&error]
+                    JSONValue] retain];
+}
+
+- (id) getTrackWithId:(NSUInteger)trackId {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *_trackId = [[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension];
+    
+    // First read from app bundle
+    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:_trackId];
+
+    // If file isn't in bundle then read from app support directory
+    // (this means user has a previous version of iMortacci, but has downloaded
+    // some new tracks via update.
+    if (![fileManager fileExistsAtPath:path]) {
+        path = [((NSString *)[fileManager applicationSupportDirectory]) stringByAppendingPathComponent:_trackId];
+    }
+
+    // Returns a data object by reading every byte from the file specified by path
+    // or nil if the data object could not be created.
+    return [NSData dataWithContentsOfFile:path];
+}
+
+@end

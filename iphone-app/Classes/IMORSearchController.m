@@ -1,0 +1,352 @@
+//
+//  IMORSearchController.m
+//  iMortacci
+//
+//  Created by Ali Servet Donmez on 1.3.11.
+//  Copyright 2011 Apex-net srl. All rights reserved.
+//
+
+#import "IMORSearchController.h"
+#import "iMortacciAppDelegate.h"
+#import "IMORSearchCellController.h"
+#import "IMORPlayblackController.h"
+
+
+@implementation IMORSearchController
+
+@synthesize tracksOnly;
+@synthesize items;
+@synthesize filteredItems;
+@synthesize savedSearchTerm;
+@synthesize savedScopeButtonIndex;
+@synthesize searchWasActive;
+@synthesize tempCell;
+
+
+#pragma mark -
+#pragma mark View lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.tableView.rowHeight = kSearchTableRowHeight;
+
+    if (tracksOnly) {
+        self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
+    }
+    else {
+        items = ((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate]).albums;
+        self.searchDisplayController.searchBar.placeholder = @"Cerca in tutti i dialetti";
+    }
+
+	// create a filtered list that will contain products for the search results table.
+	self.filteredItems = [NSMutableArray arrayWithCapacity:[self.items count]];
+	
+	// restore search settings if they were saved in didReceiveMemoryWarning.
+    if (self.savedSearchTerm)
+	{
+        [self.searchDisplayController setActive:self.searchWasActive];
+        [self.searchDisplayController.searchBar setSelectedScopeButtonIndex:self.savedScopeButtonIndex];
+        [self.searchDisplayController.searchBar setText:savedSearchTerm];
+        
+        self.savedSearchTerm = nil;
+    }
+
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+/*
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+*/
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    // We set search results tableview's row height here, instead of in 'viewDidLoad', because
+    // after first time search view will popup row height will be set to default and
+    // we don't definitely want that
+    self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    // save the state of the search UI so that it can be restored if the view is re-created
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+    self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+}
+
+/*
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+}
+*/
+/*
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations.
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+*/
+
+
+#pragma mark -
+#pragma mark Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    if (tracksOnly) {
+        return 1;
+    }
+    else {
+        if (tableView == self.tableView) {
+            return 1;
+        }
+        else {
+            return [filteredItems count];
+        }
+    }
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+    if (tracksOnly) {
+        if (tableView == self.tableView) {
+            return [items count];
+        }
+        else {
+            return [filteredItems count];
+        }
+    } else {
+        if (tableView == self.tableView) {
+            return [items count];
+        }
+        else {
+            return [[[filteredItems objectAtIndex:section] valueForKey:@"tracks"] count];
+        }
+    }
+}
+
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    // Return header title for each section
+    if (!tracksOnly && tableView == self.searchDisplayController.searchResultsTableView) {
+        return [[filteredItems objectAtIndex:section] valueForKey:@"title"];
+    }
+    else {
+        return nil;
+    }
+}
+
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSDictionary *dict;
+    if (tracksOnly) {
+        dict = (tableView == self.tableView)
+        ? [items objectAtIndex:indexPath.row]
+        : [filteredItems objectAtIndex:indexPath.row];
+    }
+    else {
+        dict = (tableView == self.tableView)
+        ? [items objectAtIndex:indexPath.row]
+        : [[[filteredItems objectAtIndex:indexPath.section] valueForKey:@"tracks"] objectAtIndex:indexPath.row];
+    }
+    
+    if (!tracksOnly && tableView == self.tableView) {
+        static NSString *CellIdentifier = @"Cell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        }
+
+        // Configure the cell...
+        
+        cell.imageView.image = [UIImage imageNamed:@"placeholder.png"];
+        cell.textLabel.text = [dict valueForKey:@"title"];
+        // This is how you check for null string values in JSON string "<null>"
+        // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
+        if ([dict valueForKey:@"description"] != [NSNull null]) {
+            cell.detailTextLabel.text = [dict valueForKey:@"description"];
+        }
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        return cell;
+    }
+    else {
+        static NSString *CellIdentifier = @"IMORSearchCellController";
+        
+        IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            [[NSBundle mainBundle] loadNibNamed:@"IMORSearchCellController" owner:self options:nil];
+            cell = tempCell;
+            self.tempCell = nil;
+        }
+
+        // Configure the cell...
+        
+        cell.titleTextLabel.text = [dict valueForKey:@"title"];
+        // This is how you check for null string values in JSON string "<null>"
+        // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
+        if ([dict valueForKey:@"description"] != [NSNull null]) {
+            cell.descriptionTextLabel.text = [dict valueForKey:@"description"];
+        }
+        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", arc4random() % 10000];
+        
+        return cell;
+    }
+}
+
+
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+*/
+
+
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source.
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }   
+}
+*/
+
+
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+}
+*/
+
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
+
+
+#pragma mark -
+#pragma mark Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    // Navigation logic may go here. Create and push another view controller.
+
+    if (!tracksOnly && tableView == self.tableView) {
+        IMORSearchController *detailViewController = [[IMORSearchController alloc]
+                                                      initWithNibName:@"IMORSearchController" bundle:nil];
+        NSDictionary *item = [items objectAtIndex:indexPath.row];
+        detailViewController.tracksOnly = YES;
+        detailViewController.title = [item valueForKey:@"title"];
+        detailViewController.items = [item valueForKey:@"tracks"];
+        
+        // Pass the selected object to the new view controller.
+        [self.navigationController pushViewController:detailViewController animated:YES];
+        [detailViewController release];
+    }
+    else {
+        IMORPlayblackController *detailViewController = [[IMORPlayblackController alloc]
+                                                         initWithNibName:@"IMORPlayblackController" bundle:nil];
+        
+        if (tracksOnly) {
+            if (tableView == self.tableView) {
+                detailViewController.item = [items objectAtIndex:indexPath.row];
+            }
+            else {
+                detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
+            }
+        }
+        else {
+            detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section] valueForKey:@"tracks"] objectAtIndex:indexPath.row];
+        }
+
+        // Pass the selected object to the new view controller.
+        [self.navigationController pushViewController:detailViewController animated:YES];
+        [detailViewController release];
+    }
+}
+
+
+#pragma mark -
+#pragma mark Memory management
+
+- (void)didReceiveMemoryWarning {
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Relinquish ownership any cached data, images, etc. that aren't in use.
+}
+
+- (void)viewDidUnload {
+    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+    // For example: self.myOutlet = nil;
+	self.filteredItems = nil;
+}
+
+
+- (void)dealloc {
+    [items release];
+    [filteredItems release];
+    [super dealloc];
+}
+
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    // Update the filtered array based on the search text and scope.
+    
+	[self.filteredItems removeAllObjects]; // First clear the filtered array.
+	
+	/* Search the main list for items whose name matches searchText;
+     * add items that match to the filtered array.
+	 */
+    
+    searchString = [NSString stringWithFormat:@"*%@*", searchString];
+    NSPredicate *pred = [NSPredicate predicateWithFormat:
+                         @"(title LIKE[cd] %@) OR (description LIKE[cd] %@) OR (alternate_desc LIKE[cd] %@)",
+                         searchString, searchString, searchString];
+
+    if (tracksOnly) {
+        [self.filteredItems addObjectsFromArray:[items filteredArrayUsingPredicate:pred]];
+    }
+    else {
+        [items enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
+            NSMutableDictionary *item = [NSMutableDictionary dictionaryWithDictionary:obj];
+            NSArray *filtered = [[item valueForKey:@"tracks"] filteredArrayUsingPredicate:pred];
+            if ([filtered count] > 0) {
+                [item setObject:filtered forKey:@"tracks"];
+                [self.filteredItems addObject:item];
+            }
+        }];
+    }
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+@end
+

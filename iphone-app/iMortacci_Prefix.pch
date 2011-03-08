@@ -2,6 +2,12 @@
 // Prefix header for all source files of the 'iMortacci' target in the 'iMortacci' project
 //
 
+#define kLatestVersionFileName @"latest.json"
+#define kAlbumsFileName @"albums.json"
+#define kTrackFileExtension @"mp3"
+
+#define kSearchTableRowHeight 68.0
+
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
