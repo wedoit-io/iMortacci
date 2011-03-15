@@ -73,6 +73,12 @@ namespace iMortacci
             set;
         }
     
+        public virtual int like_count
+        {
+            get;
+            set;
+        }
+    
         public virtual string download_url
         {
             get;
@@ -80,6 +86,12 @@ namespace iMortacci
         }
     
         public virtual string waveform_url
+        {
+            get;
+            set;
+        }
+    
+        public virtual string site_url
         {
             get;
             set;

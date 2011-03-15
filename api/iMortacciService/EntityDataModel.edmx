@@ -10,10 +10,14 @@
           <EntitySet Name="recordlabel_album" EntityType="IMortacciModel.Store.recordlabel_album" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="recordlabel_history" EntityType="IMortacciModel.Store.recordlabel_history" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="recordlabel_track" EntityType="IMortacciModel.Store.recordlabel_track" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_recordlabel_track_recordlabel_album" Association="IMortacciModel.Store.FK_recordlabel_track_recordlabel_album">
-            <End Role="recordlabel_album" EntitySet="recordlabel_album" />
-            <End Role="recordlabel_track" EntitySet="recordlabel_track" />
-          </AssociationSet>
+          <EntitySet Name="recordlabel_track_counter" EntityType="IMortacciModel.Store.recordlabel_track_counter" store:Type="Views" store:Schema="dbo" store:Name="recordlabel_track_counter">
+            <DefiningQuery>SELECT 
+      [recordlabel_track_counter].[id] AS [id], 
+      [recordlabel_track_counter].[playback_count] AS [playback_count], 
+      [recordlabel_track_counter].[like_count] AS [like_count], 
+      [recordlabel_track_counter].[user_plackback_count] AS [user_plackback_count]
+      FROM [dbo].[recordlabel_track_counter] AS [recordlabel_track_counter]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
         <EntityType Name="main_config">
           <Key>
@@ -21,6 +25,7 @@
           </Key>
           <Property Name="key" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="value" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="nchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="recordlabel_album">
           <Key>
@@ -58,22 +63,27 @@
           <Property Name="created_at" Type="datetime" Nullable="false" />
           <Property Name="release_at" Type="date" />
           <Property Name="playback_count" Type="int" Nullable="false" />
+          <Property Name="like_count" Type="int" Nullable="false" />
           <Property Name="download_url" Type="nvarchar" Nullable="false" MaxLength="255" />
           <Property Name="waveform_url" Type="nvarchar" MaxLength="255" />
+          <Property Name="site_url" Type="nvarchar" Nullable="false" MaxLength="255" />
           <Property Name="status" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK_recordlabel_track_recordlabel_album">
-          <End Role="recordlabel_album" Type="IMortacciModel.Store.recordlabel_album" Multiplicity="1" />
-          <End Role="recordlabel_track" Type="IMortacciModel.Store.recordlabel_track" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="recordlabel_album">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="recordlabel_track">
-              <PropertyRef Name="album_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'IMORTACCI.dbo.recordlabel_track_counter' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="recordlabel_track_counter">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="playback_count" />
+            <PropertyRef Name="like_count" />
+            <PropertyRef Name="user_plackback_count" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="playback_count" Type="int" Nullable="false" />
+          <Property Name="like_count" Type="int" Nullable="false" />
+          <Property Name="user_plackback_count" Type="int" Nullable="false" />
+        </EntityType>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -84,61 +94,65 @@
           <EntitySet Name="version" EntityType="IMortacciModel.version" />
           <EntitySet Name="track" EntityType="IMortacciModel.track" />
           <AssociationSet Name="FK_recordlabel_track_recordlabel_album" Association="IMortacciModel.FK_recordlabel_track_recordlabel_album">
-            <End Role="recordlabel_album" EntitySet="album" />
-            <End Role="recordlabel_track" EntitySet="track" />
+            <End EntitySet="album" Role="recordlabel_album" />
+            <End EntitySet="track" Role="recordlabel_track" />
           </AssociationSet>
+          <EntitySet Name="track_counter" EntityType="IMortacciModel.track_counter" />
         </EntityContainer>
         <EntityType Name="configuration">
           <Key>
             <PropertyRef Name="key" />
           </Key>
-          <Property Name="key" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="value" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="key" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="value" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="description" MaxLength="255" FixedLength="true" Unicode="true" Type="String" />
         </EntityType>
         <EntityType Name="album">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="slug" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="title" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="description" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="alternate_desc" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="id" Nullable="false" Type="Int32" />
+          <Property Name="slug" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="title" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="description" MaxLength="Max" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="alternate_desc" MaxLength="Max" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="created_at" Nullable="false" Type="DateTime" />
           <Property Name="release_at" Type="DateTime" />
-          <Property Name="artwork_url" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="artwork_url" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="status" Nullable="false" Type="Int32" />
           <NavigationProperty Name="tracks" Relationship="IMortacciModel.FK_recordlabel_track_recordlabel_album" FromRole="recordlabel_album" ToRole="recordlabel_track" />
         </EntityType>
         <EntityType Name="version">
           <Key>
             <PropertyRef Name="hash" />
           </Key>
-          <Property Name="hash" Type="String" Nullable="false" MaxLength="32" Unicode="true" FixedLength="false" />
-          <Property Name="created_at" Type="DateTime" Nullable="false" />
-          <Property Name="object_count" Type="Int32" Nullable="false" />
-          <Property Type="String" Name="download_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="hash" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="created_at" Nullable="false" Type="DateTime" />
+          <Property Name="object_count" Nullable="false" Type="Int32" />
+          <Property Name="download_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
         </EntityType>
         <EntityType Name="track">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="album_id" Type="Int32" Nullable="false" />
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="slug" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="title" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="description" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="alternate_desc" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="album_id" Nullable="false" Type="Int32" />
+          <Property Name="id" Nullable="false" Type="Int32" />
+          <Property Name="slug" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="title" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="description" MaxLength="Max" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="alternate_desc" MaxLength="Max" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="created_at" Nullable="false" Type="DateTime" />
           <Property Name="release_at" Type="DateTime" />
-          <Property Name="playback_count" Type="Int32" Nullable="false" />
-          <Property Name="download_url" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="waveform_url" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="playback_count" Nullable="false" Type="Int32" />
+          <Property Name="like_count" Nullable="false" Type="Int32" />
+          <Property Name="download_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="waveform_url" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="site_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="status" Nullable="false" Type="Int32" />
         </EntityType>
         <Association Name="FK_recordlabel_track_recordlabel_album">
-          <End Role="recordlabel_album" Type="IMortacciModel.album" Multiplicity="1" />
-          <End Role="recordlabel_track" Type="IMortacciModel.track" Multiplicity="*" />
+          <End Type="IMortacciModel.album" Multiplicity="1" Role="recordlabel_album" />
+          <End Type="IMortacciModel.track" Multiplicity="*" Role="recordlabel_track" />
           <ReferentialConstraint>
             <Principal Role="recordlabel_album">
               <PropertyRef Name="id" />
@@ -148,6 +162,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="track_counter">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="playback_count" />
+            <PropertyRef Name="like_count" />
+            <PropertyRef Name="user_plackback_count" />
+          </Key>
+          <Property Name="id" Nullable="false" Type="Int32" />
+          <Property Name="playback_count" Nullable="false" Type="Int32" />
+          <Property Name="like_count" Nullable="false" Type="Int32" />
+          <Property Type="Int32" Name="user_plackback_count" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -155,7 +181,8 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="IMortacciModelStoreContainer" CdmEntityContainer="IMortacciEntities">
           <EntitySetMapping Name="configuration"><EntityTypeMapping TypeName="IMortacciModel.configuration"><MappingFragment StoreEntitySet="main_config">
-            <ScalarProperty Name="key" ColumnName="key" />
+            <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="key" ColumnName="key" />
             <ScalarProperty Name="value" ColumnName="value" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="album"><EntityTypeMapping TypeName="IMortacciModel.album"><MappingFragment StoreEntitySet="recordlabel_album">
@@ -170,13 +197,15 @@
             <ScalarProperty Name="status" ColumnName="status" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="version"><EntityTypeMapping TypeName="IMortacciModel.version"><MappingFragment StoreEntitySet="recordlabel_history">
-            <ScalarProperty Name="download_url" ColumnName="download_url" />
+                <ScalarProperty Name="download_url" ColumnName="download_url" />
                 <ScalarProperty Name="hash" ColumnName="hash" />
             <ScalarProperty Name="created_at" ColumnName="created_at" />
             <ScalarProperty Name="object_count" ColumnName="object_count" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="track"><EntityTypeMapping TypeName="IMortacciModel.track"><MappingFragment StoreEntitySet="recordlabel_track">
-            <ScalarProperty Name="album_id" ColumnName="album_id" />
+            <ScalarProperty Name="like_count" ColumnName="like_count" />
+                <ScalarProperty Name="site_url" ColumnName="site_url" />
+                <ScalarProperty Name="album_id" ColumnName="album_id" />
             <ScalarProperty Name="id" ColumnName="id" />
             <ScalarProperty Name="slug" ColumnName="slug" />
             <ScalarProperty Name="title" ColumnName="title" />
@@ -189,6 +218,16 @@
             <ScalarProperty Name="waveform_url" ColumnName="waveform_url" />
             <ScalarProperty Name="status" ColumnName="status" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="track_counter">
+            <EntityTypeMapping TypeName="IMortacciModel.track_counter">
+              <MappingFragment StoreEntitySet="recordlabel_track_counter">
+                <ScalarProperty Name="user_plackback_count" ColumnName="user_plackback_count" />
+                <ScalarProperty Name="like_count" ColumnName="like_count" />
+                <ScalarProperty Name="playback_count" ColumnName="playback_count" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -211,14 +250,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="EntityDataModel">
-        <EntityTypeShape EntityType="IMortacciModel.configuration" Width="1.5" PointX="8.625" PointY="1.5" Height="1.4033821614583333" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMortacciModel.album" Width="1.5" PointX="0.875" PointY="1" Height="2.9417936197916656" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMortacciModel.version" Width="1.5" PointX="2" PointY="5" Height="1.5956835937499996" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMortacciModel.track" Width="1.5" PointX="3.125" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
-        <AssociationConnector Association="IMortacciModel.FK_recordlabel_track_recordlabel_album" ManuallyRouted="false">
+        <EntityTypeShape EntityType="IMortacciModel.configuration" PointX="8.625" PointY="1.5" Width="1.5" Height="1.4033821614583333" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.album" PointX="0.875" PointY="1" Width="1.5" Height="2.9417936197916656" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.version" PointX="2" PointY="5" Width="1.5" Height="1.7879850260416665" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.track" PointX="3.125" PointY="0.75" Width="1.5" Height="3.3263964843749996" IsExpanded="true" />
+        <AssociationConnector ManuallyRouted="false" Association="IMortacciModel.FK_recordlabel_track_recordlabel_album">
           <ConnectorPoint PointX="2.375" PointY="2.4708968098958328" />
           <ConnectorPoint PointX="3.125" PointY="2.4708968098958328" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="IMortacciModel.track_counter" PointX="5.375" PointY="0.75" Width="1.5" Height="1.5956835937499996" />
       </Diagram>
     </Diagrams>
   </Designer>

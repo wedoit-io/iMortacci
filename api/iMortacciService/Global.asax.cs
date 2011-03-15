@@ -9,6 +9,7 @@
     {
         public void Application_Start(object sender, EventArgs e)
         {
+            HttpContext.Current.Application["api_config"] = new APIConfiguration();
             this.RegisterRoutes();
         }
 

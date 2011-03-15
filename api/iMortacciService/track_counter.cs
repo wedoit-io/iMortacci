@@ -15,23 +15,29 @@ using System.Collections.Specialized;
 
 namespace iMortacci
 {
-    public partial class configuration
+    public partial class track_counter
     {
         #region Primitive Properties
     
-        public virtual string key
+        public virtual int id
         {
             get;
             set;
         }
     
-        public virtual string value
+        public virtual int playback_count
         {
             get;
             set;
         }
     
-        public virtual string description
+        public virtual int like_count
+        {
+            get;
+            set;
+        }
+    
+        public virtual int user_plackback_count
         {
             get;
             set;

@@ -72,6 +72,7 @@
     <Compile Include="configuration.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="APIConfiguration.cs" />
     <Compile Include="EntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,11 +88,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityDataModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Service_v1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -99,6 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SCObjects.cs" />
     <Compile Include="track.cs">
+      <DependentUpon>EntityDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="track_counter.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="version.cs">
@@ -123,10 +122,6 @@
     <None Include="EntityDataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>EntityDataModel.cs</LastGenOutput>
-    </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

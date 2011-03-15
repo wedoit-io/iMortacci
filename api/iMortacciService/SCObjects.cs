@@ -54,6 +54,8 @@
 
         public string download_url { get; set; }
 
+        public string purchase_url { get; set; }
+
         public string waveform_url { get; set; }
     }
 }
