@@ -159,8 +159,8 @@
             return this._GetTracks(_id).FirstOrDefault();
         }
 
-        [WebInvoke(UriTemplate = "{format}/counters", Method = "GET")]
-        public List<track_counter> UpdatePlaybackCount(string format)
+        [WebInvoke(UriTemplate = "{format}/counters", Method = "POST")]
+        public List<track_counter> UpdatePlaybackCount(string format, List<track_counter> counters)
         {
             this._SetOutgoingResponseFormat(format);
 
