@@ -518,20 +518,9 @@
 				1D3623250D0F684500981E51 /* iMortacciAppDelegate.m */,
 				509466A71327C8CE0042D81F /* Custom Categories */,
 				50E2BE6013264206008EAD29 /* Search & Playback */,
-				50946B7A13290F9F0042D81F /* Advertisement */,
-				50E2BE611326422E008EAD29 /* lib */,
-				50ABA27D131CEC1E006BC4DB /* IMORFavoritesController.h */,
-				50ABA27E131CEC1E006BC4DB /* IMORFavoritesController.m */,
-				50ABA27F131CEC1E006BC4DB /* IMORFavoritesController.xib */,
-				50ABA282131CEC25006BC4DB /* IMORNewestController.h */,
-				50ABA283131CEC25006BC4DB /* IMORNewestController.m */,
-				50ABA284131CEC25006BC4DB /* IMORNewestController.xib */,
-				50ABA287131CEC2B006BC4DB /* IMORTopChartController.h */,
-				50ABA288131CEC2B006BC4DB /* IMORTopChartController.m */,
-				50ABA289131CEC2B006BC4DB /* IMORTopChartController.xib */,
-				50ABA28C131CEC32006BC4DB /* IMORCreditsController.h */,
-				50ABA28D131CEC32006BC4DB /* IMORCreditsController.m */,
-				50ABA28E131CEC32006BC4DB /* IMORCreditsController.xib */,
+				50947638132933250042D81F /* Other */,
+				50946B7A13290F9F0042D81F /* Advertising */,
+				50E2BE611326422E008EAD29 /* External Sources */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -785,14 +774,33 @@
 			path = AdMob;
 			sourceTree = "<group>";
 		};
-		50946B7A13290F9F0042D81F /* Advertisement */ = {
+		50946B7A13290F9F0042D81F /* Advertising */ = {
 			isa = PBXGroup;
 			children = (
 				50946B7113290EF70042D81F /* IMORAdWhirlViewController.h */,
 				50946B7213290EF70042D81F /* IMORAdWhirlViewController.m */,
 				50946B7313290EF70042D81F /* IMORAdWhirlViewController.xib */,
 			);
-			name = Advertisement;
+			name = Advertising;
+			sourceTree = "<group>";
+		};
+		50947638132933250042D81F /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				50ABA27D131CEC1E006BC4DB /* IMORFavoritesController.h */,
+				50ABA27E131CEC1E006BC4DB /* IMORFavoritesController.m */,
+				50ABA27F131CEC1E006BC4DB /* IMORFavoritesController.xib */,
+				50ABA282131CEC25006BC4DB /* IMORNewestController.h */,
+				50ABA283131CEC25006BC4DB /* IMORNewestController.m */,
+				50ABA284131CEC25006BC4DB /* IMORNewestController.xib */,
+				50ABA287131CEC2B006BC4DB /* IMORTopChartController.h */,
+				50ABA288131CEC2B006BC4DB /* IMORTopChartController.m */,
+				50ABA289131CEC2B006BC4DB /* IMORTopChartController.xib */,
+				50ABA28C131CEC32006BC4DB /* IMORCreditsController.h */,
+				50ABA28D131CEC32006BC4DB /* IMORCreditsController.m */,
+				50ABA28E131CEC32006BC4DB /* IMORCreditsController.xib */,
+			);
+			name = Other;
 			sourceTree = "<group>";
 		};
 		50AB9E231318061A006BC4DB /* NSFileManager_DirectoryLocations */ = {
@@ -863,7 +871,7 @@
 			name = "Search & Playback";
 			sourceTree = "<group>";
 		};
-		50E2BE611326422E008EAD29 /* lib */ = {
+		50E2BE611326422E008EAD29 /* External Sources */ = {
 			isa = PBXGroup;
 			children = (
 				5094673C1327D8240042D81F /* UIColor-Expanded */,
@@ -875,7 +883,7 @@
 				5094696F1328DDDB0042D81F /* AdWhirl */,
 				50946A101328E0650042D81F /* AdMob */,
 			);
-			name = lib;
+			name = "External Sources";
 			sourceTree = "<group>";
 		};
 		50EF141B1326892A00C965AC /* ShareKit */ = {
