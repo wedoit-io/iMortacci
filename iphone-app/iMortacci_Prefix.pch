@@ -12,6 +12,9 @@
 #define kLatestVersionFileName @"latest.json"
 #define kAlbumsFileName @"albums.json"
 #define kCountersFileName @"counters.json"
+#define kUserInfoFileName @"user_info.json"
+#define kFavoritesFileName @"favorites.json"
+
 #define kTrackFileExtension @"mp3"
 #define kAlbumArtworkFileExtension @"png"
 

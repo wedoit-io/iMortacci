@@ -24,6 +24,8 @@
 @synthesize albums;
 @synthesize counters;
 @synthesize newItemsCount;
+@synthesize userInfo;
+@synthesize favorites;
 @synthesize internetReachable;
 @synthesize hostReachable;
 
@@ -38,6 +40,7 @@
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
         [self saveLatestVersion:nil WithAlbums:nil AndCounters:nil];
+        [self saveUserInfoAndFavorites];
     }
     
     [self loadLatestData];
@@ -78,6 +81,20 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
+    [self saveUserInfoAndFavorites];
+
+    SBJsonWriter *jsonWriter = [SBJsonWriter new];
+    
+    NSError *error = nil;
+    NSString *countersString = [jsonWriter stringWithObject:counters error:&error];
+    if (error == nil) {
+        [self writeCounters:countersString];
+    }
+    else {
+        NSLog(@"Unable to serialize user info: %@", error);
+    }
+    
+    [jsonWriter release];
 }
 
 
@@ -137,6 +154,8 @@
     [latestVersionRemote release];
     [albums release];
     [counters release];
+    [userInfo release];
+    [favorites release];
     [internetReachable release];
     [hostReachable release];
     [super dealloc];
@@ -178,6 +197,53 @@
     else
     {
         NSLog(@"Wrong usage of 'saveLatestVersion:WithAlbums:AndCounters:' method.");
+    }
+}
+
+- (void)saveUserInfoAndFavorites {
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSString *userInfoString = @"[]";
+    if (userInfo != nil) {
+        SBJsonWriter *jsonWriter = [SBJsonWriter new];
+        userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
+        [jsonWriter release];
+    }
+
+    if (error == nil) {
+        BOOL success = [userInfoString writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                    stringByAppendingPathComponent:kUserInfoFileName]
+                                        atomically:YES
+                                          encoding:NSUTF8StringEncoding
+                                             error:&error];
+        if (!success) {
+            NSLog(@"Unable to write user info:\n%@", error);
+        }
+    }
+    else {
+        NSLog(@"Unable to serialize user info: %@", error);
+    }
+
+    NSString *favoritesString = @"[]";
+    if (favorites != nil) {
+        SBJsonWriter *jsonWriter = [SBJsonWriter new];
+        favoritesString = [jsonWriter stringWithObject:favorites error:&error];
+        [jsonWriter release];
+    }
+
+    if (error == nil) {
+        BOOL success = [favoritesString writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                     stringByAppendingPathComponent:kFavoritesFileName]
+                                         atomically:YES
+                                           encoding:NSUTF8StringEncoding
+                                              error:&error];
+        if (!success) {
+            NSLog(@"Unable to write favorites:\n%@", error);
+        }
+    }
+    else {
+        NSLog(@"Unable to serialize user favorites: %@", error);
     }
 }
 
@@ -272,6 +338,16 @@
                                                 encoding:NSUTF8StringEncoding
                                                    error:&error]
                       JSONValue] retain];
+    self.userInfo = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                          stringByAppendingPathComponent:kUserInfoFileName]
+                                                encoding:NSUTF8StringEncoding
+                                                   error:&error]
+                      JSONValue] retain];
+    self.favorites = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                           stringByAppendingPathComponent:kFavoritesFileName]
+                                                 encoding:NSUTF8StringEncoding
+                                                    error:&error]
+                       JSONValue] retain];
 }
 
 - (id)getFileByName:(NSString *)filename {
@@ -354,8 +430,7 @@
         case ReachableViaWWAN:
         {
             [self checkLatest];
-            // TODO: send&receive playback counters
-            // TODO: send likes
+            [self sendAndReceiveCounters];
             break;
         }
     }
@@ -367,8 +442,32 @@
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [itemsFetcher.fetchHistory removeCachedDataForRequest:request];
+//    [itemsFetcher.fetchHistory removeCachedDataForRequest:request];
     [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(checkLatestFetcher:finishedWithData:error:)];
+}
+
+- (void)sendAndReceiveCounters {
+    // send&receive 'like_status' and 'user_playback_count' information
+    NSString *urlString = [NSString stringWithFormat:@"%@/counters", kIMORAPIURL];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+
+    SBJsonWriter *jsonWriter = [SBJsonWriter new];
+
+    NSError *error = nil;
+    NSString *userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
+    if (error == nil) {
+        [itemsFetcher setPostData:[userInfoString dataUsingEncoding:NSUTF8StringEncoding
+                                               allowLossyConversion:YES]];
+    }
+    else {
+        NSLog(@"Unable to serialize user info: %@", error);
+    }
+    
+    [jsonWriter release];
+
+    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(sendAndReceiveCountersFetcher:finishedWithData:error:)];
 }
 
 
@@ -398,6 +497,16 @@
                 [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
             }
         }
+    }
+}
+
+- (void)sendAndReceiveCountersFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
+    
+    if (error == nil) {
+        // fetch succeeded
+        
+        NSString *jsonString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
+        counters = [[jsonString JSONValue] retain];
     }
 }
 

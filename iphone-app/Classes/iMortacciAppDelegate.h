@@ -21,6 +21,8 @@
     NSArray *albums;
     NSArray *counters;
     NSUInteger newItemsCount;
+    NSArray *userInfo;
+    NSArray *favorites;
 
     Reachability *internetReachable;
     Reachability *hostReachable;
@@ -34,20 +36,30 @@
 @property (nonatomic, retain) NSArray *albums;
 @property (nonatomic, retain) NSArray *counters;
 @property (nonatomic, assign) NSUInteger newItemsCount;
+@property (nonatomic, retain) NSArray *userInfo;
+@property (nonatomic, retain) NSArray *favorites;
 @property (nonatomic, retain) Reachability *internetReachable;
 @property (nonatomic, retain) Reachability *hostReachable;
 
 - (BOOL)applicationWillLaunchFirstTime;
+
 - (void)saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums AndCounters:(NSString *)_counters;
 - (void)writeLatestVersion:(NSString *)jsonContent;
 - (void)writeAlbums:(NSString *)jsonContent;
 - (void)writeCounters:(NSString *)jsonContent;
+
 - (void)loadLatestData;
+
+- (void)saveUserInfoAndFavorites;
+
 - (id)getFileByName:(NSString *)filename;
 - (id)getTrackWithId:(NSUInteger)trackId;
 - (id)getAlbumArtworkWithSlug:(NSString *)albumSlug;
+
 - (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId;
+
 - (void)checkNetworkStatus:(NSNotification *)notice;
 - (void)checkLatest;
+- (void)sendAndReceiveCounters;
 
 @end
