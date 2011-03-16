@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AdWhirlView.h"
 
 @class IMORSearchCellController;
 
 
-@interface IMORSearchController : UITableViewController {
+@interface IMORSearchController : UIViewController <AdWhirlDelegate> {
+    
+    UITableView *_tableView;
     
     BOOL tracksOnly;
 
@@ -28,6 +31,7 @@
     IMORSearchCellController *tempCell;
 }
 
+@property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, assign) BOOL tracksOnly;
 @property (nonatomic, retain) NSArray *items;
 @property (nonatomic, retain) NSString *albumSlug;

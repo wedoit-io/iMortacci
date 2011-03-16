@@ -14,31 +14,40 @@
 @interface iMortacciAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
     UIWindow *window;
     UITabBarController *tabBarController;
+
     NSDictionary *latestVersion;
+    NSString *latestVersionRemoteString;
+    NSDictionary *latestVersionRemote;
     NSArray *albums;
+    NSArray *counters;
+    NSUInteger newItemsCount;
 
     Reachability *internetReachable;
     Reachability *hostReachable;
-    BOOL internetActive;
-    BOOL hostActive;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
 @property (nonatomic, retain) NSDictionary *latestVersion;
+@property (nonatomic, retain) NSString *latestVersionRemoteString;
+@property (nonatomic, retain) NSDictionary *latestVersionRemote;
 @property (nonatomic, retain) NSArray *albums;
-@property (nonatomic, assign) BOOL internetActive;
-@property (nonatomic, assign) BOOL hostActive;
+@property (nonatomic, retain) NSArray *counters;
+@property (nonatomic, assign) NSUInteger newItemsCount;
+@property (nonatomic, retain) Reachability *internetReachable;
+@property (nonatomic, retain) Reachability *hostReachable;
 
-- (BOOL) applicationWillLaunchFirstTime;
-- (void) saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums;
-- (void) writeLatestVersion:(NSString *)jsonContent;
-- (void) writeAlbums:(NSString *)jsonContent;
-- (void) loadLatestData;
-- (id) getFileByName:(NSString *)filename;
-- (id) getTrackWithId:(NSUInteger)trackId;
-- (id) getAlbumArtworkWithSlug:(NSString *)albumSlug;
-- (void) checkNetworkStatus:(NSNotification *)notice;
-- (void) proceedLaunch;
+- (BOOL)applicationWillLaunchFirstTime;
+- (void)saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums AndCounters:(NSString *)_counters;
+- (void)writeLatestVersion:(NSString *)jsonContent;
+- (void)writeAlbums:(NSString *)jsonContent;
+- (void)writeCounters:(NSString *)jsonContent;
+- (void)loadLatestData;
+- (id)getFileByName:(NSString *)filename;
+- (id)getTrackWithId:(NSUInteger)trackId;
+- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug;
+- (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId;
+- (void)checkNetworkStatus:(NSNotification *)notice;
+- (void)checkLatest;
 
 @end

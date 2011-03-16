@@ -11,6 +11,7 @@
 #import "JSON.h"
 #import "SHK.h"
 #import "Reachability.h"
+#import "GTMHTTPFetcher.h"
 
 
 @implementation iMortacciAppDelegate
@@ -18,9 +19,13 @@
 @synthesize window;
 @synthesize tabBarController;
 @synthesize latestVersion;
+@synthesize latestVersionRemoteString;
+@synthesize latestVersionRemote;
 @synthesize albums;
-@synthesize internetActive;
-@synthesize hostActive;
+@synthesize counters;
+@synthesize newItemsCount;
+@synthesize internetReachable;
+@synthesize hostReachable;
 
 
 #pragma mark -
@@ -32,7 +37,7 @@
 
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
-        [self saveLatestVersion:nil WithAlbums:nil];
+        [self saveLatestVersion:nil WithAlbums:nil AndCounters:nil];
     }
     
     [self loadLatestData];
@@ -40,13 +45,14 @@
     // check for internet connection
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(checkNetworkStatus:)
-                                                 name:kReachabilityChangedNotification object:nil];
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
     
     internetReachable = [[Reachability reachabilityForInternetConnection] retain];
     [internetReachable startNotifier];
     
     // check if a pathway to a random host exists
-    hostReachable = [[Reachability reachabilityWithHostName: @"www.google.com"] retain];
+    hostReachable = [[Reachability reachabilityWithHostName:kIMORHostName] retain];
     [hostReachable startNotifier];
     
     // now patiently wait for the notification...
@@ -127,7 +133,12 @@
     [tabBarController release];
     [window release];
     [latestVersion release];
+    [latestVersionRemoteString release];
+    [latestVersionRemote release];
     [albums release];
+    [counters release];
+    [internetReachable release];
+    [hostReachable release];
     [super dealloc];
 }
 
@@ -135,7 +146,7 @@
 #pragma -
 #pragma mark Internal methods
 
-- (BOOL) applicationWillLaunchFirstTime {
+- (BOOL)applicationWillLaunchFirstTime {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     // This will look like:
@@ -143,28 +154,34 @@
     NSString *_latestVersion = [((NSString *)[fileManager applicationSupportDirectory])
                                stringByAppendingPathComponent:kLatestVersionFileName];
     NSString *_albums = [((NSString *)[fileManager applicationSupportDirectory])
-                        stringByAppendingPathComponent:kAlbumsFileName];
+                         stringByAppendingPathComponent:kAlbumsFileName];
+    NSString *_counters = [((NSString *)[fileManager applicationSupportDirectory])
+                           stringByAppendingPathComponent:kCountersFileName];
     
-    return ![fileManager fileExistsAtPath:_latestVersion] || ![fileManager fileExistsAtPath:_albums];
+    return
+    ![fileManager fileExistsAtPath:_latestVersion] ||
+    ![fileManager fileExistsAtPath:_albums] ||
+    ![fileManager fileExistsAtPath:_counters];
 }
 
-- (void) saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums {
+- (void)saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums AndCounters:(NSString *)_counters {
     
-    // Either if both 'latestVersion' and 'albums' are empty strings( or nil),
-    // or they both are non-empty strings:
-    if (([_latestVersion length] == 0 && [_albums length] == 0) ||
-        ([_latestVersion length] > 0 && [_albums length] > 0))
+    // Either if all input has to be empty (first launch of this app.) or
+    // all parameters have to be non-empty strings.
+    if (([_latestVersion length] == 0 && [_albums length] == 0 && [_counters length] == 0) ||
+        ([_latestVersion length] > 0 && [_albums length] > 0 && [_counters length] > 0))
     {
         [self writeLatestVersion:_latestVersion];
         [self writeAlbums:_albums];
+        [self writeCounters:_counters];
     }
     else
     {
-        NSLog(@"Wrong usage of 'saveLatestVersion:WithAlbums:' method.");
+        NSLog(@"Wrong usage of 'saveLatestVersion:WithAlbums:AndCounters:' method.");
     }
 }
 
-- (void) writeLatestVersion:(NSString *)jsonContent {
+- (void)writeLatestVersion:(NSString *)jsonContent {
     NSError *error = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([jsonContent length] == 0) {
@@ -188,7 +205,7 @@
     }
 }
 
-- (void) writeAlbums:(NSString *)jsonContent {
+- (void)writeAlbums:(NSString *)jsonContent {
     NSError *error = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([jsonContent length] == 0) {
@@ -212,7 +229,31 @@
     }
 }
 
-- (void) loadLatestData {
+- (void)writeCounters:(NSString *)jsonContent {
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([jsonContent length] == 0) {
+        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kCountersFileName ofType:nil]
+                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
+                                                    stringByAppendingPathComponent:kCountersFileName]
+                                             error:&error];
+        if (!success) {
+            NSLog(@"Unable to copy counters file:\n%@", error);
+        }
+    }
+    else {
+        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                 stringByAppendingPathComponent:kCountersFileName]
+                                     atomically:YES
+                                       encoding:NSUTF8StringEncoding
+                                          error:&error];
+        if (!success) {
+            NSLog(@"Unable to write counters data:\n%@", error);
+        }
+    }
+}
+
+- (void)loadLatestData {
     NSError *error = nil;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -226,9 +267,14 @@
                                               encoding:NSUTF8StringEncoding
                                                  error:&error]
                     JSONValue] retain];
+    self.counters = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                                          stringByAppendingPathComponent:kCountersFileName]
+                                                encoding:NSUTF8StringEncoding
+                                                   error:&error]
+                      JSONValue] retain];
 }
 
-- (id) getFileByName:(NSString *)filename {
+- (id)getFileByName:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     // First read from app bundle
@@ -246,71 +292,113 @@
     return [NSData dataWithContentsOfFile:path];
 }
 
-- (id) getTrackWithId:(NSUInteger)trackId {
+- (id)getTrackWithId:(NSUInteger)trackId {
     return [self getFileByName:[[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension]];
 }
 
-- (id) getAlbumArtworkWithSlug:(NSString *)albumSlug {
+- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug {
     return [self getFileByName:[albumSlug stringByAppendingPathExtension:kAlbumArtworkFileExtension]];
 }
 
-- (void) checkNetworkStatus:(NSNotification *)notice
+- (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId {
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *filename = [[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension];
+    BOOL success = [data writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
+                                      stringByAppendingPathComponent:filename]
+                             options:NSDataWritingAtomic
+                               error:&error];
+    if (!success) {
+        NSLog(@"Unable save track:\n%@", error);
+    }
+}
+
+- (void)checkNetworkStatus:(NSNotification *)notice
 {
     // called after network status changes
     
     NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+    
+    // Alert user about connection status
     switch (internetStatus)
     {
         case NotReachable:
         {
-            NSLog(@"The internet is down.");
-            self.internetActive = NO;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Infame!"
+                                                            message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Pazienza"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
             break;
         }
-        case ReachableViaWiFi:
-        {
-            NSLog(@"The internet is working via WIFI.");
-            self.internetActive = YES;
-            break;
-        }
+
         case ReachableViaWWAN:
         {
-            NSLog(@"The internet is working via WWAN.");
-            self.internetActive = YES;
-            break;
-        }
-    }
-    
-    NetworkStatus hostStatus = [hostReachable currentReachabilityStatus];
-    switch (hostStatus)
-    
-    {
-        case NotReachable:
-        {
-            NSLog(@"A gateway to the host server is down.");
-            self.hostActive = NO;
-            break;
-        }
-        case ReachableViaWiFi:
-        {
-            NSLog(@"A gateway to the host server is working via WIFI.");
-            self.hostActive = YES;
-            break;
-        }
-        case ReachableViaWWAN:
-        {
-            NSLog(@"A gateway to the host server is working via WWAN.");
-            self.hostActive = YES;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Che palle!"
+                                                            message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Vabè"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
             break;
         }
     }
 
-    [self proceedLaunch];
+    // Send&receive various stuff if connection is active
+    switch (internetStatus)
+    {
+        case ReachableViaWiFi:
+        case ReachableViaWWAN:
+        {
+            [self checkLatest];
+            // TODO: send&receive playback counters
+            // TODO: send likes
+            break;
+        }
+    }
 }
 
-- (void) proceedLaunch {
-    NSLog(@"internetActive = %d", internetActive);
-    NSLog(@"hostActive = %d", hostActive);
+- (void)checkLatest {
+    // checks latest version and update badge accordingly
+    NSString *urlString = [NSString stringWithFormat:@"%@/latest", kIMORAPIURL];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    [itemsFetcher.fetchHistory removeCachedDataForRequest:request];
+    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(checkLatestFetcher:finishedWithData:error:)];
+}
+
+
+#pragma mark -
+#pragma mark GTMHTTPFetcher callback
+
+- (void)checkLatestFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
+    
+    if (error == nil) {
+        // fetch succeeded
+        
+        latestVersionRemoteString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
+        latestVersionRemote = [[latestVersionRemoteString JSONValue] retain];
+        
+        if (![[latestVersionRemote valueForKey:@"hash"] isEqualToString:[latestVersion valueForKey:@"hash"]]) {
+            newItemsCount = [[latestVersionRemote valueForKey:@"object_count"] intValue] - [[latestVersion valueForKey:@"object_count"] intValue];
+            
+            // Any change on SoundCloud will generate a new version of albums database, but
+            // it doesn't necessarly have to have new tracks available, e.g. modified titles or descriptions, etc.
+            // Therefore here we check if remote object_count is greater than locale count.
+            if (newItemsCount > 0) {
+                [[tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:[NSString stringWithFormat:@"%d", newItemsCount]];
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:newItemsCount];
+            }
+            else {
+                [[tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+            }
+        }
+    }
 }
 
 @end

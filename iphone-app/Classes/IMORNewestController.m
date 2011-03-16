@@ -7,22 +7,45 @@
 //
 
 #import "IMORNewestController.h"
+#import "IMORNewestCellController.h"
+#import "iMortacciAppDelegate.h"
+#import "Reachability.h"
+#import "GTMHTTPFetcher.h"
+#import "JSON.h"
+#import <unistd.h>
 
 
 @implementation IMORNewestController
+
+@synthesize _tableView;
+@synthesize appDelegate;
+@synthesize taskInProgress;
+@synthesize albumsRemoteString;
+@synthesize albumsRemote;
+@synthesize downloadedItem;
+@synthesize tempCell;
 
 
 #pragma mark -
 #pragma mark View lifecycle
 
-/*
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    appDelegate = (iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    // $$$ Let's make some money! ;-) $$$
+    [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
+    
+    // This is a fake table actually, so we don't want to scroll
+    self._tableView.scrollEnabled = NO;
+    
+    self._tableView.rowHeight = kSingleRowTableRowHeight;
+    self._tableView.separatorColor = [UIColor clearColor];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-*/
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -71,14 +94,22 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"IMORNewestCellController";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    IMORNewestCellController *cell = (IMORNewestCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        [[NSBundle mainBundle] loadNibNamed:@"IMORNewestCellController" owner:self options:nil];
+        cell = tempCell;
+        self.tempCell = nil;
     }
     
     // Configure the cell...
+    
+    cell.noUpdatesLabel.hidden = appDelegate.newItemsCount > 0;
+    cell.updateButton.hidden = !(appDelegate.newItemsCount > 0);
+    
+    // This is a fake table actually, so we don't want to show selected cells
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -156,7 +187,219 @@
 
 
 - (void)dealloc {
+    [_tableView release];
+    [appDelegate release];
+    [albumsRemoteString release];
+    [albumsRemote release];
+    [downloadedItem release];
+    [tempCell release];
     [super dealloc];
+}
+
+
+#pragma mark -
+#pragma mark Internal methods
+
+- (void)updateTask {
+    // update albums in a new thread
+    
+    // Must always specify a NSAutoreleasePool and release it for each thread you run
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    uint sleepTime = (uint)arc4random() % 4;
+    sleepTime = sleepTime < 2 ? 2 : sleepTime;
+    
+    // Indeterminate mode
+    taskInProgress = YES;
+    [self performSelectorOnMainThread:@selector(downloadAlbums) withObject:nil waitUntilDone:NO];
+    while (taskInProgress) {
+        sleep(0.1);
+    }
+
+    sleep(sleepTime);
+    
+    // Switch to determinate mode
+    HUD.mode = MBProgressHUDModeDeterminate;
+    HUD.progress = 0.0f;
+    HUD.detailsLabelText = appDelegate.newItemsCount > 1
+    ? [NSString stringWithFormat:@"Scarico %d nuovi mortaccioni", appDelegate.newItemsCount]
+    : @"Scarico un nuovo mortaccione";
+
+    float progressStep = 1.0f / appDelegate.newItemsCount;
+    
+    uint sleepMicroSeconds;
+    for (NSDictionary *album in albumsRemote) {
+        for (NSDictionary *track in [album valueForKey:@"tracks"]) {
+            // If track is not saved locally then we shall download and save it
+            if ([appDelegate getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
+                
+                taskInProgress = YES;
+                [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
+                while (taskInProgress) {
+                    sleep(0.1);
+                }
+                
+                [appDelegate saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
+
+                sleepMicroSeconds = (uint)arc4random() % 1000000;
+                sleepMicroSeconds = sleepMicroSeconds < 500000 ? 500000 : sleepMicroSeconds;
+                
+                // suspend thread execution for an interval measured in microsec-onds microseconds
+                // 1 second = 1.000.000 microseconds
+                usleep(sleepMicroSeconds);
+                
+                HUD.progress += progressStep;
+                HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
+            }
+//            else {
+//                sleepMicroSeconds = (uint)arc4random() % 500000;
+//                sleepMicroSeconds = sleepMicroSeconds < 250000 ? 250000 : sleepMicroSeconds;
+//            }
+        }
+    }
+    HUD.labelText = @"100%";
+    HUD.detailsLabelText = [NSString stringWithFormat:@"Finito di scaricare", appDelegate.newItemsCount];
+    sleep(sleepTime);
+
+    // Back to indeterminate mode
+    HUD.mode = MBProgressHUDModeIndeterminate;
+    HUD.labelText = @"Attendere";
+    HUD.detailsLabelText = @"Installo gli aggiornamenti";
+
+    // save latest.json, albums.json files and update app delegate properties accordingly
+    [appDelegate writeLatestVersion:appDelegate.latestVersionRemoteString];
+    [appDelegate writeAlbums:albumsRemoteString];
+    appDelegate.latestVersion = appDelegate.latestVersionRemote;
+    appDelegate.albums = albumsRemote;
+    sleep(sleepTime*3);
+	
+    // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
+	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
+	HUD.mode = MBProgressHUDModeCustomView;
+	HUD.labelText = @"Fatto";
+    HUD.detailsLabelText = @"Vai con i mortaccioni!";
+    
+    [[appDelegate.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    appDelegate.newItemsCount = 0;
+    [self._tableView reloadData];
+    
+	sleep(2);
+
+    // Hide the HUD
+    [HUD hide:YES];
+    
+    [pool release];
+}
+
+- (void)downloadAlbums {
+    NSString *urlString = [appDelegate.latestVersionRemote valueForKey:@"download_url"];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(downloadAlbumsFetcher:finishedWithData:error:)];
+}
+
+- (void)downloadItem:(NSDictionary *)item {
+    NSString *urlString = [NSString stringWithFormat:@"%@?consumer_key=%@", [item valueForKey:@"download_url"], kSoundCloudClientId];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(downloadItemFetcher:finishedWithData:error:)];
+}
+
+
+#pragma mark -
+#pragma mark AdWhirl delegate methods
+
+- (NSString *)adWhirlApplicationKey {
+    return kAdWhirlApplicationKey;
+}
+
+- (UIViewController *)viewControllerForPresentingModalView {
+    return self;
+}
+
+- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView {
+    CGSize adSize = [adWhirlView actualAdSize];
+    CGRect newAdFrame = adWhirlView.frame;
+    CGRect newTableFrame = self._tableView.frame;
+    
+    newAdFrame.size = adSize;
+    newTableFrame.size.height = self.view.frame.size.height - adSize.height;
+    
+    newAdFrame.origin.x = (self.view.bounds.size.width - adSize.width) / 2;
+    newAdFrame.origin.y = newTableFrame.size.height;
+    
+    adWhirlView.frame = newAdFrame;
+    self._tableView.frame = newTableFrame;
+}
+
+- (void)adWhirlDidFailToReceiveAd:(AdWhirlView *)adWhirlView usingBackup:(BOOL)yesOrNo {
+    if (!yesOrNo) {
+        _tableView.frame = self.view.frame;
+        adWhirlView.frame = CGRectZero;
+    }
+}
+
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    // Remove HUD from screen when the HUD was hidded
+    [HUD removeFromSuperview];
+    [HUD release];
+}
+
+
+#pragma mark -
+#pragma mark UI actions
+
+- (IBAction)update:(id)sender {
+	// The hud will dispable all input on the view
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+	
+    // Add HUD to screen
+    [self.navigationController.view addSubview:HUD];
+	
+    // Regisete for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+	
+    HUD.labelText = @"Attendere";
+    HUD.detailsLabelText = @"Cerco gli aggiornamenti";
+	
+    // Show the HUD
+    [HUD show:YES];
+    
+    [NSThread detachNewThreadSelector:@selector(updateTask) toTarget:self withObject:nil];
+}
+
+
+#pragma mark -
+#pragma mark GTMHTTPFetcher callback
+
+- (void)downloadAlbumsFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
+    
+    if (error == nil) {
+        // fetch succeeded
+        
+        albumsRemoteString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
+        albumsRemote = [[albumsRemoteString JSONValue] retain];
+    }
+    
+    taskInProgress = NO;
+}
+
+- (void)downloadItemFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
+    
+    if (error == nil) {
+        // fetch succeeded
+        
+        downloadedItem = [retrievedData copy];
+    }
+    
+    taskInProgress = NO;
 }
 
 

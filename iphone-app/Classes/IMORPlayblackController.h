@@ -2,31 +2,37 @@
 //  IMORPlayblackController.h
 //  iMortacci
 //
-//  Created by Ali Servet Donmez on 8.3.11.
+//  Created by Ali Servet Donmez on 11.3.11.
 //  Copyright 2011 Apex-net srl. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>;
+#import "AdWhirlView.h"
+
+@class IMORPlayblackCellController;
 
 
-@interface IMORPlayblackController : UIViewController {
-    NSDictionary *item;
+@interface IMORPlayblackController : UIViewController <AdWhirlDelegate> {
+    UITableView *_tableView;
     
-    // UI elements
-    UILabel *titleTextLabel;
-    UILabel *descriptionTextLabel;
+    NSDictionary *item;
+    NSString *albumSlug;
     
     // Audio playback
     AVAudioPlayer *player;
+    
+    // UI elements
+    IMORPlayblackCellController *tempCell;
 }
 
+@property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, retain) NSDictionary *item;
-@property (nonatomic, retain) IBOutlet UILabel *titleTextLabel;
-@property (nonatomic, retain) IBOutlet UILabel *descriptionTextLabel;
+@property (nonatomic, retain) NSString *albumSlug;
 @property (nonatomic, assign) AVAudioPlayer *player;
+@property (nonatomic, assign) IBOutlet IMORPlayblackCellController *tempCell;
 
-- (IBAction)playTrack;
-- (IBAction)share;
+- (IBAction)playTrack:(id)sender;
+- (IBAction)share:(id)sender;
 
 @end

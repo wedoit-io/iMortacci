@@ -14,6 +14,7 @@
 
 @implementation IMORSearchController
 
+@synthesize _tableView;
 @synthesize tracksOnly;
 @synthesize items;
 @synthesize albumSlug;
@@ -30,15 +31,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.rowHeight = kSearchTableRowHeight;
-    self.tableView.backgroundColor = kIMORColorWhite;
-    self.tableView.separatorColor = [UIColor whiteColor];
-
+    // $$$ Let's make some money! ;-) $$$
+    [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
+    
+    self._tableView.rowHeight = kSearchTableRowHeight;
+    self._tableView.backgroundColor = kIMORColorWhite;
+    self._tableView.separatorColor = [UIColor whiteColor];
+    
     if (tracksOnly) {
         self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
     }
     else {
-        items = ((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate]).albums;
         self.searchDisplayController.searchBar.placeholder = @"Cerca in tutti i dialetti";
     }
 
@@ -59,19 +62,21 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-*/
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    if (!tracksOnly) {
+        items = ((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate]).albums;
+    }
 
-    // We set search results tableview's row height here, instead of in 'viewDidLoad', because
+    [self._tableView deselectRowAtIndexPath:[self._tableView indexPathForSelectedRow] animated:YES];
+
+    // We set some search results tableview's properties here, instead of in 'viewDidLoad', because
     // after first time search view will popup row height will be set to default and
     // we don't definitely want that
     self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
+    self.searchDisplayController.searchResultsTableView.backgroundColor = kIMORColorWhite;
+    self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor whiteColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -106,7 +111,7 @@
         return 1;
     }
     else {
-        if (tableView == self.tableView) {
+        if (tableView == self._tableView) {
             return 1;
         }
         else {
@@ -119,14 +124,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if (tracksOnly) {
-        if (tableView == self.tableView) {
+        if (tableView == self._tableView) {
             return [items count];
         }
         else {
             return [filteredItems count];
         }
     } else {
-        if (tableView == self.tableView) {
+        if (tableView == self._tableView) {
             return [items count];
         }
         else {
@@ -152,17 +157,17 @@
     
     NSDictionary *dict;
     if (tracksOnly) {
-        dict = (tableView == self.tableView)
+        dict = (tableView == self._tableView)
         ? [items objectAtIndex:indexPath.row]
         : [filteredItems objectAtIndex:indexPath.row];
     }
     else {
-        dict = (tableView == self.tableView)
+        dict = (tableView == self._tableView)
         ? [items objectAtIndex:indexPath.row]
         : [[[filteredItems objectAtIndex:indexPath.section] valueForKey:@"tracks"] objectAtIndex:indexPath.row];
     }
     
-    if (!tracksOnly && tableView == self.tableView) {
+    if (!tracksOnly && tableView == self._tableView) {
         static NSString *CellIdentifier = @"Cell";
         
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -199,10 +204,15 @@
 
         // Configure the cell...
         
-        cell.backgroundColor = kIMORColorWhite;
-        
-        cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
-                                                       getAlbumArtworkWithSlug:albumSlug]];
+        if (tracksOnly) {
+            cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
+                                                           getAlbumArtworkWithSlug:albumSlug]];
+        }
+        else {
+            cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
+                                                           getAlbumArtworkWithSlug:[[filteredItems objectAtIndex:indexPath.section]
+                                                                                    valueForKey:@"slug"]]];
+        }
         
         cell.titleTextLabel.text = [dict valueForKey:@"title"];
         // This is how you check for null string values in JSON string "<null>"
@@ -210,7 +220,8 @@
         if ([dict valueForKey:@"description"] != [NSNull null]) {
             cell.descriptionTextLabel.text = [dict valueForKey:@"description"];
         }
-        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", arc4random() % 10000];
+        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", [[dict valueForKey:@"playback_count"] intValue]];
+        cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", [[dict valueForKey:@"like_count"] intValue]];
         
         cell.backgroundView.backgroundColor = kIMORColorWhite;
         return cell;
@@ -265,7 +276,7 @@
 
     // Navigation logic may go here. Create and push another view controller.
 
-    if (!tracksOnly && tableView == self.tableView) {
+    if (!tracksOnly && tableView == self._tableView) {
         IMORSearchController *detailViewController = [[IMORSearchController alloc]
                                                       initWithNibName:@"IMORSearchController" bundle:nil];
         NSDictionary *item = [items objectAtIndex:indexPath.row];
@@ -283,16 +294,18 @@
                                                          initWithNibName:@"IMORPlayblackController" bundle:nil];
         
         if (tracksOnly) {
-            if (tableView == self.tableView) {
+            if (tableView == self._tableView) {
                 detailViewController.item = [items objectAtIndex:indexPath.row];
             }
             else {
                 detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
             }
+            detailViewController.albumSlug = albumSlug;
         }
         else {
             detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section]
                                           valueForKey:@"tracks"] objectAtIndex:indexPath.row];
+            detailViewController.albumSlug = [[filteredItems objectAtIndex:indexPath.section] valueForKey:@"slug"];
         }
 
         // Pass the selected object to the new view controller.
@@ -320,10 +333,45 @@
 
 
 - (void)dealloc {
+    [_tableView release];
     [items release];
     [albumSlug release];
     [filteredItems release];
     [super dealloc];
+}
+
+
+#pragma mark -
+#pragma mark AdWhirl delegate methods
+
+- (NSString *)adWhirlApplicationKey {
+    return kAdWhirlApplicationKey;
+}
+
+- (UIViewController *)viewControllerForPresentingModalView {
+    return self;
+}
+
+- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView {
+    CGSize adSize = [adWhirlView actualAdSize];
+    CGRect newAdFrame = adWhirlView.frame;
+    CGRect newTableFrame = self._tableView.frame;
+    
+    newAdFrame.size = adSize;
+    newTableFrame.size.height = self.view.frame.size.height - adSize.height;
+
+    newAdFrame.origin.x = (self.view.bounds.size.width - adSize.width) / 2;
+    newAdFrame.origin.y = newTableFrame.size.height;
+    
+    adWhirlView.frame = newAdFrame;
+    self._tableView.frame = newTableFrame;
+}
+
+- (void)adWhirlDidFailToReceiveAd:(AdWhirlView *)adWhirlView usingBackup:(BOOL)yesOrNo {
+    if (!yesOrNo) {
+        _tableView.frame = self.view.frame;
+        adWhirlView.frame = CGRectZero;
+    }
 }
 
 
