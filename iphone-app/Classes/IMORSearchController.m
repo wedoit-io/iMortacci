@@ -16,6 +16,7 @@
 
 @synthesize tracksOnly;
 @synthesize items;
+@synthesize albumSlug;
 @synthesize filteredItems;
 @synthesize savedSearchTerm;
 @synthesize savedScopeButtonIndex;
@@ -30,6 +31,8 @@
     [super viewDidLoad];
     
     self.tableView.rowHeight = kSearchTableRowHeight;
+    self.tableView.backgroundColor = kIMORColorWhite;
+    self.tableView.separatorColor = [UIColor whiteColor];
 
     if (tracksOnly) {
         self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
@@ -51,7 +54,7 @@
         
         self.savedSearchTerm = nil;
     }
-
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -169,7 +172,9 @@
 
         // Configure the cell...
         
-        cell.imageView.image = [UIImage imageNamed:@"placeholder.png"];
+        cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
+                                                       getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]]];
+        
         cell.textLabel.text = [dict valueForKey:@"title"];
         // This is how you check for null string values in JSON string "<null>"
         // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
@@ -177,6 +182,7 @@
             cell.detailTextLabel.text = [dict valueForKey:@"description"];
         }
         
+        cell.backgroundView.backgroundColor = kIMORColorWhite;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         return cell;
@@ -193,6 +199,11 @@
 
         // Configure the cell...
         
+        cell.backgroundColor = kIMORColorWhite;
+        
+        cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
+                                                       getAlbumArtworkWithSlug:albumSlug]];
+        
         cell.titleTextLabel.text = [dict valueForKey:@"title"];
         // This is how you check for null string values in JSON string "<null>"
         // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
@@ -201,6 +212,7 @@
         }
         cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", arc4random() % 10000];
         
+        cell.backgroundView.backgroundColor = kIMORColorWhite;
         return cell;
     }
 }
@@ -260,6 +272,7 @@
         detailViewController.tracksOnly = YES;
         detailViewController.title = [item valueForKey:@"title"];
         detailViewController.items = [item valueForKey:@"tracks"];
+        detailViewController.albumSlug = [item valueForKey:@"slug"];
         
         // Pass the selected object to the new view controller.
         [self.navigationController pushViewController:detailViewController animated:YES];
@@ -278,7 +291,8 @@
             }
         }
         else {
-            detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section] valueForKey:@"tracks"] objectAtIndex:indexPath.row];
+            detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section]
+                                          valueForKey:@"tracks"] objectAtIndex:indexPath.row];
         }
 
         // Pass the selected object to the new view controller.
@@ -307,6 +321,7 @@
 
 - (void)dealloc {
     [items release];
+    [albumSlug release];
     [filteredItems release];
     [super dealloc];
 }

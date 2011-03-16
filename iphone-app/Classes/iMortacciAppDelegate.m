@@ -228,23 +228,30 @@
                     JSONValue] retain];
 }
 
-- (id) getTrackWithId:(NSUInteger)trackId {
+- (id) getFileByName:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *_trackId = [[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension];
     
     // First read from app bundle
-    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:_trackId];
-
+    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:filename];
+    
     // If file isn't in bundle then read from app support directory
     // (this means user has a previous version of iMortacci, but has downloaded
     // some new tracks via update.
     if (![fileManager fileExistsAtPath:path]) {
-        path = [((NSString *)[fileManager applicationSupportDirectory]) stringByAppendingPathComponent:_trackId];
+        path = [((NSString *)[fileManager applicationSupportDirectory]) stringByAppendingPathComponent:filename];
     }
-
+    
     // Returns a data object by reading every byte from the file specified by path
     // or nil if the data object could not be created.
     return [NSData dataWithContentsOfFile:path];
+}
+
+- (id) getTrackWithId:(NSUInteger)trackId {
+    return [self getFileByName:[[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension]];
+}
+
+- (id) getAlbumArtworkWithSlug:(NSString *)albumSlug {
+    return [self getFileByName:[albumSlug stringByAppendingPathExtension:kAlbumArtworkFileExtension]];
 }
 
 - (void) checkNetworkStatus:(NSNotification *)notice

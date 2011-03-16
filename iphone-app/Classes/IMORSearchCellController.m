@@ -11,14 +11,18 @@
 
 @implementation IMORSearchCellController
 
+@synthesize imageView;
 @synthesize titleTextLabel;
 @synthesize descriptionTextLabel;
 @synthesize playbackCountTextLabel;
+@synthesize likesTextLabel;
 
 - (void)dealloc {
+    [imageView release];
     [titleTextLabel release];
     [descriptionTextLabel release];
     [playbackCountTextLabel release];
+    [likesTextLabel release];
     [super dealloc];
 }
 

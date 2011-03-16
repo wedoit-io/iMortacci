@@ -2,13 +2,23 @@
 // Prefix header for all source files of the 'iMortacci' target in the 'iMortacci' project
 //
 
+#define kAdWhirlApplicationKey @"9036ba7fc12341f0bdadc4c569707817"
+
 #define kLatestVersionFileName @"latest.json"
 #define kAlbumsFileName @"albums.json"
 #define kTrackFileExtension @"mp3"
+#define kAlbumArtworkFileExtension @"png"
 
-#define kSearchTableRowHeight 68.0
+#define kIMORColorWhite     [UIColor colorWithHexString:@"ecebdc"]
+#define kIMORColorYellow    [UIColor colorWithHexString:@"fbbd10"]
+#define kIMORColorOrange    [UIColor colorWithHexString:@"e35b1b"]
+#define kIMORColorGreen     [UIColor colorWithHexString:@"3ea5a2"]
+#define kIMORColorBrown     [UIColor colorWithHexString:@"333333"]
+
+#define kSearchTableRowHeight 92.0
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+    #import "UIColor-Expanded.h"
 #endif

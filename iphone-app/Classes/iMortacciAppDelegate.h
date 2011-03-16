@@ -35,7 +35,9 @@
 - (void) writeLatestVersion:(NSString *)jsonContent;
 - (void) writeAlbums:(NSString *)jsonContent;
 - (void) loadLatestData;
+- (id) getFileByName:(NSString *)filename;
 - (id) getTrackWithId:(NSUInteger)trackId;
+- (id) getAlbumArtworkWithSlug:(NSString *)albumSlug;
 - (void) checkNetworkStatus:(NSNotification *)notice;
 - (void) proceedLaunch;
 
