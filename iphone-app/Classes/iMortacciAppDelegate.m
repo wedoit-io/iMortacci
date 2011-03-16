@@ -10,6 +10,7 @@
 #import "NSFileManager+DirectoryLocations.h"
 #import "JSON.h"
 #import "SHK.h"
+#import "Reachability.h"
 
 
 @implementation iMortacciAppDelegate
@@ -18,6 +19,8 @@
 @synthesize tabBarController;
 @synthesize latestVersion;
 @synthesize albums;
+@synthesize internetActive;
+@synthesize hostActive;
 
 
 #pragma mark -
@@ -34,12 +37,19 @@
     
     [self loadLatestData];
     
-    // Most ShareKit services support offline sharing. This means when a user
-    // shares something while they are disconnected, ShareKit will store it and
-    // wait to send until they are connected again.
-    // Simply add this line when you want ShareKit to try resending the items:
-    // Ref.: http://getsharekit.com/install (Step 5: Offline Sharing)
-    [SHK flushOfflineQueue];
+    // check for internet connection
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(checkNetworkStatus:)
+                                                 name:kReachabilityChangedNotification object:nil];
+    
+    internetReachable = [[Reachability reachabilityForInternetConnection] retain];
+    [internetReachable startNotifier];
+    
+    // check if a pathway to a random host exists
+    hostReachable = [[Reachability reachabilityWithHostName: @"www.google.com"] retain];
+    [hostReachable startNotifier];
+    
+    // now patiently wait for the notification...
     
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
@@ -235,6 +245,65 @@
     // Returns a data object by reading every byte from the file specified by path
     // or nil if the data object could not be created.
     return [NSData dataWithContentsOfFile:path];
+}
+
+- (void) checkNetworkStatus:(NSNotification *)notice
+{
+    // called after network status changes
+    
+    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+    switch (internetStatus)
+    {
+        case NotReachable:
+        {
+            NSLog(@"The internet is down.");
+            self.internetActive = NO;
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"The internet is working via WIFI.");
+            self.internetActive = YES;
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"The internet is working via WWAN.");
+            self.internetActive = YES;
+            break;
+        }
+    }
+    
+    NetworkStatus hostStatus = [hostReachable currentReachabilityStatus];
+    switch (hostStatus)
+    
+    {
+        case NotReachable:
+        {
+            NSLog(@"A gateway to the host server is down.");
+            self.hostActive = NO;
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"A gateway to the host server is working via WIFI.");
+            self.hostActive = YES;
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"A gateway to the host server is working via WWAN.");
+            self.hostActive = YES;
+            break;
+        }
+    }
+
+    [self proceedLaunch];
+}
+
+- (void) proceedLaunch {
+    NSLog(@"internetActive = %d", internetActive);
+    NSLog(@"hostActive = %d", hostActive);
 }
 
 @end

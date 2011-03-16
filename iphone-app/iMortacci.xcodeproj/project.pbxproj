@@ -498,6 +498,7 @@
 			children = (
 				50AB9FEE131BFAA5006BC4DB /* json-framework */,
 				50AB9E231318061A006BC4DB /* NSFileManager_DirectoryLocations */,
+				50EF14B51326892B00C965AC /* Reachability */,
 				50EF141B1326892A00C965AC /* ShareKit */,
 			);
 			name = lib;
@@ -511,7 +512,6 @@
 				50EF14281326892A00C965AC /* Core */,
 				50EF14621326892A00C965AC /* Sharers */,
 				50EF14A41326892B00C965AC /* UI */,
-				50EF14B51326892B00C965AC /* Reachability */,
 			);
 			path = ShareKit;
 			sourceTree = "<group>";
@@ -873,7 +873,8 @@
 				50EF14B61326892B00C965AC /* Reachability.h */,
 				50EF14B71326892B00C965AC /* Reachability.m */,
 			);
-			path = Reachability;
+			name = Reachability;
+			path = ShareKit/Reachability;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
