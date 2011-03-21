@@ -6,3 +6,5 @@
 *.pbxuser
 *.mode*
 *.perspective*
+project.xcworkspace/
+xcuserdata/
