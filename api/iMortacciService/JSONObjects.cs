@@ -5,6 +5,35 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
+    // =====================================================================
+    // iMortacci Objects
+    // =====================================================================
+    #region Show/hide
+
+    public enum IMORCounterLikeStatus
+    {
+        Neutral = 0,
+        UnPublished = 1,
+        Published = 2,
+    }
+
+    [JsonObject]
+    public class IMORCounterInput
+    {
+        public int id { get; set; }
+
+        public IMORCounterLikeStatus like_status { get; set; }
+
+        public int user_playback_count { get; set; }
+    }
+
+    #endregion
+
+    // =====================================================================
+    // SoundCloud Objects
+    // =====================================================================
+    #region Show/hide
+
     [JsonObject]
     public class SCPlaylist
     {
@@ -54,8 +83,8 @@
 
         public string download_url { get; set; }
 
-        public string purchase_url { get; set; }
-
         public string waveform_url { get; set; }
     }
+
+    #endregion
 }

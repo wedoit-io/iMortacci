@@ -14,8 +14,7 @@
             <DefiningQuery>SELECT 
       [recordlabel_track_counter].[id] AS [id], 
       [recordlabel_track_counter].[playback_count] AS [playback_count], 
-      [recordlabel_track_counter].[like_count] AS [like_count], 
-      [recordlabel_track_counter].[user_plackback_count] AS [user_plackback_count]
+      [recordlabel_track_counter].[like_count] AS [like_count]
       FROM [dbo].[recordlabel_track_counter] AS [recordlabel_track_counter]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
@@ -66,7 +65,6 @@
           <Property Name="like_count" Type="int" Nullable="false" />
           <Property Name="download_url" Type="nvarchar" Nullable="false" MaxLength="255" />
           <Property Name="waveform_url" Type="nvarchar" MaxLength="255" />
-          <Property Name="site_url" Type="nvarchar" Nullable="false" MaxLength="255" />
           <Property Name="status" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -77,12 +75,10 @@
             <PropertyRef Name="id" />
             <PropertyRef Name="playback_count" />
             <PropertyRef Name="like_count" />
-            <PropertyRef Name="user_plackback_count" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="playback_count" Type="int" Nullable="false" />
           <Property Name="like_count" Type="int" Nullable="false" />
-          <Property Name="user_plackback_count" Type="int" Nullable="false" />
         </EntityType>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -147,7 +143,6 @@
           <Property Name="like_count" Nullable="false" Type="Int32" />
           <Property Name="download_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="waveform_url" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
-          <Property Name="site_url" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="status" Nullable="false" Type="Int32" />
         </EntityType>
         <Association Name="FK_recordlabel_track_recordlabel_album">
@@ -167,12 +162,10 @@
             <PropertyRef Name="id" />
             <PropertyRef Name="playback_count" />
             <PropertyRef Name="like_count" />
-            <PropertyRef Name="user_plackback_count" />
           </Key>
-          <Property Name="id" Nullable="false" Type="Int32" />
-          <Property Name="playback_count" Nullable="false" Type="Int32" />
-          <Property Name="like_count" Nullable="false" Type="Int32" />
-          <Property Type="Int32" Name="user_plackback_count" Nullable="false" />
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="Int32" Name="playback_count" Nullable="false" />
+          <Property Type="Int32" Name="like_count" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -204,7 +197,6 @@
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="track"><EntityTypeMapping TypeName="IMortacciModel.track"><MappingFragment StoreEntitySet="recordlabel_track">
             <ScalarProperty Name="like_count" ColumnName="like_count" />
-                <ScalarProperty Name="site_url" ColumnName="site_url" />
                 <ScalarProperty Name="album_id" ColumnName="album_id" />
             <ScalarProperty Name="id" ColumnName="id" />
             <ScalarProperty Name="slug" ColumnName="slug" />
@@ -221,7 +213,6 @@
           <EntitySetMapping Name="track_counter">
             <EntityTypeMapping TypeName="IMortacciModel.track_counter">
               <MappingFragment StoreEntitySet="recordlabel_track_counter">
-                <ScalarProperty Name="user_plackback_count" ColumnName="user_plackback_count" />
                 <ScalarProperty Name="like_count" ColumnName="like_count" />
                 <ScalarProperty Name="playback_count" ColumnName="playback_count" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -253,12 +244,12 @@
         <EntityTypeShape EntityType="IMortacciModel.configuration" PointX="8.625" PointY="1.5" Width="1.5" Height="1.4033821614583333" IsExpanded="true" />
         <EntityTypeShape EntityType="IMortacciModel.album" PointX="0.875" PointY="1" Width="1.5" Height="2.9417936197916656" IsExpanded="true" />
         <EntityTypeShape EntityType="IMortacciModel.version" PointX="2" PointY="5" Width="1.5" Height="1.7879850260416665" IsExpanded="true" />
-        <EntityTypeShape EntityType="IMortacciModel.track" PointX="3.125" PointY="0.75" Width="1.5" Height="3.3263964843749996" IsExpanded="true" />
+        <EntityTypeShape EntityType="IMortacciModel.track" PointX="3.125" PointY="0.75" Width="1.5" Height="3.5186979166666656" IsExpanded="true" />
         <AssociationConnector ManuallyRouted="false" Association="IMortacciModel.FK_recordlabel_track_recordlabel_album">
           <ConnectorPoint PointX="2.375" PointY="2.4708968098958328" />
           <ConnectorPoint PointX="3.125" PointY="2.4708968098958328" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="IMortacciModel.track_counter" PointX="5.375" PointY="0.75" Width="1.5" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="IMortacciModel.track_counter" Width="1.5" PointX="5.375" PointY="0.75" Height="1.5956835937499996" />
       </Diagram>
     </Diagrams>
   </Designer>

@@ -91,12 +91,6 @@ namespace iMortacci
             set;
         }
     
-        public virtual string site_url
-        {
-            get;
-            set;
-        }
-    
         public virtual int status
         {
             get;

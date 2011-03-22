@@ -36,12 +36,6 @@ namespace iMortacci
             get;
             set;
         }
-    
-        public virtual int user_plackback_count
-        {
-            get;
-            set;
-        }
 
         #endregion
     }

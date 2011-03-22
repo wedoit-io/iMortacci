@@ -35,7 +35,7 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "{format}/hello")]
+        [WebGet(UriTemplate = "hello?format={format}")]
         public string GetHello(string format)
         {
             this._SetOutgoingResponseFormat(format);
@@ -50,8 +50,8 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "{format}/albums?loadtracks={loadTracks}")]
-        public List<album> GetAlbums(string format, string loadTracks)
+        [WebGet(UriTemplate = "albums?format={format}&loadtracks={trueFalse}")]
+        public List<album> GetAlbums(string format, string trueFalse)
         {
             this._SetOutgoingResponseFormat(format);
 
@@ -59,7 +59,7 @@
 
             try
             {
-                _loadTracks = bool.Parse(loadTracks);
+                _loadTracks = bool.Parse(trueFalse);
             }
             catch (ArgumentNullException)
             {
@@ -69,8 +69,8 @@
             return this._GetAlbums(_loadTracks);
         }
 
-        [WebGet(UriTemplate = "{format}/albums/{id}?loadtracks={loadTracks}")]
-        public album GetAlbumById(string format, string id, string loadTracks)
+        [WebGet(UriTemplate = "albums/{id}?format={format}&loadtracks={trueFalse}")]
+        public album GetAlbumById(string format, string id, string trueFalse)
         {
             this._SetOutgoingResponseFormat(format);
 
@@ -97,14 +97,14 @@
 
             try
             {
-                _loadTracks = bool.Parse(loadTracks);
+                _loadTracks = bool.Parse(trueFalse);
             }
             catch (FormatException)
             {
                 throw new WebFaultException<string>(
                     "The value '{value}' is not a valid boolean value. The value can be either 'true' or 'false'.".HaackFormat(new
                     {
-                        value = loadTracks
+                        value = trueFalse
                     }),
                     HttpStatusCode.BadRequest);
             }
@@ -123,7 +123,7 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "{format}/tracks")]
+        [WebGet(UriTemplate = "tracks?format={format}")]
         public List<track> GetTracks(string format)
         {
             this._SetOutgoingResponseFormat(format);
@@ -131,7 +131,7 @@
             return this._GetTracks();
         }
 
-        [WebGet(UriTemplate = "{format}/tracks/{id}")]
+        [WebGet(UriTemplate = "tracks/{id}?format={format}")]
         public track GetTrackById(string format, string id)
         {
             this._SetOutgoingResponseFormat(format);
@@ -159,12 +159,51 @@
             return this._GetTracks(_id).FirstOrDefault();
         }
 
-        [WebInvoke(UriTemplate = "{format}/counters", Method = "POST")]
-        public List<track_counter> UpdatePlaybackCount(string format, List<track_counter> counters)
+        [WebGet(UriTemplate = "counters?format={format}")]
+        public List<track_counter> GetCounters(string format)
         {
             this._SetOutgoingResponseFormat(format);
 
-            return this._UpdatePlaybackCount();
+            return this._GetCounters();
+        }
+
+        [WebGet(UriTemplate = "counters/{id}?format={format}")]
+        public track_counter GetCounterById(string format, string id)
+        {
+            this._SetOutgoingResponseFormat(format);
+
+            uint _id;
+
+            try
+            {
+                _id = uint.Parse(id);
+            }
+            catch (FormatException)
+            {
+                throw new WebFaultException<string>(
+                    "The value '{id}' is not a valid track id. The id must be an integer.".HaackFormat(new
+                    {
+                        id = id
+                    }),
+                    HttpStatusCode.BadRequest);
+            }
+            catch (OverflowException ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.BadRequest);
+            }
+
+            return this._GetCounters(_id).FirstOrDefault();
+        }
+
+        [WebInvoke(
+            Method = "PUT",
+            UriTemplate = "counters?format={format}",
+            RequestFormat = WebMessageFormat.Json)]
+        public List<track_counter> UpdateCounters(string format, List<IMORCounterInput> counters)
+        {
+            this._SetOutgoingResponseFormat(format);
+
+            return this._UpdateCounters(counters);
         }
 
         #endregion
@@ -174,8 +213,8 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "{format}/reload?force={forceReload}")]
-        public version Reload(string format, string forceReload)
+        [WebGet(UriTemplate = "reload?format={format}&force={trueFalse}")]
+        public version Reload(string format, string trueFalse)
         {
             this._SetOutgoingResponseFormat(format);
 
@@ -183,7 +222,7 @@
 
             try
             {
-                _forceReload = bool.Parse(forceReload);
+                _forceReload = bool.Parse(trueFalse);
             }
             catch (ArgumentNullException)
             {
@@ -200,7 +239,7 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "{format}/config")]
+        [WebGet(UriTemplate = "config?format={format}")]
         public List<configuration> GetConfigurations(string format)
         {
             this._SetOutgoingResponseFormat(format);
@@ -215,7 +254,7 @@
         // =====================================================================
         #region
 
-        [WebGet(UriTemplate = "{format}/latest")]
+        [WebGet(UriTemplate = "latest?format={format}")]
         public version GetLatestVersion(string format)
         {
             this._SetOutgoingResponseFormat(format);
@@ -232,7 +271,8 @@
 
         private void _SetOutgoingResponseFormat(string format)
         {
-            if (string.Equals("json", format, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals("json", format, StringComparison.OrdinalIgnoreCase) ||
+                string.IsNullOrWhiteSpace(format))
             {
                 WebOperationContext.Current.OutgoingResponse.Format = WebMessageFormat.Json;
             }
@@ -274,6 +314,23 @@
                 context.ContextOptions.ProxyCreationEnabled = false;
 
                 var query = context.track.AsQueryable();
+
+                if (id.HasValue)
+                {
+                    query = query.Where(a => a.id == id);
+                }
+
+                return query.ToList();
+            }
+        }
+
+        private List<track_counter> _GetCounters(uint? id = null)
+        {
+            using (var context = new IMortacciEntities())
+            {
+                context.ContextOptions.ProxyCreationEnabled = false;
+
+                var query = context.track_counter.AsQueryable();
 
                 if (id.HasValue)
                 {
@@ -448,16 +505,6 @@
                             }
 
                             _track.download_url = track.download_url;
-                            if (string.IsNullOrWhiteSpace(track.purchase_url))
-                            {
-                                throw new WebFaultException<string>(
-                                    "Track '{track_title}' has missing buy link on SoundCloud. Fix this issue and reload again.".HaackFormat(new
-                                    {
-                                        track_title = track.title
-                                    }),
-                                    HttpStatusCode.InternalServerError);
-                            }
-                            _track.site_url = track.purchase_url;
                             _track.waveform_url = track.waveform_url;
                         }
                     }
@@ -521,11 +568,29 @@
             return this._GetLatestVersion();
         }
 
-        private List<track_counter> _UpdatePlaybackCount()
+        private List<track_counter> _UpdateCounters(List<IMORCounterInput> counters)
         {
             using (var context = new IMortacciEntities())
             {
                 context.ContextOptions.ProxyCreationEnabled = false;
+
+                if (counters != null)
+                {
+                    track track;
+                    foreach (IMORCounterInput c in counters)
+                    {
+                        if ((track = context.track.Where(t => t.id == c.id).FirstOrDefault()) != null)
+                        {
+                            track.playback_count += c.user_playback_count;
+                            if (c.like_status == IMORCounterLikeStatus.UnPublished)
+                            {
+                                track.like_count++;
+                            }
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
 
                 return context.track_counter.ToList();
             }
