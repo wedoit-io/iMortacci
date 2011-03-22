@@ -8,20 +8,18 @@
 
 #import "IMORNewestController.h"
 #import "IMORNewestCellController.h"
-#import "iMortacciAppDelegate.h"
+#import "QuickFunctions.h"
 #import "Reachability.h"
 #import "GTMHTTPFetcher.h"
-#import "JSON.h"
+#import "JSON+Extensions.h"
 #import <unistd.h>
 
 
 @implementation IMORNewestController
 
 @synthesize _tableView;
-@synthesize appDelegate;
 @synthesize taskInProgress;
-@synthesize albumsRemoteString;
-@synthesize albumsRemote;
+@synthesize latestAlbums;
 @synthesize downloadedItem;
 @synthesize tempCell;
 
@@ -32,8 +30,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    appDelegate = (iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate];
-
     // $$$ Let's make some money! ;-) $$$
     [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
     
@@ -105,8 +101,8 @@
     
     // Configure the cell...
     
-    cell.noUpdatesLabel.hidden = appDelegate.newItemsCount > 0;
-    cell.updateButton.hidden = !(appDelegate.newItemsCount > 0);
+    cell.noUpdatesLabel.hidden = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 0;
+    cell.updateButton.hidden = !([QuickFunctions sharedQuickFunctions].app.newItemsCount > 0);
     
     // This is a fake table actually, so we don't want to show selected cells
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -188,9 +184,7 @@
 
 - (void)dealloc {
     [_tableView release];
-    [appDelegate release];
-    [albumsRemoteString release];
-    [albumsRemote release];
+    [latestAlbums release];
     [downloadedItem release];
     [tempCell release];
     [super dealloc];
@@ -221,17 +215,17 @@
     // Switch to determinate mode
     HUD.mode = MBProgressHUDModeDeterminate;
     HUD.progress = 0.0f;
-    HUD.detailsLabelText = appDelegate.newItemsCount > 1
-    ? [NSString stringWithFormat:@"Scarico %d nuovi mortaccioni", appDelegate.newItemsCount]
+    HUD.detailsLabelText = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 1
+    ? [NSString stringWithFormat:@"Scarico %d nuovi mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
     : @"Scarico un nuovo mortaccione";
 
-    float progressStep = 1.0f / appDelegate.newItemsCount;
+    float progressStep = 1.0f / [QuickFunctions sharedQuickFunctions].app.newItemsCount;
     
     uint sleepMicroSeconds;
-    for (NSDictionary *album in albumsRemote) {
+    for (NSDictionary *album in latestAlbums) {
         for (NSDictionary *track in [album valueForKey:@"tracks"]) {
             // If track is not saved locally then we shall download and save it
-            if ([appDelegate getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
+            if ([[QuickFunctions sharedQuickFunctions] getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
                 
                 taskInProgress = YES;
                 [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
@@ -239,7 +233,7 @@
                     sleep(0.1);
                 }
                 
-                [appDelegate saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
+                [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
 
                 sleepMicroSeconds = (uint)arc4random() % 1000000;
                 sleepMicroSeconds = sleepMicroSeconds < 500000 ? 500000 : sleepMicroSeconds;
@@ -258,7 +252,7 @@
         }
     }
     HUD.labelText = @"100%";
-    HUD.detailsLabelText = [NSString stringWithFormat:@"Finito di scaricare", appDelegate.newItemsCount];
+    HUD.detailsLabelText = [NSString stringWithFormat:@"Finito di scaricare", [QuickFunctions sharedQuickFunctions].app.newItemsCount];
     sleep(sleepTime);
 
     // Back to indeterminate mode
@@ -266,11 +260,14 @@
     HUD.labelText = @"Attendere";
     HUD.detailsLabelText = @"Installo gli aggiornamenti";
 
-    // save latest.json, albums.json files and update app delegate properties accordingly
-    [appDelegate writeLatestVersion:appDelegate.latestVersionRemoteString];
-    [appDelegate writeAlbums:albumsRemoteString];
-    appDelegate.latestVersion = appDelegate.latestVersionRemote;
-    appDelegate.albums = albumsRemote;
+    // save version.json, albums.json files and update app delegate properties accordingly
+    
+    [[QuickFunctions sharedQuickFunctions] saveCurrentVersion:[QuickFunctions sharedQuickFunctions].app.latestVersion];
+    [[QuickFunctions sharedQuickFunctions] saveAlbums:latestAlbums];
+
+    [[QuickFunctions sharedQuickFunctions] updateCurrentVersion:[QuickFunctions sharedQuickFunctions].app.latestVersion];
+    [[QuickFunctions sharedQuickFunctions] updateAlbums:latestAlbums];
+    
     sleep(sleepTime*3);
 	
     // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
@@ -279,9 +276,9 @@
 	HUD.labelText = @"Fatto";
     HUD.detailsLabelText = @"Vai con i mortaccioni!";
     
-    [[appDelegate.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
+    [[[QuickFunctions sharedQuickFunctions].app.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    appDelegate.newItemsCount = 0;
+    [QuickFunctions sharedQuickFunctions].app.newItemsCount = 0;
     [self._tableView reloadData];
     
 	sleep(2);
@@ -293,7 +290,7 @@
 }
 
 - (void)downloadAlbums {
-    NSString *urlString = [appDelegate.latestVersionRemote valueForKey:@"download_url"];
+    NSString *urlString = [[QuickFunctions sharedQuickFunctions].app.latestVersion valueForKey:@"download_url"];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
@@ -384,8 +381,8 @@
     if (error == nil) {
         // fetch succeeded
         
-        albumsRemoteString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
-        albumsRemote = [[albumsRemoteString JSONValue] retain];
+        NSString *jsonString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
+        latestAlbums = [[jsonString JSONValue] retain];
     }
     
     taskInProgress = NO;

@@ -7,8 +7,9 @@
 //
 
 #import "iMortacciAppDelegate.h"
-#import "NSFileManager+DirectoryLocations.h"
-#import "JSON.h"
+#import "QuickFunctions.h"
+#import "NSFileManager+Extensions.h"
+#import "JSON+Extensions.h"
 #import "SHK.h"
 #import "Reachability.h"
 #import "GTMHTTPFetcher.h"
@@ -18,10 +19,9 @@
 
 @synthesize window;
 @synthesize tabBarController;
+@synthesize currentVersion;
 @synthesize latestVersion;
-@synthesize latestVersionRemoteString;
-@synthesize latestVersionRemote;
-@synthesize albums;
+@synthesize currentAlbums;
 @synthesize counters;
 @synthesize newItemsCount;
 @synthesize userInfo;
@@ -36,14 +36,21 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-
+    
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
-        [self saveLatestVersion:nil WithAlbums:nil AndCounters:nil];
-        [self saveUserInfoAndFavorites];
+        [[QuickFunctions sharedQuickFunctions] saveCurrentVersion:nil];
+        [[QuickFunctions sharedQuickFunctions] saveAlbums:nil];
+        [[QuickFunctions sharedQuickFunctions] saveUserInfo:nil];
+        [[QuickFunctions sharedQuickFunctions] saveCounters:nil];
+        [[QuickFunctions sharedQuickFunctions] saveFavorites:nil];
     }
     
-    [self loadLatestData];
+    [[QuickFunctions sharedQuickFunctions] updateCurrentVersion:nil];
+    [[QuickFunctions sharedQuickFunctions] updateAlbums:nil];
+    [[QuickFunctions sharedQuickFunctions] updateUserInfo:nil];
+    [[QuickFunctions sharedQuickFunctions] updateCounters:nil];
+    [[QuickFunctions sharedQuickFunctions] updateFavorites:nil];
     
     // check for internet connection
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -81,20 +88,9 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
-    [self saveUserInfoAndFavorites];
-
-    SBJsonWriter *jsonWriter = [SBJsonWriter new];
     
-    NSError *error = nil;
-    NSString *countersString = [jsonWriter stringWithObject:counters error:&error];
-    if (error == nil) {
-        [self writeCounters:countersString];
-    }
-    else {
-        NSLog(@"Unable to serialize user info: %@", error);
-    }
-    
-    [jsonWriter release];
+    [[QuickFunctions sharedQuickFunctions] saveUserInfo:userInfo];
+    [[QuickFunctions sharedQuickFunctions] saveFavorites:favorites];
 }
 
 
@@ -149,10 +145,9 @@
 - (void)dealloc {
     [tabBarController release];
     [window release];
+    [currentVersion release];
     [latestVersion release];
-    [latestVersionRemoteString release];
-    [latestVersionRemote release];
-    [albums release];
+    [currentAlbums release];
     [counters release];
     [userInfo release];
     [favorites release];
@@ -166,227 +161,9 @@
 #pragma mark Internal methods
 
 - (BOOL)applicationWillLaunchFirstTime {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    // This will look like:
-    // /User/Applications/<APP_UUID>/Library/Application Support/<APP_NAME>/<FILENAME>
-    NSString *_latestVersion = [((NSString *)[fileManager applicationSupportDirectory])
-                               stringByAppendingPathComponent:kLatestVersionFileName];
-    NSString *_albums = [((NSString *)[fileManager applicationSupportDirectory])
-                         stringByAppendingPathComponent:kAlbumsFileName];
-    NSString *_counters = [((NSString *)[fileManager applicationSupportDirectory])
-                           stringByAppendingPathComponent:kCountersFileName];
-    
-    return
-    ![fileManager fileExistsAtPath:_latestVersion] ||
-    ![fileManager fileExistsAtPath:_albums] ||
-    ![fileManager fileExistsAtPath:_counters];
-}
-
-- (void)saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums AndCounters:(NSString *)_counters {
-    
-    // Either if all input has to be empty (first launch of this app.) or
-    // all parameters have to be non-empty strings.
-    if (([_latestVersion length] == 0 && [_albums length] == 0 && [_counters length] == 0) ||
-        ([_latestVersion length] > 0 && [_albums length] > 0 && [_counters length] > 0))
-    {
-        [self writeLatestVersion:_latestVersion];
-        [self writeAlbums:_albums];
-        [self writeCounters:_counters];
-    }
-    else
-    {
-        NSLog(@"Wrong usage of 'saveLatestVersion:WithAlbums:AndCounters:' method.");
-    }
-}
-
-- (void)saveUserInfoAndFavorites {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSString *userInfoString = @"[]";
-    if (userInfo != nil) {
-        SBJsonWriter *jsonWriter = [SBJsonWriter new];
-        userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
-        [jsonWriter release];
-    }
-
-    if (error == nil) {
-        BOOL success = [userInfoString writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                    stringByAppendingPathComponent:kUserInfoFileName]
-                                        atomically:YES
-                                          encoding:NSUTF8StringEncoding
-                                             error:&error];
-        if (!success) {
-            NSLog(@"Unable to write user info:\n%@", error);
-        }
-    }
-    else {
-        NSLog(@"Unable to serialize user info: %@", error);
-    }
-
-    NSString *favoritesString = @"[]";
-    if (favorites != nil) {
-        SBJsonWriter *jsonWriter = [SBJsonWriter new];
-        favoritesString = [jsonWriter stringWithObject:favorites error:&error];
-        [jsonWriter release];
-    }
-
-    if (error == nil) {
-        BOOL success = [favoritesString writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                     stringByAppendingPathComponent:kFavoritesFileName]
-                                         atomically:YES
-                                           encoding:NSUTF8StringEncoding
-                                              error:&error];
-        if (!success) {
-            NSLog(@"Unable to write favorites:\n%@", error);
-        }
-    }
-    else {
-        NSLog(@"Unable to serialize user favorites: %@", error);
-    }
-}
-
-- (void)writeLatestVersion:(NSString *)jsonContent {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([jsonContent length] == 0) {
-        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kLatestVersionFileName ofType:nil]
-                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
-                                                    stringByAppendingPathComponent:kLatestVersionFileName]
-                                             error:&error];
-        if (!success) {
-            NSLog(@"Unable to copy latest version file:\n%@", error);
-        }
-    }
-    else {
-        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                 stringByAppendingPathComponent:kLatestVersionFileName]
-                                     atomically:YES
-                                       encoding:NSUTF8StringEncoding
-                                          error:&error];
-        if (!success) {
-            NSLog(@"Unable to write latest version data:\n%@", error);
-        }
-    }
-}
-
-- (void)writeAlbums:(NSString *)jsonContent {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([jsonContent length] == 0) {
-        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kAlbumsFileName ofType:nil]
-                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
-                                                    stringByAppendingPathComponent:kAlbumsFileName]
-                                             error:&error];
-        if (!success) {
-            NSLog(@"Unable to copy albums file:\n%@", error);
-        }
-    }
-    else {
-        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                 stringByAppendingPathComponent:kAlbumsFileName]
-                                     atomically:YES
-                                       encoding:NSUTF8StringEncoding
-                                          error:&error];
-        if (!success) {
-            NSLog(@"Unable to write albums data:\n%@", error);
-        }
-    }
-}
-
-- (void)writeCounters:(NSString *)jsonContent {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([jsonContent length] == 0) {
-        BOOL success = [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kCountersFileName ofType:nil]
-                                            toPath:[((NSString *)[fileManager applicationSupportDirectory])
-                                                    stringByAppendingPathComponent:kCountersFileName]
-                                             error:&error];
-        if (!success) {
-            NSLog(@"Unable to copy counters file:\n%@", error);
-        }
-    }
-    else {
-        BOOL success = [jsonContent writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                 stringByAppendingPathComponent:kCountersFileName]
-                                     atomically:YES
-                                       encoding:NSUTF8StringEncoding
-                                          error:&error];
-        if (!success) {
-            NSLog(@"Unable to write counters data:\n%@", error);
-        }
-    }
-}
-
-- (void)loadLatestData {
-    NSError *error = nil;
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    self.latestVersion = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                               stringByAppendingPathComponent:kLatestVersionFileName]
-                                                     encoding:NSUTF8StringEncoding
-                                                        error:&error]
-                           JSONValue] retain];
-    self.albums = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                        stringByAppendingPathComponent:kAlbumsFileName]
-                                              encoding:NSUTF8StringEncoding
-                                                 error:&error]
-                    JSONValue] retain];
-    self.counters = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                          stringByAppendingPathComponent:kCountersFileName]
-                                                encoding:NSUTF8StringEncoding
-                                                   error:&error]
-                      JSONValue] retain];
-    self.userInfo = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                          stringByAppendingPathComponent:kUserInfoFileName]
-                                                encoding:NSUTF8StringEncoding
-                                                   error:&error]
-                      JSONValue] retain];
-    self.favorites = [[[NSString stringWithContentsOfFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                                           stringByAppendingPathComponent:kFavoritesFileName]
-                                                 encoding:NSUTF8StringEncoding
-                                                    error:&error]
-                       JSONValue] retain];
-}
-
-- (id)getFileByName:(NSString *)filename {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    // First read from app bundle
-    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:filename];
-    
-    // If file isn't in bundle then read from app support directory
-    // (this means user has a previous version of iMortacci, but has downloaded
-    // some new tracks via update.
-    if (![fileManager fileExistsAtPath:path]) {
-        path = [((NSString *)[fileManager applicationSupportDirectory]) stringByAppendingPathComponent:filename];
-    }
-    
-    // Returns a data object by reading every byte from the file specified by path
-    // or nil if the data object could not be created.
-    return [NSData dataWithContentsOfFile:path];
-}
-
-- (id)getTrackWithId:(NSUInteger)trackId {
-    return [self getFileByName:[[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension]];
-}
-
-- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug {
-    return [self getFileByName:[albumSlug stringByAppendingPathExtension:kAlbumArtworkFileExtension]];
-}
-
-- (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *filename = [[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension];
-    BOOL success = [data writeToFile:[((NSString *)[fileManager applicationSupportDirectory])
-                                      stringByAppendingPathComponent:filename]
-                             options:NSDataWritingAtomic
-                               error:&error];
-    if (!success) {
-        NSLog(@"Unable save track:\n%@", error);
-    }
+    return !([NSFileManager fileExistsInApplicationSupportDirectory:kCurrentVersionFileName] &&
+             [NSFileManager fileExistsInApplicationSupportDirectory:kAlbumsFileName] &&
+             [NSFileManager fileExistsInApplicationSupportDirectory:kCountersFileName]);
 }
 
 - (void)checkNetworkStatus:(NSNotification *)notice
@@ -479,11 +256,10 @@
     if (error == nil) {
         // fetch succeeded
         
-        latestVersionRemoteString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
-        latestVersionRemote = [[latestVersionRemoteString JSONValue] retain];
+        latestVersion = [[[[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding] JSONValue] retain];
         
-        if (![[latestVersionRemote valueForKey:@"hash"] isEqualToString:[latestVersion valueForKey:@"hash"]]) {
-            newItemsCount = [[latestVersionRemote valueForKey:@"object_count"] intValue] - [[latestVersion valueForKey:@"object_count"] intValue];
+        if (![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
+            newItemsCount = [[latestVersion valueForKey:@"object_count"] intValue] - [[currentVersion valueForKey:@"object_count"] intValue];
             
             // Any change on SoundCloud will generate a new version of albums database, but
             // it doesn't necessarly have to have new tracks available, e.g. modified titles or descriptions, etc.

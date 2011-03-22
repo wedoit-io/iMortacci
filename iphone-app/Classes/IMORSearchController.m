@@ -7,7 +7,7 @@
 //
 
 #import "IMORSearchController.h"
-#import "iMortacciAppDelegate.h"
+#import "QuickFunctions.h"
 #import "IMORSearchCellController.h"
 #import "IMORPlayblackController.h"
 
@@ -66,7 +66,7 @@
     [super viewDidAppear:animated];
     
     if (!tracksOnly) {
-        items = ((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate]).albums;
+        items = [QuickFunctions sharedQuickFunctions].app.currentAlbums;
     }
 
     [self._tableView deselectRowAtIndexPath:[self._tableView indexPathForSelectedRow] animated:YES];
@@ -177,9 +177,7 @@
 
         // Configure the cell...
         
-        cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
-                                                       getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]]];
-        
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]]];
         cell.textLabel.text = [dict valueForKey:@"title"];
         // This is how you check for null string values in JSON string "<null>"
         // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
@@ -205,12 +203,12 @@
         // Configure the cell...
         
         if (tracksOnly) {
-            cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
-                                                           getAlbumArtworkWithSlug:albumSlug]];
+            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug]];
         }
         else {
-            cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
-                                                           getAlbumArtworkWithSlug:[[filteredItems objectAtIndex:indexPath.section]
+            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions]
+                                                           getAlbumArtworkWithSlug:[[filteredItems
+                                                                                     objectAtIndex:indexPath.section]
                                                                                     valueForKey:@"slug"]]];
         }
         

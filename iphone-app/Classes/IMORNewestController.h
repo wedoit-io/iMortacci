@@ -11,17 +11,14 @@
 #import "MBProgressHUD.h"
 
 @class IMORNewestCellController;
-@class iMortacciAppDelegate;
 
 
 @interface IMORNewestController : UIViewController <AdWhirlDelegate, MBProgressHUDDelegate> {
     UITableView *_tableView;
     
-    iMortacciAppDelegate *appDelegate;
 	MBProgressHUD *HUD;
     BOOL taskInProgress;
-    NSString *albumsRemoteString;
-    NSArray *albumsRemote;
+    NSArray *latestAlbums;
     NSData *downloadedItem;
 
     // UI elements
@@ -29,10 +26,8 @@
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
-@property (nonatomic, retain) iMortacciAppDelegate *appDelegate;
 @property (nonatomic, assign) BOOL taskInProgress;
-@property (nonatomic, retain) NSString *albumsRemoteString;
-@property (nonatomic, retain) NSArray *albumsRemote;
+@property (nonatomic, retain) NSArray *latestAlbums;
 @property (nonatomic, retain) NSData *downloadedItem;
 @property (nonatomic, assign) IBOutlet IMORNewestCellController *tempCell;
 

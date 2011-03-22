@@ -15,10 +15,9 @@
     UIWindow *window;
     UITabBarController *tabBarController;
 
+    NSDictionary *currentVersion;
     NSDictionary *latestVersion;
-    NSString *latestVersionRemoteString;
-    NSDictionary *latestVersionRemote;
-    NSArray *albums;
+    NSArray *currentAlbums;
     NSArray *counters;
     NSUInteger newItemsCount;
     NSArray *userInfo;
@@ -30,10 +29,9 @@
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
+@property (nonatomic, retain) NSDictionary *currentVersion;
 @property (nonatomic, retain) NSDictionary *latestVersion;
-@property (nonatomic, retain) NSString *latestVersionRemoteString;
-@property (nonatomic, retain) NSDictionary *latestVersionRemote;
-@property (nonatomic, retain) NSArray *albums;
+@property (nonatomic, retain) NSArray *currentAlbums;
 @property (nonatomic, retain) NSArray *counters;
 @property (nonatomic, assign) NSUInteger newItemsCount;
 @property (nonatomic, retain) NSArray *userInfo;
@@ -42,22 +40,6 @@
 @property (nonatomic, retain) Reachability *hostReachable;
 
 - (BOOL)applicationWillLaunchFirstTime;
-
-- (void)saveLatestVersion:(NSString *)_latestVersion WithAlbums:(NSString *)_albums AndCounters:(NSString *)_counters;
-- (void)writeLatestVersion:(NSString *)jsonContent;
-- (void)writeAlbums:(NSString *)jsonContent;
-- (void)writeCounters:(NSString *)jsonContent;
-
-- (void)loadLatestData;
-
-- (void)saveUserInfoAndFavorites;
-
-- (id)getFileByName:(NSString *)filename;
-- (id)getTrackWithId:(NSUInteger)trackId;
-- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug;
-
-- (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId;
-
 - (void)checkNetworkStatus:(NSNotification *)notice;
 - (void)checkLatest;
 - (void)sendAndReceiveCounters;

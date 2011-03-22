@@ -8,7 +8,7 @@
 
 #import "IMORPlayblackController.h"
 #import "IMORPlayblackCellController.h"
-#import "iMortacciAppDelegate.h"
+#import "QuickFunctions.h"
 #import "SHK.h"
 
 
@@ -113,8 +113,7 @@
     
     // Configure the cell...
     
-    cell.imageView.image = [UIImage imageWithData:[((iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate])
-                                                   getAlbumArtworkWithSlug:albumSlug]];
+    cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug]];
     cell.titleTextLabel.text = [item valueForKey:@"title"];
     cell.descriptionTextLabel.text = [item valueForKey:@"description"];
     cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", [[item valueForKey:@"playback_count"] intValue]];
@@ -245,8 +244,8 @@
 #pragma mark UI actions
 
 - (IBAction)playTrack:(id)sender {
-    iMortacciAppDelegate *appDelegate = (iMortacciAppDelegate *)[[UIApplication sharedApplication] delegate];
-    player = [[AVAudioPlayer alloc] initWithData:[appDelegate getTrackWithId:[[item valueForKey:@"id"] intValue]]
+    player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
+                                                  getTrackWithId:[[item valueForKey:@"id"] intValue]]
                                            error:nil];
     [player play];
 }

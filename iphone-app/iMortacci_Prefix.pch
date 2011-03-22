@@ -3,16 +3,16 @@
 //
 
 #define kIMORHostName @"apex-net.it"
-#define kIMORAPIURL @"http://donmez.apex-net.it/imortacci/api/v1/json"
+#define kIMORAPIURL @"http://test.apex-net.it/imortacci/api/v1"
 
 #define kSoundCloudClientId @"7Eo3B0odlpK5FvOVUKDnQ"
 
 #define kAdWhirlApplicationKey @"9036ba7fc12341f0bdadc4c569707817"
 
-#define kLatestVersionFileName @"latest.json"
+#define kCurrentVersionFileName @"version.json"
 #define kAlbumsFileName @"albums.json"
+#define kUserInfoFileName @"userinfo.json"
 #define kCountersFileName @"counters.json"
-#define kUserInfoFileName @"user_info.json"
 #define kFavoritesFileName @"favorites.json"
 
 #define kTrackFileExtension @"mp3"
