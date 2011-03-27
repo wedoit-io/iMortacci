@@ -38,6 +38,11 @@
     
     // Override point for customization after application launch.
     
+    // Let's sleep a little before doing anything else: this will assure that
+    // the user will see iMortacco launch image for at least given amount of
+    // seconds below
+    sleep(2);
+    
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
         [[QuickFunctions sharedQuickFunctions] saveCurrentVersion:nil];
@@ -67,6 +72,8 @@
     [hostReachable startNotifier];
     
     // now patiently wait for the notification...
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
@@ -241,19 +248,20 @@
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
 
-    SBJsonWriter *jsonWriter = [SBJsonWriter new];
-
-    NSError *error = nil;
-    NSString *userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
-    if (error == nil) {
-        [itemsFetcher setPostData:[userInfoString dataUsingEncoding:NSUTF8StringEncoding
-                                               allowLossyConversion:YES]];
-    }
-    else {
-        NSLog(@"Unable to serialize user info: %@", error);
-    }
-    
-    [jsonWriter release];
+    // TODO
+//    SBJsonWriter *jsonWriter = [SBJsonWriter new];
+//
+//    NSError *error = nil;
+//    NSString *userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
+//    if (error == nil) {
+//        [itemsFetcher setPostData:[userInfoString dataUsingEncoding:NSUTF8StringEncoding
+//                                               allowLossyConversion:YES]];
+//    }
+//    else {
+//        NSLog(@"Unable to serialize user info: %@", error);
+//    }
+//    
+//    [jsonWriter release];
 
     [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(sendAndReceiveCountersFetcher:finishedWithData:error:)];
 }
