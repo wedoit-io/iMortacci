@@ -7,6 +7,7 @@
 //
 
 #import "iMortacciAppDelegate.h"
+#import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "NSFileManager+Extensions.h"
 #import "JSON+Extensions.h"
@@ -24,7 +25,7 @@
 @synthesize currentAlbums;
 @synthesize counters;
 @synthesize newItemsCount;
-@synthesize userInfo;
+@synthesize localUserInfo;
 @synthesize favorites;
 @synthesize internetReachable;
 @synthesize hostReachable;
@@ -37,10 +38,14 @@
     
     // Override point for customization after application launch.
     
+    // Register with the Apple Push Notification service ("push service")
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+
     // Let's sleep a little before doing anything else: this will assure that
     // the user will see iMortacco launch image for at least given amount of
     // seconds below
-    sleep(2);
+    sleep(3);
     
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
@@ -96,7 +101,7 @@
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
     
-    [[QuickFunctions sharedQuickFunctions] saveUserInfo:userInfo];
+    [[QuickFunctions sharedQuickFunctions] saveUserInfo:localUserInfo];
     [[QuickFunctions sharedQuickFunctions] saveFavorites:favorites];
 }
 
@@ -105,6 +110,8 @@
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
+    
+    [self checkNetworkStatus:nil];
 }
 
 
@@ -120,6 +127,40 @@
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
+    
+    [self applicationDidEnterBackground:nil];
+}
+
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
+    // Call APNS Server
+    NSString *tokenDescription = [deviceToken description];
+    NSString *tokenTrimmed = [tokenDescription stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+    NSString *tokenWithoutSpaces = [tokenTrimmed stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *myToken = tokenWithoutSpaces;
+    
+    NSString *urlString = [NSString stringWithFormat:@"%@?CMD=initapp&appkey=%@&devtoken=%@", kAppServerUrl, kAppKey, myToken];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    GTMHTTPFetcher* fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    [fetcher beginFetchWithDelegate:nil didFinishSelector:nil];
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSString *alertMsg;
+    
+    // Check alert param
+    if( [[userInfo objectForKey:@"aps"] objectForKey:@"alert"] != NULL) {
+        alertMsg = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+        
+        UIAlertView *alert;
+        alert = [[UIAlertView alloc] initWithTitle:@"iMortacci" message:alertMsg delegate:self cancelButtonTitle:@"Chiudi"  otherButtonTitles:@"Visualizza", nil];
+        [alert show]; 
+        [alert release];
+    }
 }
 
 
@@ -156,7 +197,7 @@
     [latestVersion release];
     [currentAlbums release];
     [counters release];
-    [userInfo release];
+    [localUserInfo release];
     [favorites release];
     [internetReachable release];
     [hostReachable release];
@@ -186,6 +227,7 @@
             // Send&receive various stuff if connection is active
             [self checkLatest];
             [self sendAndReceiveCounters];
+            
             break;
         }
             
@@ -212,7 +254,7 @@
     [request setHTTPMethod:@"PUT"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [itemsFetcher setPostData:[[userInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
+    [itemsFetcher setPostData:[[localUserInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
     [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(sendAndReceiveCountersFetcher:finishedWithData:error:)];
 }
 
@@ -227,7 +269,7 @@
         
         latestVersion = [[[[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding] JSONValue] retain];
         
-        if (![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
+        if (latestVersion != nil && ![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
             newItemsCount = [[latestVersion valueForKey:@"object_count"] intValue] - [[currentVersion valueForKey:@"object_count"] intValue];
             
             // Any change on SoundCloud will generate a new version of albums database, but
@@ -250,8 +292,28 @@
     if (error == nil) {
         // fetch succeeded
         
-        NSString *jsonString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
-        counters = [[jsonString JSONValue] retain];
+        NSArray *newCounters = [[[[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding] JSONValue] retain];
+        if (newCounters != nil) {
+            [[QuickFunctions sharedQuickFunctions] updateCounters:newCounters];
+            for (int i = 0; i < [localUserInfo count]; i++) {
+                NSNumber *newLikeStatus = [[[localUserInfo objectAtIndex:i] valueForKey:@"like_status"] isEqualToNumber:[NSNumber numberWithInt:1]]
+                ? [NSNumber numberWithInt:2]
+                : [[localUserInfo objectAtIndex:i] valueForKey:@"like_status"];
+
+                [localUserInfo replaceObjectAtIndex:i withObject:[NSDictionary dictionaryWithObjects:
+                                                                  [NSArray arrayWithObjects:
+                                                                   [[localUserInfo objectAtIndex:i] valueForKey:@"id"],
+                                                                   newLikeStatus,
+                                                                   [NSNumber numberWithInt:0],
+                                                                   nil]
+                                                                                             forKeys:
+                                                                  [NSArray arrayWithObjects:
+                                                                   @"id",
+                                                                   @"like_status",
+                                                                   @"user_playback_count",
+                                                                   nil]]];
+            }
+        }
     }
 }
 

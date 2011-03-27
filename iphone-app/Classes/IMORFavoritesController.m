@@ -7,38 +7,102 @@
 //
 
 #import "IMORFavoritesController.h"
-
+#import "iMortacci.h"
+#import "QuickFunctions.h"
+#import "IMORFavoritesCellController.h"
+#import "IMORPlayblackController.h"
 
 @implementation IMORFavoritesController
+
+@synthesize _tableView;
+@synthesize emptyView;
+@synthesize items;
+@synthesize filteredItems;
+@synthesize savedSearchTerm;
+@synthesize savedScopeButtonIndex;
+@synthesize searchWasActive;
+@synthesize tempCell;
 
 
 #pragma mark -
 #pragma mark View lifecycle
 
-/*
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    // Initiate items array with current number of favorites
+    items = [NSMutableArray new];
+    
+    // $$$ Let's make some money! ;-) $$$
+    [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
+    
+    self._tableView.rowHeight = kSearchTableRowHeight;
+    self._tableView.backgroundColor = kIMORColorWhite;
+    self._tableView.separatorColor = [UIColor whiteColor];
+    
+    self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
+    
+	// create a filtered list that will contain products for the search results table.
+	self.filteredItems = [NSMutableArray arrayWithCapacity:[self.items count]];
+	
+	// restore search settings if they were saved in didReceiveMemoryWarning.
+    if (self.savedSearchTerm)
+	{
+        [self.searchDisplayController setActive:self.searchWasActive];
+        [self.searchDisplayController.searchBar setSelectedScopeButtonIndex:self.savedScopeButtonIndex];
+        [self.searchDisplayController.searchBar setText:savedSearchTerm];
+        
+        self.savedSearchTerm = nil;
+    }
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    self._tableView.allowsSelectionDuringEditing = YES;
 }
-*/
 
-/*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self populateItems];
+
+    BOOL hasItems = [items count] > 0;
+
+    self.emptyView.hidden = hasItems;
+    self._tableView.hidden = !hasItems;
+
+    [self._tableView deselectRowAtIndexPath:[self._tableView indexPathForSelectedRow] animated:YES];
+    
+    // We set some search results tableview's properties here, instead of in 'viewDidLoad', because
+    // after first time search view will popup row height will be set to default and
+    // we don't definitely want that
+    self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
+    self.searchDisplayController.searchResultsTableView.backgroundColor = kIMORColorWhite;
+    self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor whiteColor];
+    
+    // Begin in editing mode disabled, hence 'cancel'(-mode)
+    if (hasItems) {
+        [self._tableView reloadData];
+        [self cancel:nil];
+    }
+    else {
+        self.navigationItem.leftBarButtonItem = nil;
+    }
 }
-*/
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
-*/
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    // save the state of the search UI so that it can be restored if the view is re-created
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+    self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -64,21 +128,70 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 1;
+    if (tableView == self._tableView) {
+        return [items count];
+    }
+    else {
+        return [filteredItems count];
+    }
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    NSDictionary *dict = (tableView == self._tableView)
+    ? [items objectAtIndex:indexPath.row]
+    : [filteredItems objectAtIndex:indexPath.row];
+
+    static NSString *CellIdentifier = @"IMORFavoritesCellController";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    IMORFavoritesCellController *cell = (IMORFavoritesCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        [[NSBundle mainBundle] loadNibNamed:@"IMORFavoritesCellController" owner:self options:nil];
+        cell = tempCell;
+        self.tempCell = nil;
     }
     
     // Configure the cell...
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"album_id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+    if ([filtered count] > 0) {
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                                             AndSize:@"small"]];
+    }
+    else {
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                                             AndSize:@"small"]];
+    }
+    
+    cell.titleTextLabel.text = [dict valueForKey:@"title"];
+    // This is how you check for null string values in JSON string "<null>"
+    // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
+    if ([dict valueForKey:@"description"] != [NSNull null]) {
+        cell.descriptionTextLabel.text = [dict valueForKey:@"description"];
+    }
+    
+    int playbackCount = 0;
+    int likeCount = 0;
+
+    NSPredicate *predCounters = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
+    NSArray *filteredCounters = [[QuickFunctions sharedQuickFunctions].app.counters filteredArrayUsingPredicate:predCounters];
+    if ([filteredCounters count] > 0) {
+        playbackCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"playback_count"] intValue];
+        likeCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"like_count"] intValue];
+    }
+
+    NSPredicate *predLocalUserInfo = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
+    NSArray *filteredLocalUserInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLocalUserInfo];
+    if ([filteredLocalUserInfo count] > 0) {
+        playbackCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"user_playback_count"] intValue];
+        likeCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"like_status"] intValue] > 0 ? 1 : 0;
+    }
+    
+    cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", playbackCount];
+    cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", likeCount];
     
     return cell;
 }
@@ -91,7 +204,6 @@
     return YES;
 }
 */
-
 
 /*
 // Override to support editing the table view.
@@ -129,13 +241,37 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
-    /*
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-    // ...
-    // Pass the selected object to the new view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
-    [detailViewController release];
-    */
+
+    if ([self._tableView isEditing]) {
+        
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [[items objectAtIndex:indexPath.row] valueForKey:@"id"]];
+        [[QuickFunctions sharedQuickFunctions].app.favorites removeObjectsInArray:
+         [[QuickFunctions sharedQuickFunctions].app.favorites filteredArrayUsingPredicate:pred]];
+        
+        [self populateItems];
+        [self._tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        if ([[QuickFunctions sharedQuickFunctions].app.favorites count] > 0) {
+            [self._tableView reloadData];
+        }
+        else {
+            [self viewWillAppear:YES];
+        }
+    }
+    else {
+        IMORPlayblackController *detailViewController = [[IMORPlayblackController alloc]
+                                                         initWithNibName:@"IMORPlayblackController" bundle:nil];
+        
+        if (tableView == self._tableView) {
+            detailViewController.item = [items objectAtIndex:indexPath.row];
+        }
+        else {
+            detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
+        }
+        
+        // Pass the selected object to the new view controller.
+        [self.navigationController pushViewController:detailViewController animated:YES];
+        [detailViewController release];
+    }
 }
 
 
@@ -152,13 +288,121 @@
 - (void)viewDidUnload {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
+	self.filteredItems = nil;
 }
 
 
 - (void)dealloc {
+    [_tableView release];
+    [items release];
+    [filteredItems release];
+    [emptyView release];
     [super dealloc];
 }
 
+
+#pragma mark -
+#pragma mark AdWhirl delegate methods
+
+- (NSString *)adWhirlApplicationKey {
+    return kAdWhirlApplicationKey;
+}
+
+- (UIViewController *)viewControllerForPresentingModalView {
+    return self;
+}
+
+- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView {
+    CGSize adSize = [adWhirlView actualAdSize];
+    CGRect newAdFrame = adWhirlView.frame;
+    CGRect newTableFrame = self._tableView.frame;
+    
+    newAdFrame.size = adSize;
+    newTableFrame.size.height = self.view.frame.size.height - adSize.height;
+    
+    newAdFrame.origin.x = (self.view.bounds.size.width - adSize.width) / 2;
+    newAdFrame.origin.y = newTableFrame.size.height;
+    
+    adWhirlView.frame = newAdFrame;
+    self._tableView.frame = newTableFrame;
+}
+
+- (void)adWhirlDidFailToReceiveAd:(AdWhirlView *)adWhirlView usingBackup:(BOOL)yesOrNo {
+    if (!yesOrNo) {
+        _tableView.frame = self.view.frame;
+        adWhirlView.frame = CGRectZero;
+    }
+}
+
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    // Update the filtered array based on the search text and scope.
+    
+	[self.filteredItems removeAllObjects]; // First clear the filtered array.
+	
+	/* Search the main list for items whose name matches searchText;
+     * add items that match to the filtered array.
+	 */
+    
+    searchString = [NSString stringWithFormat:@"*%@*", searchString];
+    NSPredicate *pred = [NSPredicate predicateWithFormat:
+                         @"(title LIKE[cd] %@) OR (description LIKE[cd] %@) OR (alternate_desc LIKE[cd] %@)",
+                         searchString, searchString, searchString];
+    
+    [self.filteredItems addObjectsFromArray:[items filteredArrayUsingPredicate:pred]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Internal methods
+
+- (void)populateItems {
+    [items removeAllObjects];
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id IN %@",
+                         [[QuickFunctions sharedQuickFunctions].app.favorites valueForKeyPath:@"id"]];
+    
+    [[QuickFunctions sharedQuickFunctions].app.currentAlbums enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSMutableDictionary *item = [NSMutableDictionary dictionaryWithDictionary:obj];
+        NSArray *filtered = [[item valueForKey:@"tracks"] filteredArrayUsingPredicate:pred];
+        [items addObjectsFromArray:filtered];
+    }];
+}
+
+
+#pragma mark -
+#pragma mark UI actions
+
+- (IBAction)edit:(id)sender {
+	UIBarButtonItem *cancelButton = [[[UIBarButtonItem alloc] initWithTitle:@"Annulla"
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(cancel:)]
+                                     autorelease];
+
+    self.navigationItem.leftBarButtonItem = cancelButton;
+
+    [self._tableView setEditing:YES animated:YES];
+}
+
+- (IBAction)cancel:(id)sender {
+	UIBarButtonItem *editButton = [[[UIBarButtonItem alloc] initWithTitle:@"Modifica"
+                                                                    style:UIBarButtonItemStylePlain
+                                                                   target:self
+                                                                   action:@selector(edit:)]
+                                   autorelease];
+
+    self.navigationItem.leftBarButtonItem = editButton;
+
+    [self._tableView setEditing:NO animated:YES];
+}
 
 @end
 

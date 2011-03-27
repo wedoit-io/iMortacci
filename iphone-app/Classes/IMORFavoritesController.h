@@ -7,10 +7,40 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AdWhirlView.h"
+
+@class IMORFavoritesCellController;
 
 
-@interface IMORFavoritesController : UITableViewController {
+@interface IMORFavoritesController : UIViewController <AdWhirlDelegate> {
 
+    UITableView *_tableView;
+    UIView *emptyView;
+
+    NSMutableArray *items;
+	NSMutableArray	*filteredItems; // The content filtered as a result of a search.
+
+	// The saved state of the search UI if a memory warning removed the view.
+    NSString		*savedSearchTerm;
+    NSInteger		savedScopeButtonIndex;
+    BOOL			searchWasActive;
+    
+    // UI elements
+    IMORFavoritesCellController *tempCell;
 }
+
+@property (nonatomic, retain) IBOutlet UITableView *_tableView;
+@property (nonatomic, retain) IBOutlet UIView *emptyView;
+@property (nonatomic, retain) NSMutableArray *items;
+@property (nonatomic, retain) NSMutableArray *filteredItems;
+@property (nonatomic, copy) NSString *savedSearchTerm;
+@property (nonatomic) NSInteger savedScopeButtonIndex;
+@property (nonatomic) BOOL searchWasActive;
+@property (nonatomic, assign) IBOutlet IMORFavoritesCellController *tempCell;
+
+- (void)populateItems;
+
+- (IBAction)edit:(id)sender;
+- (IBAction)cancel:(id)sender;
 
 @end

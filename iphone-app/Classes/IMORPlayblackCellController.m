@@ -15,6 +15,7 @@
 @synthesize descriptionTextLabel;
 @synthesize playbackCountTextLabel;
 @synthesize likesTextLabel;
+@synthesize likesButton;
 
 - (void)dealloc {
     [imageView release];
@@ -22,6 +23,7 @@
     [descriptionTextLabel release];
     [playbackCountTextLabel release];
     [likesTextLabel release];
+    [likesButton release];
     [super dealloc];
 }
 

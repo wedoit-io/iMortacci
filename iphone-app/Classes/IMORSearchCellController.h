@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class TDBadgeView;
+
 
 @interface IMORSearchCellController : UITableViewCell {
     UIImageView *imageView;
@@ -15,6 +17,12 @@
     UILabel *descriptionTextLabel;
     UILabel *playbackCountTextLabel;
     UILabel *likesTextLabel;
+
+	NSString *badgeString;
+	TDBadgeView *badge;
+	
+	UIColor *badgeColor;
+	UIColor *badgeColorHighlighted;
 }
 
 @property (nonatomic, retain) IBOutlet UIImageView *imageView;
@@ -22,5 +30,9 @@
 @property (nonatomic, retain) IBOutlet UILabel *descriptionTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *playbackCountTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *likesTextLabel;
+@property (nonatomic, retain) NSString *badgeString;
+@property (readonly, retain) TDBadgeView *badge;
+@property (nonatomic, retain) UIColor *badgeColor;
+@property (nonatomic, retain) UIColor *badgeColorHighlighted;
 
 @end

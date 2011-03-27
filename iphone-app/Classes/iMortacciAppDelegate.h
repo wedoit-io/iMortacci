@@ -20,8 +20,8 @@
     NSArray *currentAlbums;
     NSArray *counters;
     NSUInteger newItemsCount;
-    NSArray *userInfo;
-    NSArray *favorites;
+    NSMutableArray *localUserInfo;
+    NSMutableArray *favorites;
 
     Reachability *internetReachable;
     Reachability *hostReachable;
@@ -34,8 +34,8 @@
 @property (nonatomic, retain) NSArray *currentAlbums;
 @property (nonatomic, retain) NSArray *counters;
 @property (nonatomic, assign) NSUInteger newItemsCount;
-@property (nonatomic, retain) NSArray *userInfo;
-@property (nonatomic, retain) NSArray *favorites;
+@property (nonatomic, retain) NSMutableArray *localUserInfo;
+@property (nonatomic, retain) NSMutableArray *favorites;
 @property (nonatomic, retain) Reachability *internetReachable;
 @property (nonatomic, retain) Reachability *hostReachable;
 

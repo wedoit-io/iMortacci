@@ -7,6 +7,7 @@
 //
 
 #import "QuickFunctions.h"
+#import "iMortacci.h"
 #import "SynthesizeSingleton.h"
 #import "JSON+Extensions.h"
 #import "NSFileManager+Extensions.h"
@@ -78,10 +79,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
 
 - (void)updateUserInfo:(NSArray *)userInfo {
     if (userInfo == nil) {
-        app.userInfo = [self readJSONValueFromFileInApplicationDirectoryWithName:kUserInfoFileName];
+        app.localUserInfo = [self readJSONValueFromFileInApplicationDirectoryWithName:kUserInfoFileName];
     }
     else {
-        app.userInfo = userInfo;
+        app.localUserInfo = [NSMutableArray arrayWithArray:userInfo];
     }
 }
 
@@ -99,7 +100,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
         app.favorites = [self readJSONValueFromFileInApplicationDirectoryWithName:kFavoritesFileName];
     }
     else {
-        app.favorites = favorites;
+        app.favorites = [NSMutableArray arrayWithArray:favorites];
     }
 }
 

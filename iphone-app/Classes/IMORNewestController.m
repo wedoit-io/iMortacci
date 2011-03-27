@@ -8,6 +8,7 @@
 
 #import "IMORNewestController.h"
 #import "IMORNewestCellController.h"
+#import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "Reachability.h"
 #import "GTMHTTPFetcher.h"
@@ -76,11 +77,16 @@
     [super viewWillDisappear:animated];
 }
 */
-/*
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    
+    // This should (kinda) fix some fast-handed buddies out there who's got there
+    // before we can actually refresh screen which results to some inconsistency
+    // with what badge counter says
+    [self._tableView reloadData];
 }
-*/
+
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -280,8 +286,8 @@
     HUD.mode = MBProgressHUDModeDeterminate;
     HUD.progress = 0.0f;
     HUD.detailsLabelText = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 1
-    ? [NSString stringWithFormat:@"Scarico %d nuovi mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
-    : @"Scarico un nuovo mortaccione";
+    ? [NSString stringWithFormat:@"%d mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
+    : @"Un mortaccione";
 
     float progressStep = 1.0f / [QuickFunctions sharedQuickFunctions].app.newItemsCount;
     
@@ -296,7 +302,7 @@
                 while (taskInProgress || HUD.progress < progressToReach) {
                     if (HUD.progress < progressToReach) {
                         HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
-                        HUD.progress += 0.01;
+                        HUD.progress += 0.001 * ((uint)arc4random() % 15);
                     }
                     usleep(100000);
                 }
@@ -309,7 +315,7 @@
     // Back to indeterminate mode
     HUD.mode = MBProgressHUDModeIndeterminate;
     HUD.labelText = @"Attendere";
-    HUD.detailsLabelText = @"Installo gli aggiornamenti";
+    HUD.detailsLabelText = @"Installo";
 
     // save version.json, albums.json files and update app delegate properties accordingly
     
@@ -324,8 +330,10 @@
     // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
 	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
 	HUD.mode = MBProgressHUDModeCustomView;
-	HUD.labelText = @"Fatto";
-    HUD.detailsLabelText = @"Vai con i mortaccioni!";
+	HUD.labelText = @"Fine";
+    HUD.detailsLabelText = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 1
+    ? [NSString stringWithFormat:@"%d nuovissimi mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
+    : @"Un nuovissimo mortaccione";
     
     [[[QuickFunctions sharedQuickFunctions].app.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
@@ -411,11 +419,13 @@
     // Add HUD to screen
     [self.navigationController.view addSubview:HUD];
 	
-    // Regisete for HUD callbacks so we can remove it from the window at the right time
+    // Register for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
 	
+    HUD.opacity = 0.6;
+    HUD.animationType = MBProgressHUDAnimationZoom;
+    
     HUD.labelText = @"Attendere";
-    HUD.detailsLabelText = @"Cerco gli aggiornamenti";
 	
     // Show the HUD
     [HUD show:YES];

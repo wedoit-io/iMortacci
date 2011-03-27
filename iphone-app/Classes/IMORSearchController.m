@@ -7,6 +7,7 @@
 //
 
 #import "IMORSearchController.h"
+#import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "IMORSearchCellController.h"
 #import "IMORPlayblackController.h"
@@ -17,7 +18,6 @@
 @synthesize _tableView;
 @synthesize tracksOnly;
 @synthesize items;
-@synthesize albumSlug;
 @synthesize filteredItems;
 @synthesize savedSearchTerm;
 @synthesize savedScopeButtonIndex;
@@ -37,6 +37,8 @@
     self._tableView.rowHeight = kSearchTableRowHeight;
     self._tableView.backgroundColor = kIMORColorWhite;
     self._tableView.separatorColor = [UIColor whiteColor];
+    
+    self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
     
     if (tracksOnly) {
         self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
@@ -63,7 +65,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     
     if (!tracksOnly) {
         items = [QuickFunctions sharedQuickFunctions].app.currentAlbums;
@@ -77,6 +79,8 @@
     self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
     self.searchDisplayController.searchResultsTableView.backgroundColor = kIMORColorWhite;
     self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor whiteColor];
+    
+    [self._tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -186,9 +190,6 @@
             cell.detailTextLabel.text = [dict valueForKey:@"description"];
         }
         
-        cell.backgroundView.backgroundColor = kIMORColorWhite;
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
         return cell;
     }
     else {
@@ -204,8 +205,16 @@
         // Configure the cell...
         
         if (tracksOnly) {
-            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug
-                                                                                                                 AndSize:@"small"]];
+            NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"album_id"]];
+            NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+            if ([filtered count] > 0) {
+                cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                                                     AndSize:@"small"]];
+            }
+            else {
+                cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                                                     AndSize:@"small"]];
+            }
         }
         else {
             cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions]
@@ -221,10 +230,32 @@
         if ([dict valueForKey:@"description"] != [NSNull null]) {
             cell.descriptionTextLabel.text = [dict valueForKey:@"description"];
         }
-        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", [[dict valueForKey:@"playback_count"] intValue]];
-        cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", [[dict valueForKey:@"like_count"] intValue]];
         
-        cell.backgroundView.backgroundColor = kIMORColorWhite;
+        int playbackCount = 0;
+        int likeCount = 0;
+        
+        NSPredicate *predCounters = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
+        NSArray *filteredCounters = [[QuickFunctions sharedQuickFunctions].app.counters filteredArrayUsingPredicate:predCounters];
+        if ([filteredCounters count] > 0) {
+            playbackCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"playback_count"] intValue];
+            likeCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"like_count"] intValue];
+        }
+        
+        NSPredicate *predLocalUserInfo = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
+        NSArray *filteredLocalUserInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLocalUserInfo];
+        if ([filteredLocalUserInfo count] > 0) {
+            playbackCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"user_playback_count"] intValue];
+            likeCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"like_status"] intValue] > 0 ? 1 : 0;
+        }
+        
+        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", playbackCount];
+        cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", likeCount];
+        
+        if ([filteredLocalUserInfo count] == 0) {
+            cell.badgeString = @"nuovo";
+            cell.badgeColor = kIMORColorGreen;
+        }
+        
         return cell;
     }
 }
@@ -284,7 +315,6 @@
         detailViewController.tracksOnly = YES;
         detailViewController.title = [item valueForKey:@"title"];
         detailViewController.items = [item valueForKey:@"tracks"];
-        detailViewController.albumSlug = [item valueForKey:@"slug"];
         
         // Pass the selected object to the new view controller.
         [self.navigationController pushViewController:detailViewController animated:YES];
@@ -301,12 +331,10 @@
             else {
                 detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
             }
-            detailViewController.albumSlug = albumSlug;
         }
         else {
             detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section]
                                           valueForKey:@"tracks"] objectAtIndex:indexPath.row];
-            detailViewController.albumSlug = [[filteredItems objectAtIndex:indexPath.section] valueForKey:@"slug"];
         }
 
         // Pass the selected object to the new view controller.
@@ -336,7 +364,6 @@
 - (void)dealloc {
     [_tableView release];
     [items release];
-    [albumSlug release];
     [filteredItems release];
     [super dealloc];
 }

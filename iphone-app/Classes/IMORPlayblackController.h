@@ -7,17 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>;
+#import <AVFoundation/AVFoundation.h>
 #import "AdWhirlView.h"
+#import "MBProgressHUD.h"
 
 @class IMORPlayblackCellController;
 
 
-@interface IMORPlayblackController : UIViewController <AdWhirlDelegate> {
+@interface IMORPlayblackController : UIViewController <AdWhirlDelegate, MBProgressHUDDelegate, AVAudioPlayerDelegate> {
     UITableView *_tableView;
     
+	MBProgressHUD *HUD;
     NSDictionary *item;
-    NSString *albumSlug;
     
     // Audio playback
     AVAudioPlayer *player;
@@ -28,11 +29,12 @@
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, retain) NSDictionary *item;
-@property (nonatomic, retain) NSString *albumSlug;
 @property (nonatomic, assign) AVAudioPlayer *player;
 @property (nonatomic, assign) IBOutlet IMORPlayblackCellController *tempCell;
 
 - (IBAction)playTrack:(id)sender;
 - (IBAction)share:(id)sender;
+- (IBAction)addToFavorites:(id)sender;
+- (IBAction)likeIt:(id)sender;
 
 @end

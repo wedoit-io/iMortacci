@@ -8,6 +8,7 @@
 
 #import "IMORPlayblackController.h"
 #import "IMORPlayblackCellController.h"
+#import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "SHK.h"
 
@@ -16,7 +17,6 @@
 
 @synthesize _tableView;
 @synthesize item;
-@synthesize albumSlug;
 @synthesize player;
 @synthesize tempCell;
 
@@ -27,9 +27,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // TODO: Cambia il titolo della vista playbackcontroller con il titolo del dialetto
-    self.title = @"iMortacci";
-
     // $$$ Let's make some money! ;-) $$$
     [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
     
@@ -39,6 +36,8 @@
     self._tableView.rowHeight = kSingleRowTableRowHeight;
     self._tableView.backgroundColor = kIMORColorGreen;
     self._tableView.separatorColor = [UIColor clearColor];
+    
+    [self playTrack:nil];
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -113,12 +112,48 @@
     
     // Configure the cell...
     
-    cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug
-                                                                                                         AndSize:@"medium"]];
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+    if ([filtered count] > 0) {
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                                             AndSize:@"small"]];
+    }
+    else {
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                                             AndSize:@"small"]];
+    }
+
     cell.titleTextLabel.text = [item valueForKey:@"title"];
-    cell.descriptionTextLabel.text = [item valueForKey:@"description"];
-    cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", [[item valueForKey:@"playback_count"] intValue]];
-    cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", [[item valueForKey:@"like_count"] intValue]];
+    if ([item valueForKey:@"description"] != [NSNull null]) {
+        cell.descriptionTextLabel.text = [item valueForKey:@"description"];
+    }
+
+    int playbackCount = 0;
+    int likeCount = 0;
+    
+    NSPredicate *predCounters = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+    NSArray *filteredCounters = [[QuickFunctions sharedQuickFunctions].app.counters filteredArrayUsingPredicate:predCounters];
+    if ([filteredCounters count] > 0) {
+        playbackCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"playback_count"] intValue];
+        likeCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"like_count"] intValue];
+    }
+    
+    NSPredicate *predLocalUserInfo = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+    NSArray *filteredLocalUserInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLocalUserInfo];
+    if ([filteredLocalUserInfo count] > 0) {
+        playbackCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"user_playback_count"] intValue];
+        likeCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"like_status"] intValue] > 0 ? 1 : 0;
+    }
+    
+    cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", playbackCount];
+    cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", likeCount];
+    
+    NSPredicate *predLikeStatus = [NSPredicate predicateWithFormat:@"id = %@ AND like_status > 0", [item valueForKey:@"id"]];
+    NSArray *filteredLikeStatus = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLikeStatus];
+    if ([filteredLikeStatus count] > 0) {
+        [cell.likesButton setBackgroundImage:[UIImage imageNamed:@"YouLikeItButton.png"] forState:UIControlStateNormal];
+        [cell.likesButton setBackgroundImage:[UIImage imageNamed:@"YouLikeItButton.png"] forState:UIControlStateHighlighted];
+    }
     
     // This is a fake table actually, so we don't want to show selected cells
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -201,9 +236,103 @@
 - (void)dealloc {
     [_tableView release];
     [item release];
-    [albumSlug release];
     [tempCell release];
     [super dealloc];
+}
+
+
+#pragma mark -
+#pragma mark Internal methods
+
+- (void)likeItTask {
+    // mark as liked in a new thread
+    
+    // Must always specify a NSAutoreleasePool and release it for each thread you run
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    sleep(3);
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
+    if ([filtered count] > 0) {
+        NSDictionary *itemInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo firstObjectCommonWithArray:filtered];
+        if ([(NSNumber *)[itemInfo valueForKey:@"like_status"] intValue] == 0) {
+            [[QuickFunctions sharedQuickFunctions].app.localUserInfo replaceObjectAtIndex:[[QuickFunctions sharedQuickFunctions].app.localUserInfo indexOfObject:itemInfo]
+                                                                          withObject:
+             [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                  [itemInfo valueForKey:@"id"],
+                                                  [NSNumber numberWithInt:1],
+                                                  [itemInfo valueForKey:@"user_playback_count"],
+                                                  nil]
+                                         forKeys:[NSArray arrayWithObjects:
+                                                  @"id",
+                                                  @"like_status",
+                                                  @"user_playback_count",
+                                                  nil]]];
+            
+            // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
+            HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Favorite.png"]] autorelease];
+            HUD.mode = MBProgressHUDModeCustomView;
+            HUD.labelText = @"Grazie";
+            
+            sleep(2);
+        }
+        else {
+            
+            // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
+            HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Error.png"]] autorelease];
+            HUD.mode = MBProgressHUDModeCustomView;
+            HUD.labelText = @"Già votato";
+            
+            sleep(3);
+        }
+    }
+    
+    // Hide the HUD
+    [HUD hide:YES];
+    
+    [self._tableView reloadData];
+    
+    [pool release];
+}
+
+- (void)addToFavoritesTask {
+    // add to favorites in a new thread
+    
+    // Must always specify a NSAutoreleasePool and release it for each thread you run
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    sleep(3);
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.favorites filteredArrayUsingPredicate:pred];
+    if ([filtered count] == 0) {
+        [[QuickFunctions sharedQuickFunctions].app.favorites addObject:
+         [NSDictionary dictionaryWithObject:[item valueForKey:@"id"] forKey:@"id"]];
+
+        // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
+        HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
+        HUD.mode = MBProgressHUDModeCustomView;
+        HUD.labelText = @"Preferito";
+        
+        sleep(2);
+    }
+    else {
+        
+        // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
+        HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Error.png"]] autorelease];
+        HUD.mode = MBProgressHUDModeCustomView;
+        HUD.labelText = @"Già preferito";
+        
+        sleep(3);
+    }
+
+    // Hide the HUD
+    [HUD hide:YES];
+    
+    [self._tableView reloadData];
+    
+    [pool release];
 }
 
 
@@ -242,12 +371,85 @@
 
 
 #pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    // Remove HUD from screen when the HUD was hidded
+    [HUD removeFromSuperview];
+    [HUD release];
+}
+
+
+#pragma mark -
+#pragma mark AVAudioPlayerDelegate methods
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+    
+    // Hide the HUD
+    [HUD hide:YES];
+
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
+    if ([filtered count] == 0) {
+        [[QuickFunctions sharedQuickFunctions].app.localUserInfo addObject:
+         [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                              [item valueForKey:@"id"],
+                                              [NSNumber numberWithInt:0],
+                                              [NSNumber numberWithInt:1],
+                                              nil]
+                                     forKeys:[NSArray arrayWithObjects:
+                                              @"id",
+                                              @"like_status",
+                                              @"user_playback_count",
+                                              nil]]];
+    }
+    else {
+        NSDictionary *itemInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo firstObjectCommonWithArray:filtered];
+        [[QuickFunctions sharedQuickFunctions].app.localUserInfo replaceObjectAtIndex:[[QuickFunctions sharedQuickFunctions].app.localUserInfo indexOfObject:itemInfo]
+                                                                      withObject:
+         [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                              [itemInfo valueForKey:@"id"],
+                                              [itemInfo valueForKey:@"like_status"],
+                                              [NSNumber numberWithInt:[(NSNumber *)[itemInfo valueForKey:@"user_playback_count"] intValue] + 1],
+                                              nil]
+                                     forKeys:[NSArray arrayWithObjects:
+                                              @"id",
+                                              @"like_status",
+                                              @"user_playback_count",
+                                              nil]]];
+    }
+    
+    [self._tableView reloadData];
+}
+
+
+#pragma mark -
 #pragma mark UI actions
 
 - (IBAction)playTrack:(id)sender {
+	// The hud will dispable all input on the view
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+	
+    // Add HUD to screen
+    [self.navigationController.view addSubview:HUD];
+	
+    // Register for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+    
+    HUD.opacity = 0.6;
+    HUD.animationType = MBProgressHUDAnimationZoom;
+    
+    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
+    HUD.labelText = @"Alza il volume";
+    HUD.mode = MBProgressHUDModeCustomView;
+	
+    // Show the HUD
+    [HUD show:YES];
+    
     player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
                                                   getTrackWithId:[[item valueForKey:@"id"] intValue]]
                                            error:nil];
+    player.delegate = self;
     [player play];
 }
 
@@ -261,6 +463,50 @@
     
 	// Display the action sheet
 	[actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (IBAction)addToFavorites:(id)sender {
+    
+	// The hud will dispable all input on the view
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+	
+    // Add HUD to screen
+    [self.navigationController.view addSubview:HUD];
+	
+    // Register for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+    
+    HUD.opacity = 0.6;
+    HUD.animationType = MBProgressHUDAnimationZoom;
+
+    HUD.labelText = @"Attendere";
+	
+    // Show the HUD
+    [HUD show:YES];
+
+    [NSThread detachNewThreadSelector:@selector(addToFavoritesTask) toTarget:self withObject:nil];
+}
+
+- (IBAction)likeIt:(id)sender {
+    
+	// The hud will dispable all input on the view
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+	
+    // Add HUD to screen
+    [self.navigationController.view addSubview:HUD];
+	
+    // Register for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+    
+    HUD.opacity = 0.6;
+    HUD.animationType = MBProgressHUDAnimationZoom;
+    
+    HUD.labelText = @"Attendere";
+	
+    // Show the HUD
+    [HUD show:YES];
+    
+    [NSThread detachNewThreadSelector:@selector(likeItTask) toTarget:self withObject:nil];
 }
 
 @end

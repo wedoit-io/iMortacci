@@ -518,14 +518,14 @@
 - (void)showUsingAnimation:(BOOL)animated {
     self.alpha = 0.0;
     if (animated && animationType == MBProgressHUDAnimationZoom) {
-        self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(1.5, 1.5));
+        self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(0.5, 0.5));
     }
     
 	self.showStarted = [NSDate date];
     // Fade in
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.30];
+        [UIView setAnimationDuration:0.10];
         self.alpha = 1.0;
         if (animationType == MBProgressHUDAnimationZoom) {
             self.transform = rotationTransform;
@@ -547,7 +547,7 @@
         // 0.02 prevents the hud from passing through touches during the animation the hud will get completely hidden
         // in the done method
         if (animationType == MBProgressHUDAnimationZoom) {
-            self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(0.5, 0.5));
+            self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(2.5, 2.5));
         }
         self.alpha = 0.02;
         [UIView commitAnimations];

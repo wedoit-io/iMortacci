@@ -1,5 +1,5 @@
 //
-//  IMORPlayblackCellController.h
+//  IMORFavoritesCellController.h
 //  iMortacci
 //
 //  Created by Ali Servet Donmez on 8.3.11.
@@ -9,13 +9,12 @@
 #import <UIKit/UIKit.h>
 
 
-@interface IMORPlayblackCellController : UITableViewCell {
+@interface IMORFavoritesCellController : UITableViewCell {
     UIImageView *imageView;
     UILabel *titleTextLabel;
     UILabel *descriptionTextLabel;
     UILabel *playbackCountTextLabel;
     UILabel *likesTextLabel;
-    UIButton *likesButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIImageView *imageView;
@@ -23,7 +22,7 @@
 @property (nonatomic, retain) IBOutlet UILabel *descriptionTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *playbackCountTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *likesTextLabel;
-@property (nonatomic, retain) IBOutlet UIButton *likesButton;
 
+- (IBAction)deleteFavorite:(id)sender;
 
 @end

@@ -19,7 +19,6 @@
     BOOL tracksOnly;
 
     NSArray *items;
-    NSString *albumSlug;
 	NSMutableArray	*filteredItems; // The content filtered as a result of a search.
 	
 	// The saved state of the search UI if a memory warning removed the view.
@@ -34,7 +33,6 @@
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, assign) BOOL tracksOnly;
 @property (nonatomic, retain) NSArray *items;
-@property (nonatomic, retain) NSString *albumSlug;
 @property (nonatomic, retain) NSMutableArray *filteredItems;
 @property (nonatomic, copy) NSString *savedSearchTerm;
 @property (nonatomic) NSInteger savedScopeButtonIndex;
