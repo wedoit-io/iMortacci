@@ -67,7 +67,7 @@
     [internetReachable startNotifier];
     
     // check if a pathway to a random host exists
-    hostReachable = [[Reachability reachabilityWithHostName:kIMORHostName] retain];
+    hostReachable = [[Reachability reachabilityWithHostName:kReachabilityHostName] retain];
     [hostReachable startNotifier];
     
     // now patiently wait for the notification...
