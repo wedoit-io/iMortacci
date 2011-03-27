@@ -26,6 +26,7 @@
 @synthesize newItemsCount;
 @synthesize userInfo;
 @synthesize favorites;
+@synthesize alertShowed;
 @synthesize internetReachable;
 @synthesize hostReachable;
 
@@ -173,30 +174,37 @@
     NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
     
     // Alert user about connection status
-    switch (internetStatus)
-    {
-        case NotReachable:
+    if (!alertShowed) {
+        switch (internetStatus)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Infame!"
-                                                            message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Pazienza"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            [alert release];
-            break;
-        }
-
-        case ReachableViaWWAN:
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Che palle!"
-                                                            message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Vabè"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            [alert release];
-            break;
+            case NotReachable:
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Infame!"
+                                                                message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Pazienza"
+                                                      otherButtonTitles:nil];
+                [alert show];
+                [alert release];
+                alertShowed = YES;
+                break;
+            }
+                
+            case ReachableViaWWAN:
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Che palle!"
+                                                                message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Vabè"
+                                                      otherButtonTitles:nil];
+                [alert show];
+                [alert release];
+                alertShowed = YES;
+                break;
+            }
+                
+            default:
+                break;
         }
     }
 
@@ -210,6 +218,9 @@
             [self sendAndReceiveCounters];
             break;
         }
+            
+        default:
+            break;
     }
 }
 

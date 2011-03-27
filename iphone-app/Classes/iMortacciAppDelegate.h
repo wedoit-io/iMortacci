@@ -23,6 +23,7 @@
     NSArray *userInfo;
     NSArray *favorites;
 
+    BOOL alertShowed;
     Reachability *internetReachable;
     Reachability *hostReachable;
 }
@@ -36,6 +37,7 @@
 @property (nonatomic, assign) NSUInteger newItemsCount;
 @property (nonatomic, retain) NSArray *userInfo;
 @property (nonatomic, retain) NSArray *favorites;
+@property (nonatomic, assign) BOOL alertShowed;
 @property (nonatomic, retain) Reachability *internetReachable;
 @property (nonatomic, retain) Reachability *hostReachable;
 
