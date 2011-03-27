@@ -221,34 +221,24 @@
 
     float progressStep = 1.0f / [QuickFunctions sharedQuickFunctions].app.newItemsCount;
     
-    uint sleepMicroSeconds;
     for (NSDictionary *album in latestAlbums) {
         for (NSDictionary *track in [album valueForKey:@"tracks"]) {
             // If track is not saved locally then we shall download and save it
             if ([[QuickFunctions sharedQuickFunctions] getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
-                
                 taskInProgress = YES;
                 [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
-                while (taskInProgress) {
-                    sleep(0.1);
+
+                float progressToReach = HUD.progress + progressStep;
+                while (taskInProgress || HUD.progress < progressToReach) {
+                    if (HUD.progress < progressToReach) {
+                        HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
+                        HUD.progress += 0.01;
+                    }
+                    usleep(100000);
                 }
                 
                 [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
-
-                sleepMicroSeconds = (uint)arc4random() % 1000000;
-                sleepMicroSeconds = sleepMicroSeconds < 500000 ? 500000 : sleepMicroSeconds;
-                
-                // suspend thread execution for an interval measured in microsec-onds microseconds
-                // 1 second = 1.000.000 microseconds
-                usleep(sleepMicroSeconds);
-                
-                HUD.progress += progressStep;
-                HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
             }
-//            else {
-//                sleepMicroSeconds = (uint)arc4random() % 500000;
-//                sleepMicroSeconds = sleepMicroSeconds < 250000 ? 250000 : sleepMicroSeconds;
-//            }
         }
     }
     HUD.labelText = @"100%";
