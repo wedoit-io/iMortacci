@@ -119,8 +119,10 @@
     
     // Configure the cell...
     
-    cell.noUpdatesLabel.hidden = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 0;
-    cell.updateButton.hidden = !([QuickFunctions sharedQuickFunctions].app.newItemsCount > 0);
+    BOOL updatesAvailable = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 0;
+    cell.updatesUnavailableImage.hidden = updatesAvailable;
+    cell.updatesAvailableImage.hidden = !updatesAvailable;
+    cell.updateButton.hidden = !updatesAvailable;
     
     // This is a fake table actually, so we don't want to show selected cells
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -303,9 +305,6 @@
             }
         }
     }
-    HUD.labelText = [NSString stringWithFormat:@"Finito di scaricare", [QuickFunctions sharedQuickFunctions].app.newItemsCount];
-    HUD.detailsLabelText = @"";
-    sleep(sleepTime);
 
     // Back to indeterminate mode
     HUD.mode = MBProgressHUDModeIndeterminate;

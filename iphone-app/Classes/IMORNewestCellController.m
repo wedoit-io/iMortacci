@@ -11,12 +11,14 @@
 
 @implementation IMORNewestCellController
 
+@synthesize updatesAvailableImage;
+@synthesize updatesUnavailableImage;
 @synthesize updateButton;
-@synthesize noUpdatesLabel;
 
 - (void)dealloc {
     [updateButton release];
-    [noUpdatesLabel release];
+    [updatesAvailableImage release];
+    [updatesUnavailableImage release];
     [super dealloc];
 }
 

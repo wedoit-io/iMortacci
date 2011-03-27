@@ -22,9 +22,10 @@
 #define kIMORColorOrange    [UIColor colorWithHexString:@"e35b1b"]
 #define kIMORColorGreen     [UIColor colorWithHexString:@"3ea5a2"]
 #define kIMORColorBrown     [UIColor colorWithHexString:@"333333"]
+#define kIMORColorGray      [UIColor colorWithHexString:@"555555"]
 
 #define kSearchTableRowHeight 60.0
-#define kSingleRowTableRowHeight 330.0
+#define kSingleRowTableRowHeight 317.0
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>

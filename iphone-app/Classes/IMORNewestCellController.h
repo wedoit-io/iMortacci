@@ -11,10 +11,12 @@
 
 @interface IMORNewestCellController : UITableViewCell {
     UIButton *updateButton;
-    UILabel *noUpdatesLabel;
+    UIImageView *updatesAvailableImage;
+    UIImageView *updatesUnavailableImage;
 }
 
+@property (nonatomic, retain) IBOutlet UIImageView *updatesAvailableImage;
+@property (nonatomic, retain) IBOutlet UIImageView *updatesUnavailableImage;
 @property (nonatomic, retain) IBOutlet UIButton *updateButton;
-@property (nonatomic, retain) IBOutlet UILabel *noUpdatesLabel;
 
 @end

@@ -14,7 +14,7 @@
 - (void)drawRect:(CGRect)rect {
     UIImage *image = [UIImage imageNamed: @"NavBarBackground.png"];
     [image drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [self setTintColor:kIMORColorOrange];
+    [self setTintColor:kIMORColorGreen];
 }
 
 @end
