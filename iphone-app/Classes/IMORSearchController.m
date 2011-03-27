@@ -177,7 +177,8 @@
 
         // Configure the cell...
         
-        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]]];
+        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
+                                                                                                             AndSize:@"small"]];
         cell.textLabel.text = [dict valueForKey:@"title"];
         // This is how you check for null string values in JSON string "<null>"
         // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
@@ -203,13 +204,15 @@
         // Configure the cell...
         
         if (tracksOnly) {
-            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug]];
+            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug
+                                                                                                                 AndSize:@"small"]];
         }
         else {
             cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions]
                                                            getAlbumArtworkWithSlug:[[filteredItems
                                                                                      objectAtIndex:indexPath.section]
-                                                                                    valueForKey:@"slug"]]];
+                                                                                    valueForKey:@"slug"]
+                                                           AndSize:@"small"]];
         }
         
         cell.titleTextLabel.text = [dict valueForKey:@"title"];

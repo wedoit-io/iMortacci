@@ -113,7 +113,8 @@
     
     // Configure the cell...
     
-    cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug]];
+    cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:albumSlug
+                                                                                                         AndSize:@"medium"]];
     cell.titleTextLabel.text = [item valueForKey:@"title"];
     cell.descriptionTextLabel.text = [item valueForKey:@"description"];
     cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", [[item valueForKey:@"playback_count"] intValue]];

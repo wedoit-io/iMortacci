@@ -39,10 +39,6 @@
 		509466271327C6570042D81F /* NavBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466251327C6570042D81F /* NavBarBackground@2x.png */; };
 		509466AA1327C90E0042D81F /* UINavigationBar+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 509466A91327C90E0042D81F /* UINavigationBar+Custom.m */; };
 		509467401327D8450042D81F /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 5094673F1327D8450042D81F /* UIColor-Expanded.m */; };
-		5094691F1328D2FA0042D81F /* emiliaromagna.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094691B1328D2FA0042D81F /* emiliaromagna.png */; };
-		509469201328D2FA0042D81F /* emiliaromagna@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094691C1328D2FA0042D81F /* emiliaromagna@2x.png */; };
-		509469211328D2FA0042D81F /* lazio.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094691D1328D2FA0042D81F /* lazio.png */; };
-		509469221328D2FA0042D81F /* lazio@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094691E1328D2FA0042D81F /* lazio@2x.png */; };
 		509469B61328DDDC0042D81F /* AdWhirlAdapterAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 509469721328DDDB0042D81F /* AdWhirlAdapterAdMob.m */; };
 		509469BA1328DDDC0042D81F /* AdWhirlAdapterIAd.m in Sources */ = {isa = PBXBuildFile; fileRef = 5094697A1328DDDB0042D81F /* AdWhirlAdapterIAd.m */; };
 		509469C31328DDDC0042D81F /* AdWhirlAdapterCustom.m in Sources */ = {isa = PBXBuildFile; fileRef = 509469901328DDDB0042D81F /* AdWhirlAdapterCustom.m */; };
@@ -141,6 +137,86 @@
 		50E0322B133A4A96009217F6 /* DownloadButtonHighlightedState@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03227133A4A95009217F6 /* DownloadButtonHighlightedState@2x.png */; };
 		50E0322C133A4A96009217F6 /* DownloadButtonDefaultState.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03228133A4A95009217F6 /* DownloadButtonDefaultState.png */; };
 		50E0322D133A4A96009217F6 /* DownloadButtonDefaultState@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03229133A4A95009217F6 /* DownloadButtonDefaultState@2x.png */; };
+		50E03242133A5721009217F6 /* basilicata-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0322E133A5721009217F6 /* basilicata-medium@2x.png */; };
+		50E03243133A5721009217F6 /* calabria-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0322F133A5721009217F6 /* calabria-medium@2x.png */; };
+		50E03244133A5721009217F6 /* campania-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03230133A5721009217F6 /* campania-medium@2x.png */; };
+		50E03245133A5721009217F6 /* emiliaromagna-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03231133A5721009217F6 /* emiliaromagna-medium@2x.png */; };
+		50E03246133A5721009217F6 /* friuli-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03232133A5721009217F6 /* friuli-medium@2x.png */; };
+		50E03247133A5721009217F6 /* lazio-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03233133A5721009217F6 /* lazio-medium@2x.png */; };
+		50E03248133A5721009217F6 /* liguria-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03234133A5721009217F6 /* liguria-medium@2x.png */; };
+		50E03249133A5721009217F6 /* lombardia-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03235133A5721009217F6 /* lombardia-medium@2x.png */; };
+		50E0324A133A5721009217F6 /* marche-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03236133A5721009217F6 /* marche-medium@2x.png */; };
+		50E0324B133A5721009217F6 /* molise-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03237133A5721009217F6 /* molise-medium@2x.png */; };
+		50E0324C133A5721009217F6 /* piemonte-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03238133A5721009217F6 /* piemonte-medium@2x.png */; };
+		50E0324D133A5721009217F6 /* puglia-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03239133A5721009217F6 /* puglia-medium@2x.png */; };
+		50E0324E133A5721009217F6 /* sardegna-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323A133A5721009217F6 /* sardegna-medium@2x.png */; };
+		50E0324F133A5721009217F6 /* sicilia-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323B133A5721009217F6 /* sicilia-medium@2x.png */; };
+		50E03250133A5721009217F6 /* default-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323C133A5721009217F6 /* default-medium@2x.png */; };
+		50E03251133A5721009217F6 /* toscana-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323D133A5721009217F6 /* toscana-medium@2x.png */; };
+		50E03252133A5721009217F6 /* trentino-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323E133A5721009217F6 /* trentino-medium@2x.png */; };
+		50E03253133A5721009217F6 /* umbria-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0323F133A5721009217F6 /* umbria-medium@2x.png */; };
+		50E03254133A5721009217F6 /* valledaosta-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03240133A5721009217F6 /* valledaosta-medium@2x.png */; };
+		50E03255133A5721009217F6 /* veneto-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03241133A5721009217F6 /* veneto-medium@2x.png */; };
+		50E0326A133A572D009217F6 /* basilicata-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03256133A572D009217F6 /* basilicata-medium.png */; };
+		50E0326B133A572D009217F6 /* calabria-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03257133A572D009217F6 /* calabria-medium.png */; };
+		50E0326C133A572D009217F6 /* campania-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03258133A572D009217F6 /* campania-medium.png */; };
+		50E0326D133A572D009217F6 /* emiliaromagna-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03259133A572D009217F6 /* emiliaromagna-medium.png */; };
+		50E0326E133A572D009217F6 /* friuli-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325A133A572D009217F6 /* friuli-medium.png */; };
+		50E0326F133A572D009217F6 /* lazio-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325B133A572D009217F6 /* lazio-medium.png */; };
+		50E03270133A572D009217F6 /* liguria-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325C133A572D009217F6 /* liguria-medium.png */; };
+		50E03271133A572D009217F6 /* lombardia-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325D133A572D009217F6 /* lombardia-medium.png */; };
+		50E03272133A572D009217F6 /* marche-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325E133A572D009217F6 /* marche-medium.png */; };
+		50E03273133A572D009217F6 /* molise-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0325F133A572D009217F6 /* molise-medium.png */; };
+		50E03274133A572D009217F6 /* piemonte-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03260133A572D009217F6 /* piemonte-medium.png */; };
+		50E03275133A572D009217F6 /* puglia-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03261133A572D009217F6 /* puglia-medium.png */; };
+		50E03276133A572D009217F6 /* sardegna-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03262133A572D009217F6 /* sardegna-medium.png */; };
+		50E03277133A572D009217F6 /* sicilia-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03263133A572D009217F6 /* sicilia-medium.png */; };
+		50E03278133A572D009217F6 /* default-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03264133A572D009217F6 /* default-medium.png */; };
+		50E03279133A572D009217F6 /* toscana-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03265133A572D009217F6 /* toscana-medium.png */; };
+		50E0327A133A572D009217F6 /* trentino-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03266133A572D009217F6 /* trentino-medium.png */; };
+		50E0327B133A572D009217F6 /* umbria-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03267133A572D009217F6 /* umbria-medium.png */; };
+		50E0327C133A572D009217F6 /* valledaosta-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03268133A572D009217F6 /* valledaosta-medium.png */; };
+		50E0327D133A572D009217F6 /* veneto-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03269133A572D009217F6 /* veneto-medium.png */; };
+		50E03292133A573A009217F6 /* basilicata-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0327E133A573A009217F6 /* basilicata-small@2x.png */; };
+		50E03293133A573A009217F6 /* calabria-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0327F133A573A009217F6 /* calabria-small@2x.png */; };
+		50E03294133A573A009217F6 /* campania-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03280133A573A009217F6 /* campania-small@2x.png */; };
+		50E03295133A573A009217F6 /* emiliaromagna-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03281133A573A009217F6 /* emiliaromagna-small@2x.png */; };
+		50E03296133A573A009217F6 /* friuli-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03282133A573A009217F6 /* friuli-small@2x.png */; };
+		50E03297133A573A009217F6 /* lazio-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03283133A573A009217F6 /* lazio-small@2x.png */; };
+		50E03298133A573A009217F6 /* liguria-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03284133A573A009217F6 /* liguria-small@2x.png */; };
+		50E03299133A573A009217F6 /* lombardia-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03285133A573A009217F6 /* lombardia-small@2x.png */; };
+		50E0329A133A573A009217F6 /* marche-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03286133A573A009217F6 /* marche-small@2x.png */; };
+		50E0329B133A573A009217F6 /* molise-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03287133A573A009217F6 /* molise-small@2x.png */; };
+		50E0329C133A573A009217F6 /* piemonte-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03288133A573A009217F6 /* piemonte-small@2x.png */; };
+		50E0329D133A573A009217F6 /* puglia-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03289133A573A009217F6 /* puglia-small@2x.png */; };
+		50E0329E133A573A009217F6 /* sardegna-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328A133A573A009217F6 /* sardegna-small@2x.png */; };
+		50E0329F133A573A009217F6 /* sicilia-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328B133A573A009217F6 /* sicilia-small@2x.png */; };
+		50E032A0133A573A009217F6 /* default-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328C133A573A009217F6 /* default-small@2x.png */; };
+		50E032A1133A573A009217F6 /* toscana-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328D133A573A009217F6 /* toscana-small@2x.png */; };
+		50E032A2133A573A009217F6 /* trentino-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328E133A573A009217F6 /* trentino-small@2x.png */; };
+		50E032A3133A573A009217F6 /* umbria-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0328F133A573A009217F6 /* umbria-small@2x.png */; };
+		50E032A4133A573A009217F6 /* valledaosta-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03290133A573A009217F6 /* valledaosta-small@2x.png */; };
+		50E032A5133A573A009217F6 /* veneto-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03291133A573A009217F6 /* veneto-small@2x.png */; };
+		50E032BA133A5744009217F6 /* abruzzo-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032A6133A5744009217F6 /* abruzzo-small.png */; };
+		50E032BB133A5744009217F6 /* basilicata-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032A7133A5744009217F6 /* basilicata-small.png */; };
+		50E032BC133A5744009217F6 /* calabria-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032A8133A5744009217F6 /* calabria-small.png */; };
+		50E032BD133A5744009217F6 /* campania-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032A9133A5744009217F6 /* campania-small.png */; };
+		50E032BE133A5744009217F6 /* emiliaromagna-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AA133A5744009217F6 /* emiliaromagna-small.png */; };
+		50E032BF133A5744009217F6 /* friuli-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AB133A5744009217F6 /* friuli-small.png */; };
+		50E032C0133A5744009217F6 /* lazio-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AC133A5744009217F6 /* lazio-small.png */; };
+		50E032C1133A5744009217F6 /* liguria-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AD133A5744009217F6 /* liguria-small.png */; };
+		50E032C2133A5744009217F6 /* lombardia-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AE133A5744009217F6 /* lombardia-small.png */; };
+		50E032C3133A5744009217F6 /* marche-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032AF133A5744009217F6 /* marche-small.png */; };
+		50E032C4133A5744009217F6 /* molise-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B0133A5744009217F6 /* molise-small.png */; };
+		50E032C5133A5744009217F6 /* piemonte-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B1133A5744009217F6 /* piemonte-small.png */; };
+		50E032C6133A5744009217F6 /* sardegna-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B2133A5744009217F6 /* sardegna-small.png */; };
+		50E032C7133A5744009217F6 /* sicilia-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B3133A5744009217F6 /* sicilia-small.png */; };
+		50E032C8133A5744009217F6 /* default-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B4133A5744009217F6 /* default-small.png */; };
+		50E032C9133A5744009217F6 /* toscana-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B5133A5744009217F6 /* toscana-small.png */; };
+		50E032CA133A5744009217F6 /* trentino-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B6133A5744009217F6 /* trentino-small.png */; };
+		50E032CB133A5744009217F6 /* umbria-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B7133A5744009217F6 /* umbria-small.png */; };
+		50E032CC133A5744009217F6 /* valledaosta-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B8133A5744009217F6 /* valledaosta-small.png */; };
+		50E032CD133A5744009217F6 /* veneto-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E032B9133A5744009217F6 /* veneto-small.png */; };
 		50E2BD661326327B008EAD29 /* IMORSearchCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E2BD641326327B008EAD29 /* IMORSearchCellController.m */; };
 		50E2BD671326327B008EAD29 /* IMORSearchCellController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50E2BD651326327B008EAD29 /* IMORSearchCellController.xib */; };
 		50E2BE9A13264441008EAD29 /* IMORPlayblackCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E2BE9813264441008EAD29 /* IMORPlayblackCellController.m */; };
@@ -260,10 +336,6 @@
 		509466A91327C90E0042D81F /* UINavigationBar+Custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Custom.m"; sourceTree = "<group>"; };
 		5094673E1327D8450042D81F /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
 		5094673F1327D8450042D81F /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
-		5094691B1328D2FA0042D81F /* emiliaromagna.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = emiliaromagna.png; sourceTree = "<group>"; };
-		5094691C1328D2FA0042D81F /* emiliaromagna@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emiliaromagna@2x.png"; sourceTree = "<group>"; };
-		5094691D1328D2FA0042D81F /* lazio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lazio.png; sourceTree = "<group>"; };
-		5094691E1328D2FA0042D81F /* lazio@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lazio@2x.png"; sourceTree = "<group>"; };
 		509469711328DDDB0042D81F /* AdWhirlAdapterAdMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdWhirlAdapterAdMob.h; sourceTree = "<group>"; };
 		509469721328DDDB0042D81F /* AdWhirlAdapterAdMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdWhirlAdapterAdMob.m; sourceTree = "<group>"; };
 		509469791328DDDB0042D81F /* AdWhirlAdapterIAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdWhirlAdapterIAd.h; sourceTree = "<group>"; };
@@ -414,6 +486,86 @@
 		50E03227133A4A95009217F6 /* DownloadButtonHighlightedState@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DownloadButtonHighlightedState@2x.png"; sourceTree = "<group>"; };
 		50E03228133A4A95009217F6 /* DownloadButtonDefaultState.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DownloadButtonDefaultState.png; sourceTree = "<group>"; };
 		50E03229133A4A95009217F6 /* DownloadButtonDefaultState@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "DownloadButtonDefaultState@2x.png"; sourceTree = "<group>"; };
+		50E0322E133A5721009217F6 /* basilicata-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "basilicata-medium@2x.png"; sourceTree = "<group>"; };
+		50E0322F133A5721009217F6 /* calabria-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calabria-medium@2x.png"; sourceTree = "<group>"; };
+		50E03230133A5721009217F6 /* campania-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "campania-medium@2x.png"; sourceTree = "<group>"; };
+		50E03231133A5721009217F6 /* emiliaromagna-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emiliaromagna-medium@2x.png"; sourceTree = "<group>"; };
+		50E03232133A5721009217F6 /* friuli-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friuli-medium@2x.png"; sourceTree = "<group>"; };
+		50E03233133A5721009217F6 /* lazio-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lazio-medium@2x.png"; sourceTree = "<group>"; };
+		50E03234133A5721009217F6 /* liguria-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "liguria-medium@2x.png"; sourceTree = "<group>"; };
+		50E03235133A5721009217F6 /* lombardia-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lombardia-medium@2x.png"; sourceTree = "<group>"; };
+		50E03236133A5721009217F6 /* marche-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marche-medium@2x.png"; sourceTree = "<group>"; };
+		50E03237133A5721009217F6 /* molise-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "molise-medium@2x.png"; sourceTree = "<group>"; };
+		50E03238133A5721009217F6 /* piemonte-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "piemonte-medium@2x.png"; sourceTree = "<group>"; };
+		50E03239133A5721009217F6 /* puglia-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puglia-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323A133A5721009217F6 /* sardegna-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sardegna-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323B133A5721009217F6 /* sicilia-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sicilia-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323C133A5721009217F6 /* default-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323D133A5721009217F6 /* toscana-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toscana-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323E133A5721009217F6 /* trentino-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trentino-medium@2x.png"; sourceTree = "<group>"; };
+		50E0323F133A5721009217F6 /* umbria-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "umbria-medium@2x.png"; sourceTree = "<group>"; };
+		50E03240133A5721009217F6 /* valledaosta-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "valledaosta-medium@2x.png"; sourceTree = "<group>"; };
+		50E03241133A5721009217F6 /* veneto-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "veneto-medium@2x.png"; sourceTree = "<group>"; };
+		50E03256133A572D009217F6 /* basilicata-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "basilicata-medium.png"; sourceTree = "<group>"; };
+		50E03257133A572D009217F6 /* calabria-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calabria-medium.png"; sourceTree = "<group>"; };
+		50E03258133A572D009217F6 /* campania-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "campania-medium.png"; sourceTree = "<group>"; };
+		50E03259133A572D009217F6 /* emiliaromagna-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emiliaromagna-medium.png"; sourceTree = "<group>"; };
+		50E0325A133A572D009217F6 /* friuli-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friuli-medium.png"; sourceTree = "<group>"; };
+		50E0325B133A572D009217F6 /* lazio-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lazio-medium.png"; sourceTree = "<group>"; };
+		50E0325C133A572D009217F6 /* liguria-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "liguria-medium.png"; sourceTree = "<group>"; };
+		50E0325D133A572D009217F6 /* lombardia-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lombardia-medium.png"; sourceTree = "<group>"; };
+		50E0325E133A572D009217F6 /* marche-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marche-medium.png"; sourceTree = "<group>"; };
+		50E0325F133A572D009217F6 /* molise-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "molise-medium.png"; sourceTree = "<group>"; };
+		50E03260133A572D009217F6 /* piemonte-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "piemonte-medium.png"; sourceTree = "<group>"; };
+		50E03261133A572D009217F6 /* puglia-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puglia-medium.png"; sourceTree = "<group>"; };
+		50E03262133A572D009217F6 /* sardegna-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sardegna-medium.png"; sourceTree = "<group>"; };
+		50E03263133A572D009217F6 /* sicilia-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sicilia-medium.png"; sourceTree = "<group>"; };
+		50E03264133A572D009217F6 /* default-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default-medium.png"; sourceTree = "<group>"; };
+		50E03265133A572D009217F6 /* toscana-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toscana-medium.png"; sourceTree = "<group>"; };
+		50E03266133A572D009217F6 /* trentino-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trentino-medium.png"; sourceTree = "<group>"; };
+		50E03267133A572D009217F6 /* umbria-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "umbria-medium.png"; sourceTree = "<group>"; };
+		50E03268133A572D009217F6 /* valledaosta-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "valledaosta-medium.png"; sourceTree = "<group>"; };
+		50E03269133A572D009217F6 /* veneto-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "veneto-medium.png"; sourceTree = "<group>"; };
+		50E0327E133A573A009217F6 /* basilicata-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "basilicata-small@2x.png"; sourceTree = "<group>"; };
+		50E0327F133A573A009217F6 /* calabria-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calabria-small@2x.png"; sourceTree = "<group>"; };
+		50E03280133A573A009217F6 /* campania-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "campania-small@2x.png"; sourceTree = "<group>"; };
+		50E03281133A573A009217F6 /* emiliaromagna-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emiliaromagna-small@2x.png"; sourceTree = "<group>"; };
+		50E03282133A573A009217F6 /* friuli-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friuli-small@2x.png"; sourceTree = "<group>"; };
+		50E03283133A573A009217F6 /* lazio-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lazio-small@2x.png"; sourceTree = "<group>"; };
+		50E03284133A573A009217F6 /* liguria-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "liguria-small@2x.png"; sourceTree = "<group>"; };
+		50E03285133A573A009217F6 /* lombardia-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lombardia-small@2x.png"; sourceTree = "<group>"; };
+		50E03286133A573A009217F6 /* marche-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marche-small@2x.png"; sourceTree = "<group>"; };
+		50E03287133A573A009217F6 /* molise-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "molise-small@2x.png"; sourceTree = "<group>"; };
+		50E03288133A573A009217F6 /* piemonte-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "piemonte-small@2x.png"; sourceTree = "<group>"; };
+		50E03289133A573A009217F6 /* puglia-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puglia-small@2x.png"; sourceTree = "<group>"; };
+		50E0328A133A573A009217F6 /* sardegna-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sardegna-small@2x.png"; sourceTree = "<group>"; };
+		50E0328B133A573A009217F6 /* sicilia-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sicilia-small@2x.png"; sourceTree = "<group>"; };
+		50E0328C133A573A009217F6 /* default-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default-small@2x.png"; sourceTree = "<group>"; };
+		50E0328D133A573A009217F6 /* toscana-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toscana-small@2x.png"; sourceTree = "<group>"; };
+		50E0328E133A573A009217F6 /* trentino-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trentino-small@2x.png"; sourceTree = "<group>"; };
+		50E0328F133A573A009217F6 /* umbria-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "umbria-small@2x.png"; sourceTree = "<group>"; };
+		50E03290133A573A009217F6 /* valledaosta-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "valledaosta-small@2x.png"; sourceTree = "<group>"; };
+		50E03291133A573A009217F6 /* veneto-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "veneto-small@2x.png"; sourceTree = "<group>"; };
+		50E032A6133A5744009217F6 /* abruzzo-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "abruzzo-small.png"; sourceTree = "<group>"; };
+		50E032A7133A5744009217F6 /* basilicata-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "basilicata-small.png"; sourceTree = "<group>"; };
+		50E032A8133A5744009217F6 /* calabria-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calabria-small.png"; sourceTree = "<group>"; };
+		50E032A9133A5744009217F6 /* campania-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "campania-small.png"; sourceTree = "<group>"; };
+		50E032AA133A5744009217F6 /* emiliaromagna-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emiliaromagna-small.png"; sourceTree = "<group>"; };
+		50E032AB133A5744009217F6 /* friuli-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friuli-small.png"; sourceTree = "<group>"; };
+		50E032AC133A5744009217F6 /* lazio-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lazio-small.png"; sourceTree = "<group>"; };
+		50E032AD133A5744009217F6 /* liguria-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "liguria-small.png"; sourceTree = "<group>"; };
+		50E032AE133A5744009217F6 /* lombardia-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lombardia-small.png"; sourceTree = "<group>"; };
+		50E032AF133A5744009217F6 /* marche-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marche-small.png"; sourceTree = "<group>"; };
+		50E032B0133A5744009217F6 /* molise-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "molise-small.png"; sourceTree = "<group>"; };
+		50E032B1133A5744009217F6 /* piemonte-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "piemonte-small.png"; sourceTree = "<group>"; };
+		50E032B2133A5744009217F6 /* sardegna-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sardegna-small.png"; sourceTree = "<group>"; };
+		50E032B3133A5744009217F6 /* sicilia-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sicilia-small.png"; sourceTree = "<group>"; };
+		50E032B4133A5744009217F6 /* default-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default-small.png"; sourceTree = "<group>"; };
+		50E032B5133A5744009217F6 /* toscana-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toscana-small.png"; sourceTree = "<group>"; };
+		50E032B6133A5744009217F6 /* trentino-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trentino-small.png"; sourceTree = "<group>"; };
+		50E032B7133A5744009217F6 /* umbria-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "umbria-small.png"; sourceTree = "<group>"; };
+		50E032B8133A5744009217F6 /* valledaosta-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "valledaosta-small.png"; sourceTree = "<group>"; };
+		50E032B9133A5744009217F6 /* veneto-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "veneto-small.png"; sourceTree = "<group>"; };
 		50E2BD631326327B008EAD29 /* IMORSearchCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMORSearchCellController.h; sourceTree = "<group>"; };
 		50E2BD641326327B008EAD29 /* IMORSearchCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMORSearchCellController.m; sourceTree = "<group>"; };
 		50E2BD651326327B008EAD29 /* IMORSearchCellController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMORSearchCellController.xib; sourceTree = "<group>"; };
@@ -745,10 +897,86 @@
 		5094677F1327DC090042D81F /* album_artworks */ = {
 			isa = PBXGroup;
 			children = (
-				5094691B1328D2FA0042D81F /* emiliaromagna.png */,
-				5094691C1328D2FA0042D81F /* emiliaromagna@2x.png */,
-				5094691D1328D2FA0042D81F /* lazio.png */,
-				5094691E1328D2FA0042D81F /* lazio@2x.png */,
+				50E032B4133A5744009217F6 /* default-small.png */,
+				50E0328C133A573A009217F6 /* default-small@2x.png */,
+				50E03264133A572D009217F6 /* default-medium.png */,
+				50E0323C133A5721009217F6 /* default-medium@2x.png */,
+				50E032A6133A5744009217F6 /* abruzzo-small.png */,
+				50E032A7133A5744009217F6 /* basilicata-small.png */,
+				50E032A8133A5744009217F6 /* calabria-small.png */,
+				50E032A9133A5744009217F6 /* campania-small.png */,
+				50E032AA133A5744009217F6 /* emiliaromagna-small.png */,
+				50E032AB133A5744009217F6 /* friuli-small.png */,
+				50E032AC133A5744009217F6 /* lazio-small.png */,
+				50E032AD133A5744009217F6 /* liguria-small.png */,
+				50E032AE133A5744009217F6 /* lombardia-small.png */,
+				50E032AF133A5744009217F6 /* marche-small.png */,
+				50E032B0133A5744009217F6 /* molise-small.png */,
+				50E032B1133A5744009217F6 /* piemonte-small.png */,
+				50E032B2133A5744009217F6 /* sardegna-small.png */,
+				50E032B3133A5744009217F6 /* sicilia-small.png */,
+				50E032B5133A5744009217F6 /* toscana-small.png */,
+				50E032B6133A5744009217F6 /* trentino-small.png */,
+				50E032B7133A5744009217F6 /* umbria-small.png */,
+				50E032B8133A5744009217F6 /* valledaosta-small.png */,
+				50E032B9133A5744009217F6 /* veneto-small.png */,
+				50E0327E133A573A009217F6 /* basilicata-small@2x.png */,
+				50E0327F133A573A009217F6 /* calabria-small@2x.png */,
+				50E03280133A573A009217F6 /* campania-small@2x.png */,
+				50E03281133A573A009217F6 /* emiliaromagna-small@2x.png */,
+				50E03282133A573A009217F6 /* friuli-small@2x.png */,
+				50E03283133A573A009217F6 /* lazio-small@2x.png */,
+				50E03284133A573A009217F6 /* liguria-small@2x.png */,
+				50E03285133A573A009217F6 /* lombardia-small@2x.png */,
+				50E03286133A573A009217F6 /* marche-small@2x.png */,
+				50E03287133A573A009217F6 /* molise-small@2x.png */,
+				50E03288133A573A009217F6 /* piemonte-small@2x.png */,
+				50E03289133A573A009217F6 /* puglia-small@2x.png */,
+				50E0328A133A573A009217F6 /* sardegna-small@2x.png */,
+				50E0328B133A573A009217F6 /* sicilia-small@2x.png */,
+				50E0328D133A573A009217F6 /* toscana-small@2x.png */,
+				50E0328E133A573A009217F6 /* trentino-small@2x.png */,
+				50E0328F133A573A009217F6 /* umbria-small@2x.png */,
+				50E03290133A573A009217F6 /* valledaosta-small@2x.png */,
+				50E03291133A573A009217F6 /* veneto-small@2x.png */,
+				50E03256133A572D009217F6 /* basilicata-medium.png */,
+				50E03257133A572D009217F6 /* calabria-medium.png */,
+				50E03258133A572D009217F6 /* campania-medium.png */,
+				50E03259133A572D009217F6 /* emiliaromagna-medium.png */,
+				50E0325A133A572D009217F6 /* friuli-medium.png */,
+				50E0325B133A572D009217F6 /* lazio-medium.png */,
+				50E0325C133A572D009217F6 /* liguria-medium.png */,
+				50E0325D133A572D009217F6 /* lombardia-medium.png */,
+				50E0325E133A572D009217F6 /* marche-medium.png */,
+				50E0325F133A572D009217F6 /* molise-medium.png */,
+				50E03260133A572D009217F6 /* piemonte-medium.png */,
+				50E03261133A572D009217F6 /* puglia-medium.png */,
+				50E03262133A572D009217F6 /* sardegna-medium.png */,
+				50E03263133A572D009217F6 /* sicilia-medium.png */,
+				50E03265133A572D009217F6 /* toscana-medium.png */,
+				50E03266133A572D009217F6 /* trentino-medium.png */,
+				50E03267133A572D009217F6 /* umbria-medium.png */,
+				50E03268133A572D009217F6 /* valledaosta-medium.png */,
+				50E03269133A572D009217F6 /* veneto-medium.png */,
+				50E0322E133A5721009217F6 /* basilicata-medium@2x.png */,
+				50E0322F133A5721009217F6 /* calabria-medium@2x.png */,
+				50E03230133A5721009217F6 /* campania-medium@2x.png */,
+				50E03231133A5721009217F6 /* emiliaromagna-medium@2x.png */,
+				50E03232133A5721009217F6 /* friuli-medium@2x.png */,
+				50E03233133A5721009217F6 /* lazio-medium@2x.png */,
+				50E03234133A5721009217F6 /* liguria-medium@2x.png */,
+				50E03235133A5721009217F6 /* lombardia-medium@2x.png */,
+				50E03236133A5721009217F6 /* marche-medium@2x.png */,
+				50E03237133A5721009217F6 /* molise-medium@2x.png */,
+				50E03238133A5721009217F6 /* piemonte-medium@2x.png */,
+				50E03239133A5721009217F6 /* puglia-medium@2x.png */,
+				50E0323A133A5721009217F6 /* sardegna-medium@2x.png */,
+				50E0323B133A5721009217F6 /* sicilia-medium@2x.png */,
+				50E0323D133A5721009217F6 /* toscana-medium@2x.png */,
+				50E0323E133A5721009217F6 /* trentino-medium@2x.png */,
+				50E0323F133A5721009217F6 /* umbria-medium@2x.png */,
+				50E03240133A5721009217F6 /* valledaosta-medium@2x.png */,
+				50E03241133A5721009217F6 /* veneto-medium@2x.png */,
 			);
 			name = album_artworks;
 			sourceTree = "<group>";
@@ -1546,10 +1774,6 @@
 				509466141327C5350042D81F /* Credits@2x.png in Resources */,
 				509466261327C6570042D81F /* NavBarBackground.png in Resources */,
 				509466271327C6570042D81F /* NavBarBackground@2x.png in Resources */,
-				5094691F1328D2FA0042D81F /* emiliaromagna.png in Resources */,
-				509469201328D2FA0042D81F /* emiliaromagna@2x.png in Resources */,
-				509469211328D2FA0042D81F /* lazio.png in Resources */,
-				509469221328D2FA0042D81F /* lazio@2x.png in Resources */,
 				509469D11328DDDC0042D81F /* AdWhirlWebBrowser.xib in Resources */,
 				5094779A132A1ABA0042D81F /* IMORPlayblackController.xib in Resources */,
 				50947814132A24400042D81F /* PlayButtonHighlightedState.png in Resources */,
@@ -1602,6 +1826,86 @@
 				50E0322B133A4A96009217F6 /* DownloadButtonHighlightedState@2x.png in Resources */,
 				50E0322C133A4A96009217F6 /* DownloadButtonDefaultState.png in Resources */,
 				50E0322D133A4A96009217F6 /* DownloadButtonDefaultState@2x.png in Resources */,
+				50E03242133A5721009217F6 /* basilicata-medium@2x.png in Resources */,
+				50E03243133A5721009217F6 /* calabria-medium@2x.png in Resources */,
+				50E03244133A5721009217F6 /* campania-medium@2x.png in Resources */,
+				50E03245133A5721009217F6 /* emiliaromagna-medium@2x.png in Resources */,
+				50E03246133A5721009217F6 /* friuli-medium@2x.png in Resources */,
+				50E03247133A5721009217F6 /* lazio-medium@2x.png in Resources */,
+				50E03248133A5721009217F6 /* liguria-medium@2x.png in Resources */,
+				50E03249133A5721009217F6 /* lombardia-medium@2x.png in Resources */,
+				50E0324A133A5721009217F6 /* marche-medium@2x.png in Resources */,
+				50E0324B133A5721009217F6 /* molise-medium@2x.png in Resources */,
+				50E0324C133A5721009217F6 /* piemonte-medium@2x.png in Resources */,
+				50E0324D133A5721009217F6 /* puglia-medium@2x.png in Resources */,
+				50E0324E133A5721009217F6 /* sardegna-medium@2x.png in Resources */,
+				50E0324F133A5721009217F6 /* sicilia-medium@2x.png in Resources */,
+				50E03250133A5721009217F6 /* default-medium@2x.png in Resources */,
+				50E03251133A5721009217F6 /* toscana-medium@2x.png in Resources */,
+				50E03252133A5721009217F6 /* trentino-medium@2x.png in Resources */,
+				50E03253133A5721009217F6 /* umbria-medium@2x.png in Resources */,
+				50E03254133A5721009217F6 /* valledaosta-medium@2x.png in Resources */,
+				50E03255133A5721009217F6 /* veneto-medium@2x.png in Resources */,
+				50E0326A133A572D009217F6 /* basilicata-medium.png in Resources */,
+				50E0326B133A572D009217F6 /* calabria-medium.png in Resources */,
+				50E0326C133A572D009217F6 /* campania-medium.png in Resources */,
+				50E0326D133A572D009217F6 /* emiliaromagna-medium.png in Resources */,
+				50E0326E133A572D009217F6 /* friuli-medium.png in Resources */,
+				50E0326F133A572D009217F6 /* lazio-medium.png in Resources */,
+				50E03270133A572D009217F6 /* liguria-medium.png in Resources */,
+				50E03271133A572D009217F6 /* lombardia-medium.png in Resources */,
+				50E03272133A572D009217F6 /* marche-medium.png in Resources */,
+				50E03273133A572D009217F6 /* molise-medium.png in Resources */,
+				50E03274133A572D009217F6 /* piemonte-medium.png in Resources */,
+				50E03275133A572D009217F6 /* puglia-medium.png in Resources */,
+				50E03276133A572D009217F6 /* sardegna-medium.png in Resources */,
+				50E03277133A572D009217F6 /* sicilia-medium.png in Resources */,
+				50E03278133A572D009217F6 /* default-medium.png in Resources */,
+				50E03279133A572D009217F6 /* toscana-medium.png in Resources */,
+				50E0327A133A572D009217F6 /* trentino-medium.png in Resources */,
+				50E0327B133A572D009217F6 /* umbria-medium.png in Resources */,
+				50E0327C133A572D009217F6 /* valledaosta-medium.png in Resources */,
+				50E0327D133A572D009217F6 /* veneto-medium.png in Resources */,
+				50E03292133A573A009217F6 /* basilicata-small@2x.png in Resources */,
+				50E03293133A573A009217F6 /* calabria-small@2x.png in Resources */,
+				50E03294133A573A009217F6 /* campania-small@2x.png in Resources */,
+				50E03295133A573A009217F6 /* emiliaromagna-small@2x.png in Resources */,
+				50E03296133A573A009217F6 /* friuli-small@2x.png in Resources */,
+				50E03297133A573A009217F6 /* lazio-small@2x.png in Resources */,
+				50E03298133A573A009217F6 /* liguria-small@2x.png in Resources */,
+				50E03299133A573A009217F6 /* lombardia-small@2x.png in Resources */,
+				50E0329A133A573A009217F6 /* marche-small@2x.png in Resources */,
+				50E0329B133A573A009217F6 /* molise-small@2x.png in Resources */,
+				50E0329C133A573A009217F6 /* piemonte-small@2x.png in Resources */,
+				50E0329D133A573A009217F6 /* puglia-small@2x.png in Resources */,
+				50E0329E133A573A009217F6 /* sardegna-small@2x.png in Resources */,
+				50E0329F133A573A009217F6 /* sicilia-small@2x.png in Resources */,
+				50E032A0133A573A009217F6 /* default-small@2x.png in Resources */,
+				50E032A1133A573A009217F6 /* toscana-small@2x.png in Resources */,
+				50E032A2133A573A009217F6 /* trentino-small@2x.png in Resources */,
+				50E032A3133A573A009217F6 /* umbria-small@2x.png in Resources */,
+				50E032A4133A573A009217F6 /* valledaosta-small@2x.png in Resources */,
+				50E032A5133A573A009217F6 /* veneto-small@2x.png in Resources */,
+				50E032BA133A5744009217F6 /* abruzzo-small.png in Resources */,
+				50E032BB133A5744009217F6 /* basilicata-small.png in Resources */,
+				50E032BC133A5744009217F6 /* calabria-small.png in Resources */,
+				50E032BD133A5744009217F6 /* campania-small.png in Resources */,
+				50E032BE133A5744009217F6 /* emiliaromagna-small.png in Resources */,
+				50E032BF133A5744009217F6 /* friuli-small.png in Resources */,
+				50E032C0133A5744009217F6 /* lazio-small.png in Resources */,
+				50E032C1133A5744009217F6 /* liguria-small.png in Resources */,
+				50E032C2133A5744009217F6 /* lombardia-small.png in Resources */,
+				50E032C3133A5744009217F6 /* marche-small.png in Resources */,
+				50E032C4133A5744009217F6 /* molise-small.png in Resources */,
+				50E032C5133A5744009217F6 /* piemonte-small.png in Resources */,
+				50E032C6133A5744009217F6 /* sardegna-small.png in Resources */,
+				50E032C7133A5744009217F6 /* sicilia-small.png in Resources */,
+				50E032C8133A5744009217F6 /* default-small.png in Resources */,
+				50E032C9133A5744009217F6 /* toscana-small.png in Resources */,
+				50E032CA133A5744009217F6 /* trentino-small.png in Resources */,
+				50E032CB133A5744009217F6 /* umbria-small.png in Resources */,
+				50E032CC133A5744009217F6 /* valledaosta-small.png in Resources */,
+				50E032CD133A5744009217F6 /* veneto-small.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

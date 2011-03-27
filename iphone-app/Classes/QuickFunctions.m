@@ -194,8 +194,19 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
     return [self getFileByName:[[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension]];
 }
 
-- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug {
-    return [self getFileByName:[albumSlug stringByAppendingPathExtension:kAlbumArtworkFileExtension]];
+- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size {
+    
+    NSString *filename = [[NSString stringWithFormat:@"%@-%@", albumSlug, size]
+                          stringByAppendingPathExtension:kAlbumArtworkFileExtension];
+    
+    NSData *image = [self getFileByName:filename];
+    if (image == nil) {
+        filename = [[NSString stringWithFormat:@"default-%@", size]
+                    stringByAppendingPathExtension:kAlbumArtworkFileExtension];
+        image = [self getFileByName:filename];
+    }
+    
+    return image;
 }
 
 - (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId {
