@@ -26,7 +26,6 @@
 @synthesize newItemsCount;
 @synthesize userInfo;
 @synthesize favorites;
-@synthesize alertShowed;
 @synthesize internetReachable;
 @synthesize hostReachable;
 
@@ -179,48 +178,12 @@
     // called after network status changes
     
     NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
-    
-    // Alert user about connection status
-    if (!alertShowed) {
-        switch (internetStatus)
-        {
-            case NotReachable:
-            {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Infame!"
-                                                                message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Pazienza"
-                                                      otherButtonTitles:nil];
-                [alert show];
-                [alert release];
-                alertShowed = YES;
-                break;
-            }
-                
-            case ReachableViaWWAN:
-            {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Che palle!"
-                                                                message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Vabè"
-                                                      otherButtonTitles:nil];
-                [alert show];
-                [alert release];
-                alertShowed = YES;
-                break;
-            }
-                
-            default:
-                break;
-        }
-    }
-
-    // Send&receive various stuff if connection is active
     switch (internetStatus)
     {
         case ReachableViaWiFi:
         case ReachableViaWWAN:
         {
+            // Send&receive various stuff if connection is active
             [self checkLatest];
             [self sendAndReceiveCounters];
             break;
@@ -245,24 +208,11 @@
     // send&receive 'like_status' and 'user_playback_count' information
     NSString *urlString = [NSString stringWithFormat:@"%@/counters", kIMORAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    [request setHTTPMethod:@"PUT"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-
-    // TODO
-//    SBJsonWriter *jsonWriter = [SBJsonWriter new];
-//
-//    NSError *error = nil;
-//    NSString *userInfoString = [jsonWriter stringWithObject:userInfo error:&error];
-//    if (error == nil) {
-//        [itemsFetcher setPostData:[userInfoString dataUsingEncoding:NSUTF8StringEncoding
-//                                               allowLossyConversion:YES]];
-//    }
-//    else {
-//        NSLog(@"Unable to serialize user info: %@", error);
-//    }
-//    
-//    [jsonWriter release];
-
+    [itemsFetcher setPostData:[[userInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
     [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(sendAndReceiveCountersFetcher:finishedWithData:error:)];
 }
 

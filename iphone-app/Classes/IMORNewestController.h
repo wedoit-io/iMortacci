@@ -11,6 +11,7 @@
 #import "MBProgressHUD.h"
 
 @class IMORNewestCellController;
+@class Reachability;
 
 
 @interface IMORNewestController : UIViewController <AdWhirlDelegate, MBProgressHUDDelegate> {
@@ -23,6 +24,10 @@
 
     // UI elements
     IMORNewestCellController *tempCell;
+    
+    BOOL alertShowed;
+    Reachability *internetReachable;
+    Reachability *hostReachable;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
@@ -30,10 +35,14 @@
 @property (nonatomic, retain) NSArray *latestAlbums;
 @property (nonatomic, retain) NSData *downloadedItem;
 @property (nonatomic, assign) IBOutlet IMORNewestCellController *tempCell;
+@property (nonatomic, assign) BOOL alertShowed;
+@property (nonatomic, retain) Reachability *internetReachable;
+@property (nonatomic, retain) Reachability *hostReachable;
 
-- (IBAction)update:(id)sender;
-
+- (void)checkNetworkStatus:(NSNotification *)notice;
 - (void)updateTask;
 - (void)downloadAlbums;
+
+- (IBAction)update:(id)sender;
 
 @end

@@ -2,8 +2,8 @@
 // Prefix header for all source files of the 'iMortacci' target in the 'iMortacci' project
 //
 
-#define kIMORHostName @"apex-net.it"
-#define kIMORAPIURL @"http://test.apex-net.it/imortacci/api/v1"
+#define kIMORHostName @"google.com"
+#define kIMORAPIURL @"http://donmez.apex-net.it/imortacci/api/v1"
 
 #define kSoundCloudClientId @"7Eo3B0odlpK5FvOVUKDnQ"
 

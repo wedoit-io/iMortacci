@@ -22,6 +22,9 @@
 @synthesize latestAlbums;
 @synthesize downloadedItem;
 @synthesize tempCell;
+@synthesize alertShowed;
+@synthesize internetReachable;
+@synthesize hostReachable;
 
 
 #pragma mark -
@@ -39,6 +42,21 @@
     self._tableView.rowHeight = kSingleRowTableRowHeight;
     self._tableView.separatorColor = [UIColor clearColor];
 
+    // check for internet connection
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(checkNetworkStatus:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+    
+    internetReachable = [[Reachability reachabilityForInternetConnection] retain];
+    [internetReachable startNotifier];
+    
+    // check if a pathway to a random host exists
+    hostReachable = [[Reachability reachabilityWithHostName:kIMORHostName] retain];
+    [hostReachable startNotifier];
+    
+    // now patiently wait for the notification...
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -187,12 +205,56 @@
     [latestAlbums release];
     [downloadedItem release];
     [tempCell release];
+    [internetReachable release];
+    [hostReachable release];
     [super dealloc];
 }
 
 
 #pragma mark -
 #pragma mark Internal methods
+
+- (void)checkNetworkStatus:(NSNotification *)notice
+{
+    // called after network status changes
+    
+    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+    
+    // Alert user about connection status
+    if (!alertShowed) {
+        switch (internetStatus)
+        {
+            case NotReachable:
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                                message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Pazienza"
+                                                      otherButtonTitles:nil];
+                [alert show];
+                [alert release];
+                alertShowed = YES;
+                break;
+            }
+                
+            case ReachableViaWWAN:
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                                message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Vabè"
+                                                      otherButtonTitles:nil];
+                [alert show];
+                [alert release];
+                alertShowed = YES;
+                break;
+            }
+                
+            default:
+                break;
+        }
+    }
+}
 
 - (void)updateTask {
     // update albums in a new thread
@@ -241,8 +303,8 @@
             }
         }
     }
-    HUD.labelText = @"100%";
-    HUD.detailsLabelText = [NSString stringWithFormat:@"Finito di scaricare", [QuickFunctions sharedQuickFunctions].app.newItemsCount];
+    HUD.labelText = [NSString stringWithFormat:@"Finito di scaricare", [QuickFunctions sharedQuickFunctions].app.newItemsCount];
+    HUD.detailsLabelText = @"";
     sleep(sleepTime);
 
     // Back to indeterminate mode
