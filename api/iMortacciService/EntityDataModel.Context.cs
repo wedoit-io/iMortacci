@@ -71,6 +71,12 @@ namespace iMortacci
             get { return _track_counter  ?? (_track_counter = CreateObjectSet<track_counter>("track_counter")); }
         }
         private ObjectSet<track_counter> _track_counter;
+    
+        public ObjectSet<track_slug> track_slug
+        {
+            get { return _track_slug  ?? (_track_slug = CreateObjectSet<track_slug>("track_slug")); }
+        }
+        private ObjectSet<track_slug> _track_slug;
 
         #endregion
     }

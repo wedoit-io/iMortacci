@@ -17,6 +17,12 @@
       [recordlabel_track_counter].[like_count] AS [like_count]
       FROM [dbo].[recordlabel_track_counter] AS [recordlabel_track_counter]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="recordlabel_track_slug" EntityType="IMortacciModel.Store.recordlabel_track_slug" store:Type="Views" store:Schema="dbo" store:Name="recordlabel_track_slug">
+            <DefiningQuery>SELECT 
+      [recordlabel_track_slug].[id] AS [id], 
+      [recordlabel_track_slug].[slug] AS [slug]
+      FROM [dbo].[recordlabel_track_slug] AS [recordlabel_track_slug]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
         <EntityType Name="main_config">
           <Key>
@@ -80,6 +86,17 @@
           <Property Name="playback_count" Type="int" Nullable="false" />
           <Property Name="like_count" Type="int" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'IMORTACCI.dbo.recordlabel_track_slug' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="recordlabel_track_slug">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="slug" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="slug" Type="nvarchar" Nullable="false" MaxLength="255" />
+        </EntityType>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -94,6 +111,7 @@
             <End EntitySet="track" Role="recordlabel_track" />
           </AssociationSet>
           <EntitySet Name="track_counter" EntityType="IMortacciModel.track_counter" />
+          <EntitySet Name="track_slug" EntityType="IMortacciModel.track_slug" />
         </EntityContainer>
         <EntityType Name="configuration">
           <Key>
@@ -167,6 +185,14 @@
           <Property Type="Int32" Name="playback_count" Nullable="false" />
           <Property Type="Int32" Name="like_count" Nullable="false" />
         </EntityType>
+        <EntityType Name="track_slug">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="slug" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="slug" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -219,6 +245,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="track_slug">
+            <EntityTypeMapping TypeName="IMortacciModel.track_slug">
+              <MappingFragment StoreEntitySet="recordlabel_track_slug">
+                <ScalarProperty Name="slug" ColumnName="slug" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -250,6 +284,7 @@
           <ConnectorPoint PointX="3.125" PointY="2.4708968098958328" />
         </AssociationConnector>
         <EntityTypeShape EntityType="IMortacciModel.track_counter" Width="1.5" PointX="5.375" PointY="0.75" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="IMortacciModel.track_slug" Width="1.5" PointX="5.5" PointY="2.75" Height="1.4033821614583322" />
       </Diagram>
     </Diagrams>
   </Designer>

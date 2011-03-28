@@ -31,16 +31,16 @@
         }
 
         // =====================================================================
-        // HELLO
+        // PING
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "hello?format={format}")]
-        public string GetHello(string format)
+        [WebGet(UriTemplate = "ping?format={format}")]
+        public string GetPong(string format)
         {
             this._SetOutgoingResponseFormat(format);
 
-            return "Hello, World! ;-)";
+            return "pong";
         }
 
         #endregion
@@ -195,6 +195,34 @@
             return this._GetCounters(_id).FirstOrDefault();
         }
 
+        [WebGet(UriTemplate = "slugs/{id}?format={format}")]
+        public track_slug GetSlugById(string format, string id)
+        {
+            this._SetOutgoingResponseFormat(format);
+
+            uint _id;
+
+            try
+            {
+                _id = uint.Parse(id);
+            }
+            catch (FormatException)
+            {
+                throw new WebFaultException<string>(
+                    "The value '{id}' is not a valid track id. The id must be an integer.".HaackFormat(new
+                    {
+                        id = id
+                    }),
+                    HttpStatusCode.BadRequest);
+            }
+            catch (OverflowException ex)
+            {
+                throw new WebFaultException<string>(ex.Message, HttpStatusCode.BadRequest);
+            }
+
+            return this._GetSlugs(_id).FirstOrDefault();
+        }
+
         [WebInvoke(
             Method = "PUT",
             UriTemplate = "counters?format={format}",
@@ -331,6 +359,23 @@
                 context.ContextOptions.ProxyCreationEnabled = false;
 
                 var query = context.track_counter.AsQueryable();
+
+                if (id.HasValue)
+                {
+                    query = query.Where(a => a.id == id);
+                }
+
+                return query.ToList();
+            }
+        }
+
+        private List<track_slug> _GetSlugs(uint? id = null)
+        {
+            using (var context = new IMortacciEntities())
+            {
+                context.ContextOptions.ProxyCreationEnabled = false;
+
+                var query = context.track_slug.AsQueryable();
 
                 if (id.HasValue)
                 {
