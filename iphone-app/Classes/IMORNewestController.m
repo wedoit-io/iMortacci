@@ -229,10 +229,11 @@
 {
     // called after network status changes
     
-    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
-    
-    // Alert user about connection status
-    if (!alertShowed) {
+    // Alert user about connection status if not done it before
+    if ([QuickFunctions sharedQuickFunctions].app.newItemsCount > 0 && !alertShowed) {
+
+        NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+        
         switch (internetStatus)
         {
             case NotReachable:

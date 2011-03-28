@@ -118,7 +118,7 @@ static NSString *const SHKFacebookPendingItem = @"SHKFacebookPendingItem";
 		NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 									   [item.URL absoluteString], @"link",
 									   item.title, @"name",
-									   @"Ha appena tirato un mortaccione", @"message",
+									   @"Ali Servet ha appena tirato un Mortaccione Romagolo", @"message",
 									   [item customValueForKey:@"description"], @"description",
 									   nil];
         

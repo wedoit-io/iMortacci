@@ -57,11 +57,11 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    // This will slowly fade out volume
+    // This will slowly fade out volume (duration: 1.2 seconds)
     if (player != nil && player.playing) {
         while (player.volume > 0) {
             player.volume -= 0.01;
-            usleep(100000); // this is equal to 0.1 second
+            usleep(12000); // this is equal to 0.012 seconds
         }
         [player stop];
     }
@@ -466,7 +466,6 @@
         player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
                                                       getTrackWithId:[[item valueForKey:@"id"] intValue]]
                                                error:nil];
-        player.volume = 0.1;
         player.delegate = self;
         [player play];
     }
@@ -477,9 +476,9 @@
 //	NSURL *url = [NSURL URLWithString:[item valueForKey:@"site_url"]];
 //	SHKItem *shareItem = [SHKItem URL:url title:[item valueForKey:@"title"]];
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", kPlayerURL, [item valueForKey:@"id"]]];
-	SHKItem *shareItem = [SHKItem URL:url title:[item valueForKey:@"title"]];
+	SHKItem *shareItem = [SHKItem URL:url title:[NSString stringWithFormat:@"Ascolta subito: \"%@\"", [item valueForKey:@"title"]]];
     shareItem.text = [NSString stringWithFormat:@"%@", [item valueForKey:@"description"]];
-    [shareItem setCustomValue:@"iMortacci – un modo divertente e \"mortaccione\" per condividere quello che provi in quel momento con i tuoi amici tramite il tuo dialetto preferito. È gratuito!" forKey:@"description"];
+    [shareItem setCustomValue:@"Ali Servet stà utilizzando iMortacci, l'app GRATUITA per iPhone/iPad che ti permette di ascoltare e inviare agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti italiani." forKey:@"description"];
     [shareItem setCustomValue:@"http://i1.sndcdn.com/artworks-000005393668-9wdjqg-large.jpg" forKey:@"image"];
     
 	// Get the ShareKit action sheet

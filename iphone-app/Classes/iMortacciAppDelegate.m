@@ -49,7 +49,7 @@
     
     // Register with the Apple Push Notification service ("push service")
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+     (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle

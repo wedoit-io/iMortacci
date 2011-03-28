@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.SystemVersion">10J567</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1305</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.HIToolboxVersion">462.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			<string key="NS.object.0">300</string>
@@ -61,7 +61,7 @@
 							<object class="IBUILabel" id="469913281">
 								<reference key="NSNextResponder" ref="787489080"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{63, 19}, {232, 22}}</string>
+								<string key="NSFrame">{{66, 11}, {234, 22}}</string>
 								<reference key="NSSuperview" ref="787489080"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
@@ -84,6 +84,8 @@
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
 								</object>
+								<reference key="IBUIShadowColor" ref="87799461"/>
+								<string key="IBUIShadowOffset">{0, 1}</string>
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
@@ -91,7 +93,7 @@
 							<object class="IBUILabel" id="844585809">
 								<reference key="NSNextResponder" ref="787489080"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{240, 5}, {55, 14}}</string>
+								<string key="NSFrame">{{66, 35}, {234, 14}}</string>
 								<reference key="NSSuperview" ref="787489080"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="469913281"/>
@@ -111,6 +113,8 @@
 									<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 								</object>
 								<reference key="IBUIHighlightedColor" ref="87799461"/>
+								<reference key="IBUIShadowColor" ref="87799461"/>
+								<string key="IBUIShadowOffset">{0, 1}</string>
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
@@ -207,8 +211,8 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="338170149"/>
-							<reference ref="844585809"/>
 							<reference ref="469913281"/>
+							<reference ref="844585809"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>

@@ -172,11 +172,13 @@
     }
     
     if (!tracksOnly && tableView == self._tableView) {
-        static NSString *CellIdentifier = @"Cell";
+        static NSString *CellIdentifier = @"IMORSearchCellController";
         
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+            [[NSBundle mainBundle] loadNibNamed:@"IMORSearchCellController" owner:self options:nil];
+            cell = tempCell;
+            self.tempCell = nil;
         }
 
         // Configure the cell...
@@ -184,19 +186,13 @@
         cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
                                                                                                              AndSize:@"small"]];
         
-        cell.textLabel.text = [dict valueForKey:@"title"];
-//        // This is how you check for null string values in JSON string "<null>"
-//        // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
-//        if ([dict valueForKey:@"description"] != [NSNull null]) {
-//            cell.detailTextLabel.text = [dict valueForKey:@"description"];
-//        }
+        cell.titleTextLabel.text = [dict valueForKey:@"title"];
         
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
-        UIView *bgColorView = [[UIView alloc] init];
-        [bgColorView setBackgroundColor:kIMORColorGreen];
-        [cell setSelectedBackgroundView:bgColorView];
-        [bgColorView release];
+        cell.playbackCountTextLabel.hidden = YES;
+        cell.titleTextLabel.frame = CGRectMake(cell.titleTextLabel.frame.origin.x,
+                                               cell.titleTextLabel.frame.origin.y + 8.0,
+                                               cell.titleTextLabel.frame.size.width,
+                                               cell.titleTextLabel.frame.size.height);
         
         return cell;
     }
@@ -263,11 +259,6 @@
             cell.badgeString = @"nuovo";
             cell.badgeColor = kIMORColorGreen;
         }
-        
-        UIView *bgColorView = [[UIView alloc] init];
-        [bgColorView setBackgroundColor:kIMORColorGreen];
-        [cell setSelectedBackgroundView:bgColorView];
-        [bgColorView release];
         
         return cell;
     }
