@@ -22,6 +22,8 @@
     NSUInteger newItemsCount;
     NSMutableArray *localUserInfo;
     NSMutableArray *favorites;
+    
+    BOOL firstPlay;
 
     Reachability *internetReachable;
     Reachability *hostReachable;
@@ -36,6 +38,7 @@
 @property (nonatomic, assign) NSUInteger newItemsCount;
 @property (nonatomic, retain) NSMutableArray *localUserInfo;
 @property (nonatomic, retain) NSMutableArray *favorites;
+@property (nonatomic, assign) BOOL firstPlay;
 @property (nonatomic, retain) Reachability *internetReachable;
 @property (nonatomic, retain) Reachability *hostReachable;
 

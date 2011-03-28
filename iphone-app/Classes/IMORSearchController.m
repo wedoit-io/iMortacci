@@ -183,12 +183,15 @@
         
         cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
                                                                                                              AndSize:@"small"]];
+        
         cell.textLabel.text = [dict valueForKey:@"title"];
-        // This is how you check for null string values in JSON string "<null>"
-        // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
-        if ([dict valueForKey:@"description"] != [NSNull null]) {
-            cell.detailTextLabel.text = [dict valueForKey:@"description"];
-        }
+//        // This is how you check for null string values in JSON string "<null>"
+//        // Ref.: http://stackoverflow.com/questions/4839355/checking-a-null-value-in-objective-c-that-has-been-returned-from-a-json-string
+//        if ([dict valueForKey:@"description"] != [NSNull null]) {
+//            cell.detailTextLabel.text = [dict valueForKey:@"description"];
+//        }
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         return cell;
     }

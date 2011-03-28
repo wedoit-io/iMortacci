@@ -37,7 +37,7 @@
     self._tableView.backgroundColor = kIMORColorGreen;
     self._tableView.separatorColor = [UIColor clearColor];
     
-    [self playTrack:nil];
+//    [self playTrack:nil];
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -53,11 +53,20 @@
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    // This will slowly fade out volume
+    if (player != nil && player.playing) {
+        while (player.volume > 0) {
+            player.volume -= 0.01;
+            usleep(100000); // this is equal to 0.1 second
+        }
+        [player stop];
+    }
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -302,8 +311,6 @@
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    sleep(3);
-    
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.favorites filteredArrayUsingPredicate:pred];
     if ([filtered count] == 0) {
@@ -315,7 +322,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Preferito";
         
-        sleep(2);
+        sleep(1);
     }
     else {
         
@@ -324,7 +331,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Già preferito";
         
-        sleep(3);
+        sleep(1);
     }
 
     // Hide the HUD
@@ -385,41 +392,12 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     
-    // Hide the HUD
-    [HUD hide:YES];
-
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
-    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
-    if ([filtered count] == 0) {
-        [[QuickFunctions sharedQuickFunctions].app.localUserInfo addObject:
-         [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                              [item valueForKey:@"id"],
-                                              [NSNumber numberWithInt:0],
-                                              [NSNumber numberWithInt:1],
-                                              nil]
-                                     forKeys:[NSArray arrayWithObjects:
-                                              @"id",
-                                              @"like_status",
-                                              @"user_playback_count",
-                                              nil]]];
+    if ([QuickFunctions sharedQuickFunctions].app.firstPlay) {
+        [QuickFunctions sharedQuickFunctions].app.firstPlay = NO;
+        
+        // Hide the HUD
+        [HUD hide:YES];
     }
-    else {
-        NSDictionary *itemInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo firstObjectCommonWithArray:filtered];
-        [[QuickFunctions sharedQuickFunctions].app.localUserInfo replaceObjectAtIndex:[[QuickFunctions sharedQuickFunctions].app.localUserInfo indexOfObject:itemInfo]
-                                                                      withObject:
-         [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                              [itemInfo valueForKey:@"id"],
-                                              [itemInfo valueForKey:@"like_status"],
-                                              [NSNumber numberWithInt:[(NSNumber *)[itemInfo valueForKey:@"user_playback_count"] intValue] + 1],
-                                              nil]
-                                     forKeys:[NSArray arrayWithObjects:
-                                              @"id",
-                                              @"like_status",
-                                              @"user_playback_count",
-                                              nil]]];
-    }
-    
-    [self._tableView reloadData];
 }
 
 
@@ -427,30 +405,71 @@
 #pragma mark UI actions
 
 - (IBAction)playTrack:(id)sender {
-	// The hud will dispable all input on the view
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-	
-    // Add HUD to screen
-    [self.navigationController.view addSubview:HUD];
-	
-    // Register for HUD callbacks so we can remove it from the window at the right time
-    HUD.delegate = self;
-    
-    HUD.opacity = 0.6;
-    HUD.animationType = MBProgressHUDAnimationZoom;
-    
-    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
-    HUD.labelText = @"Alza il volume";
-    HUD.mode = MBProgressHUDModeCustomView;
-	
-    // Show the HUD
-    [HUD show:YES];
-    
-    player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
-                                                  getTrackWithId:[[item valueForKey:@"id"] intValue]]
-                                           error:nil];
-    player.delegate = self;
-    [player play];
+    if (!player.playing) {
+        
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
+        NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
+        if ([filtered count] == 0) {
+            [[QuickFunctions sharedQuickFunctions].app.localUserInfo addObject:
+             [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                  [item valueForKey:@"id"],
+                                                  [NSNumber numberWithInt:0],
+                                                  [NSNumber numberWithInt:1],
+                                                  nil]
+                                         forKeys:[NSArray arrayWithObjects:
+                                                  @"id",
+                                                  @"like_status",
+                                                  @"user_playback_count",
+                                                  nil]]];
+        }
+        else {
+            NSDictionary *itemInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo firstObjectCommonWithArray:filtered];
+            [[QuickFunctions sharedQuickFunctions].app.localUserInfo replaceObjectAtIndex:[[QuickFunctions sharedQuickFunctions].app.localUserInfo indexOfObject:itemInfo]
+                                                                               withObject:
+             [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                  [itemInfo valueForKey:@"id"],
+                                                  [itemInfo valueForKey:@"like_status"],
+                                                  [NSNumber numberWithInt:[(NSNumber *)[itemInfo valueForKey:@"user_playback_count"] intValue] + 1],
+                                                  nil]
+                                         forKeys:[NSArray arrayWithObjects:
+                                                  @"id",
+                                                  @"like_status",
+                                                  @"user_playback_count",
+                                                  nil]]];
+        }
+        
+        [self._tableView reloadData];
+
+        if ([QuickFunctions sharedQuickFunctions].app.firstPlay) {
+            // The hud will dispable all input on the view
+            HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+            
+            // Add HUD to screen
+            [self.navigationController.view addSubview:HUD];
+            
+            // Register for HUD callbacks so we can remove it from the window at the right time
+            HUD.delegate = self;
+            
+            HUD.minShowTime = 3.0;
+            HUD.opacity = 0.6;
+            HUD.animationType = MBProgressHUDAnimationZoom;
+            
+            HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
+            HUD.labelText = @"Alza il volume";
+            HUD.detailsLabelText = @"Se non senti la voce...";
+            HUD.mode = MBProgressHUDModeCustomView;
+            
+            // Show the HUD
+            [HUD show:YES];
+        }
+        
+        player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
+                                                      getTrackWithId:[[item valueForKey:@"id"] intValue]]
+                                               error:nil];
+        player.volume = 0.1;
+        player.delegate = self;
+        [player play];
+    }
 }
 
 - (IBAction)share:(id)sender {
@@ -479,8 +498,6 @@
     HUD.opacity = 0.6;
     HUD.animationType = MBProgressHUDAnimationZoom;
 
-    HUD.labelText = @"Attendere";
-	
     // Show the HUD
     [HUD show:YES];
 

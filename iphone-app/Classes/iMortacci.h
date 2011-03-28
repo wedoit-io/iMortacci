@@ -12,7 +12,7 @@
 #define kAppServerUrl @"http://notificatore.apexnet.it/Notificatore.aspx"
 #define kAppKey @"IMORTACCI"
 
-#define kIMORAPIURL @"http://donmez.apex-net.it/imortacci/api/v1"
+#define kIMORAPIURL @"http://test.apex-net.it/imortacci/api/v1"
 
 #define kPingTimeout 10
 #define kReachabilityHostName @"google.com"

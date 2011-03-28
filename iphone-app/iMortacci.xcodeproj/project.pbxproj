@@ -307,6 +307,8 @@
 		50F26725133B544700E11C96 /* Error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50F2671F133B544600E11C96 /* Error@2x.png */; };
 		50F26726133B544700E11C96 /* Favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = 50F26720133B544600E11C96 /* Favorite.png */; };
 		50F26727133B544700E11C96 /* Favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50F26721133B544700E11C96 /* Favorite@2x.png */; };
+		9A0B3542133FC93B008ACB88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9A0B353F133FC93B008ACB88 /* Localizable.strings */; };
+		9A0B354A133FCF05008ACB88 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9A0B3548133FCF05008ACB88 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -741,6 +743,8 @@
 		50F26720133B544600E11C96 /* Favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite.png; sourceTree = "<group>"; };
 		50F26721133B544700E11C96 /* Favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Favorite@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iMortacci-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iMortacci-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		9A0B3540133FC93B008ACB88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
+		9A0B3549133FCF05008ACB88 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1512,6 +1516,8 @@
 		50EF14611326892A00C965AC /* Localization */ = {
 			isa = PBXGroup;
 			children = (
+				9A0B353E133FC93B008ACB88 /* en.lproj */,
+				9A0B3547133FCF05008ACB88 /* it.lproj */,
 			);
 			name = Localization;
 			sourceTree = "<group>";
@@ -1746,6 +1752,22 @@
 			name = "Icon file";
 			sourceTree = "<group>";
 		};
+		9A0B353E133FC93B008ACB88 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				9A0B353F133FC93B008ACB88 /* Localizable.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		9A0B3547133FCF05008ACB88 /* it.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				9A0B3548133FCF05008ACB88 /* Localizable.strings */,
+			);
+			path = it.lproj;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1780,6 +1802,9 @@
 				Japanese,
 				French,
 				German,
+				de,
+				en,
+				it,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* iMortacci */;
 			projectDirPath = "";
@@ -1962,6 +1987,8 @@
 				50F26727133B544700E11C96 /* Favorite@2x.png in Resources */,
 				50467E5C133D003E006F4CA7 /* DeleteRow.png in Resources */,
 				50467E5D133D003E006F4CA7 /* DeleteRow@2x.png in Resources */,
+				9A0B3542133FC93B008ACB88 /* Localizable.strings in Resources */,
+				9A0B354A133FCF05008ACB88 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2092,6 +2119,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9A0B353F133FC93B008ACB88 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9A0B3540133FC93B008ACB88 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		9A0B3548133FCF05008ACB88 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9A0B3549133FCF05008ACB88 /* it */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {

@@ -27,6 +27,7 @@
 @synthesize newItemsCount;
 @synthesize localUserInfo;
 @synthesize favorites;
+@synthesize firstPlay;
 @synthesize internetReachable;
 @synthesize hostReachable;
 
@@ -38,14 +39,16 @@
     
     // Override point for customization after application launch.
     
-    // Register with the Apple Push Notification service ("push service")
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
-
+    firstPlay = YES;
+    
     // Let's sleep a little before doing anything else: this will assure that
     // the user will see iMortacco launch image for at least given amount of
     // seconds below
     sleep(3);
+    
+    // Register with the Apple Push Notification service ("push service")
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
     
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
@@ -110,6 +113,8 @@
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
+    
+    firstPlay = YES;
     
     [self checkNetworkStatus:nil];
 }
