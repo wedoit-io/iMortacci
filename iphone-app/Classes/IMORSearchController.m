@@ -193,6 +193,11 @@
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
+        UIView *bgColorView = [[UIView alloc] init];
+        [bgColorView setBackgroundColor:kIMORColorGreen];
+        [cell setSelectedBackgroundView:bgColorView];
+        [bgColorView release];
+        
         return cell;
     }
     else {
@@ -258,6 +263,11 @@
             cell.badgeString = @"nuovo";
             cell.badgeColor = kIMORColorGreen;
         }
+        
+        UIView *bgColorView = [[UIView alloc] init];
+        [bgColorView setBackgroundColor:kIMORColorGreen];
+        [cell setSelectedBackgroundView:bgColorView];
+        [bgColorView release];
         
         return cell;
     }

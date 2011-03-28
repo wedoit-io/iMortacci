@@ -45,10 +45,11 @@
 + (SHKActionSheet *)actionSheetForType:(SHKShareType)type
 {
 	SHKActionSheet *as = [[SHKActionSheet alloc] initWithTitle:SHKLocalizedString(@"Share")
-													  delegate:self
+													  delegate:nil
 											 cancelButtonTitle:nil
 										destructiveButtonTitle:nil
 											 otherButtonTitles:nil];
+	as.delegate = as;
 	as.item = [[[SHKItem alloc] init] autorelease];
 	as.item.shareType = type;
 	
@@ -66,9 +67,9 @@
 			[as.sharers addObject:sharerId];
 		}
 	}
-
-//	// Add More button
-//	[as addButtonWithTitle:SHKLocalizedString(@"More...")];
+	
+	// Add More button
+	[as addButtonWithTitle:SHKLocalizedString(@"More...")];
 	
 	// Add Cancel button
 	[as addButtonWithTitle:SHKLocalizedString(@"Cancel")];
@@ -92,14 +93,14 @@
 		[NSClassFromString([sharers objectAtIndex:buttonIndex]) performSelector:@selector(shareItem:) withObject:item];
 	}
 	
-//	// More
-//	else if (buttonIndex == sharers.count)
-//	{
-//		SHKShareMenu *shareMenu = [[SHKCustomShareMenu alloc] initWithStyle:UITableViewStyleGrouped];
-//		shareMenu.item = item;
-//		[[SHK currentHelper] showViewController:shareMenu];
-//		[shareMenu release];
-//	}
+	// More
+	else if (buttonIndex == sharers.count)
+	{
+		SHKShareMenu *shareMenu = [[SHKCustomShareMenu alloc] initWithStyle:UITableViewStyleGrouped];
+		shareMenu.item = item;
+		[[SHK currentHelper] showViewController:shareMenu];
+		[shareMenu release];
+	}
 	
 	[super dismissWithClickedButtonIndex:buttonIndex animated:animated];
 }

@@ -155,7 +155,7 @@
     }
     
     cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", playbackCount];
-    cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", likeCount];
+    cell.likesTextLabel.text = [NSString stringWithFormat:@"%d", likeCount];
     
     NSPredicate *predLikeStatus = [NSPredicate predicateWithFormat:@"id = %@ AND like_status > 0", [item valueForKey:@"id"]];
     NSArray *filteredLikeStatus = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLikeStatus];
@@ -474,8 +474,13 @@
 
 - (IBAction)share:(id)sender {
     // Create the item to share (in this example, a url)
-	NSURL *url = [NSURL URLWithString:[item valueForKey:@"site_url"]];
+//	NSURL *url = [NSURL URLWithString:[item valueForKey:@"site_url"]];
+//	SHKItem *shareItem = [SHKItem URL:url title:[item valueForKey:@"title"]];
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", kPlayerURL, [item valueForKey:@"id"]]];
 	SHKItem *shareItem = [SHKItem URL:url title:[item valueForKey:@"title"]];
+    shareItem.text = [NSString stringWithFormat:@"%@", [item valueForKey:@"description"]];
+    [shareItem setCustomValue:@"iMortacci – un modo divertente e \"mortaccione\" per condividere quello che provi in quel momento con i tuoi amici tramite il tuo dialetto preferito. È gratuito!" forKey:@"description"];
+    [shareItem setCustomValue:@"http://i1.sndcdn.com/artworks-000005393668-9wdjqg-large.jpg" forKey:@"image"];
     
 	// Get the ShareKit action sheet
 	SHKActionSheet *actionSheet = [SHKActionSheet actionSheetForItem:shareItem];

@@ -16,6 +16,7 @@
 
     UITableView *_tableView;
     UIView *emptyView;
+    UILabel *noFavoritesLabel;
 
     NSMutableArray *items;
 	NSMutableArray	*filteredItems; // The content filtered as a result of a search.
@@ -31,6 +32,7 @@
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, retain) IBOutlet UIView *emptyView;
+@property (nonatomic, retain) IBOutlet UILabel *noFavoritesLabel;
 @property (nonatomic, retain) NSMutableArray *items;
 @property (nonatomic, retain) NSMutableArray *filteredItems;
 @property (nonatomic, copy) NSString *savedSearchTerm;

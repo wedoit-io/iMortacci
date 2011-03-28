@@ -8,26 +8,42 @@
 
 #import "UIColor-Expanded.h"
 
+// App settings
+#define kAppName    @"iMortacci"
+#define kAppUrl     @"http://imortacci.com"
+#define kPlayerURL  @"http://imortacci.com/it/player"
 
-#define kAppServerUrl @"http://notificatore.apexnet.it/Notificatore.aspx"
-#define kAppKey @"IMORTACCI"
+// iMortacci API and reachability
+#define kAPIURL             @"http://test.apex-net.it/imortacci/api/v1"
+#define kReachabilityHostName   @"google.com"
 
-#define kIMORAPIURL @"http://test.apex-net.it/imortacci/api/v1"
+// Push notifications api
+#define kAppServerUrl   @"http://notificatore.apexnet.it/Notificatore.aspx"
+#define kAppKey         @"IMORTACCI"
 
-#define kPingTimeout 10
-#define kReachabilityHostName @"google.com"
-#define kSoundCloudClientId @"7Eo3B0odlpK5FvOVUKDnQ"
-#define kAdWhirlApplicationKey @"9036ba7fc12341f0bdadc4c569707817"
+// Sharing settings
+#define kFacebookAppID          @"138911126174224"
+#define kTwitterConsumerKey		@"Nq00YeOiOIXeJLwuBiTXrg"
+#define kTwitterSecret			@"pbdrFjFyTyfPkQoTWPVsFfcW2IKu5u6HfQSXmPEA"
+#define kTwitterCallbackUrl		@"http://callback.imortacci.com"
+#define kBitLyLogin				@"imortacci"
+#define kBitLyKey				@"R_0653d7e5f6f3a7be96a6014b6e958685"
 
-#define kCurrentVersionFileName @"version.json"
-#define kAlbumsFileName @"albums.json"
-#define kUserInfoFileName @"userinfo.json"
-#define kCountersFileName @"counters.json"
-#define kFavoritesFileName @"favorites.json"
+#define kSoundCloudClientId     @"7Eo3B0odlpK5FvOVUKDnQ"
+#define kAdWhirlApplicationKey  @"9036ba7fc12341f0bdadc4c569707817"
 
-#define kTrackFileExtension @"mp3"
-#define kAlbumArtworkFileExtension @"png"
+// App filenames for convenience
+#define kCurrentVersionFileName     @"version.json"
+#define kAlbumsFileName             @"albums.json"
+#define kUserInfoFileName           @"userinfo.json"
+#define kCountersFileName           @"counters.json"
+#define kFavoritesFileName          @"favorites.json"
 
+// Useful contants
+#define kTrackFileExtension             @"mp3"
+#define kAlbumArtworkFileExtension      @"png"
+
+// UI color definitions
 #define kIMORColorWhite     [UIColor colorWithHexString:@"ecebdc"]
 #define kIMORColorYellow    [UIColor colorWithHexString:@"fbbd10"]
 #define kIMORColorOrange    [UIColor colorWithHexString:@"e35b1b"]
@@ -35,5 +51,6 @@
 #define kIMORColorBrown     [UIColor colorWithHexString:@"333333"]
 #define kIMORColorGray      [UIColor colorWithHexString:@"555555"]
 
-#define kSearchTableRowHeight 60.0
-#define kSingleRowTableRowHeight 317.0
+// Useful values
+#define kSearchTableRowHeight           60.0
+#define kSingleRowTableRowHeight        317.0

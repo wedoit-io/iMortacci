@@ -130,6 +130,9 @@
     cell.updatesAvailableImage.hidden = !updatesAvailable;
     cell.updateButton.hidden = !updatesAvailable;
     
+    
+    self._tableView.backgroundColor = updatesAvailable ? kIMORColorWhite : kIMORColorGray;
+    
     // This is a fake table actually, so we don't want to show selected cells
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     

@@ -14,6 +14,7 @@
 #import "SHK.h"
 #import "Reachability.h"
 #import "GTMHTTPFetcher.h"
+#import "SHKFacebook.h"
 
 
 @implementation iMortacciAppDelegate
@@ -85,7 +86,7 @@
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
     [self.window makeKeyAndVisible];
-
+    
     return YES;
 }
 
@@ -136,6 +137,20 @@
     [self applicationDidEnterBackground:nil];
 }
 
+
+#pragma mark -
+#pragma mark Url handling
+
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    
+    SHKFacebook *fbSharer = [[[SHKFacebook alloc] init] autorelease];
+    return [[fbSharer facebook] handleOpenURL:url]; 
+}
+
+
+#pragma mark -
+#pragma mark Push notifications
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
@@ -243,7 +258,7 @@
 
 - (void)checkLatest {
     // checks latest version and update badge accordingly
-    NSString *urlString = [NSString stringWithFormat:@"%@/latest", kIMORAPIURL];
+    NSString *urlString = [NSString stringWithFormat:@"%@/latest", kAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
@@ -253,7 +268,7 @@
 
 - (void)sendAndReceiveCounters {
     // send&receive 'like_status' and 'user_playback_count' information
-    NSString *urlString = [NSString stringWithFormat:@"%@/counters", kIMORAPIURL];
+    NSString *urlString = [NSString stringWithFormat:@"%@/counters", kAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"PUT"];

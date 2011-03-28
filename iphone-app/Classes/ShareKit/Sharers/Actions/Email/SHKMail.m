@@ -25,17 +25,19 @@
 //
 //
 
+#import "SHKConfiguration.h"
 #import "SHKMail.h"
 
 
 @implementation MFMailComposeViewController (SHK)
 
 - (void)SHKviewDidDisappear:(BOOL)animated
-{
+{	
 	[super viewDidDisappear:animated];
 	
-	// Remove the SHK view wrapper from the window
-	[[SHK currentHelper] viewWasDismissed];
+	// Remove the SHK view wrapper from the window (but only if the view doesn't have another modal over it)
+	if (self.modalViewController == nil)
+		[[SHK currentHelper] viewWasDismissed];
 }
 
 @end
@@ -49,7 +51,7 @@
 
 + (NSString *)sharerTitle
 {
-	return @"Email";
+	return SHKLocalizedString(@"Email");
 }
 
 + (BOOL)canShareText
@@ -114,6 +116,12 @@
 - (BOOL)sendMail
 {	
 	MFMailComposeViewController *mailController = [[[MFMailComposeViewController alloc] init] autorelease];
+	if (!mailController) {
+		// e.g. no mail account registered (will show alert)
+		[[SHK currentHelper] hideCurrentViewControllerAnimated:YES];
+		return YES;
+	}
+	
 	mailController.mailComposeDelegate = self;
 	
 	NSString *body = [item customValueForKey:@"body"];
@@ -143,27 +151,28 @@
 			
 			else
 				body = attachedStr;
-			
-			[mailController addAttachmentData:item.data mimeType:item.mimeType fileName:item.filename];
 		}
-		
-		if (item.image)
-			[mailController addAttachmentData:UIImageJPEGRepresentation(item.image, 1) mimeType:@"image/jpeg" fileName:@"Image.jpg"];		
 		
 		// fallback
 		if (body == nil)
 			body = @"";
 		
 		// sig
-		if (SHKSharedWithSignature)
+		if ([SHKCONFIG(sharedWithSignature) boolValue])
 		{
 			body = [body stringByAppendingString:@"<br/><br/>"];
-			body = [body stringByAppendingString:SHKLocalizedString(@"Sent from %@", SHKMyAppName)];
+			body = [body stringByAppendingString:SHKLocalizedString(@"Sent from %@", SHKCONFIG(appName))];
 		}
 		
 		// save changes to body
 		[item setCustomValue:body forKey:@"body"];
 	}
+	
+	if (item.data)		
+		[mailController addAttachmentData:item.data mimeType:item.mimeType fileName:item.filename];
+	
+	if (item.image)
+		[mailController addAttachmentData:UIImageJPEGRepresentation(item.image, 1) mimeType:@"image/jpeg" fileName:@"Image.jpg"];
 	
 	[mailController setSubject:item.title];
 	[mailController setMessageBody:body isHTML:YES];

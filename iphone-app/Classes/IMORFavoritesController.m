@@ -16,6 +16,7 @@
 
 @synthesize _tableView;
 @synthesize emptyView;
+@synthesize noFavoritesLabel;
 @synthesize items;
 @synthesize filteredItems;
 @synthesize savedSearchTerm;
@@ -39,6 +40,10 @@
     self._tableView.rowHeight = kSearchTableRowHeight;
     self._tableView.backgroundColor = kIMORColorWhite;
     self._tableView.separatorColor = [UIColor whiteColor];
+    
+    self.view.backgroundColor = kIMORColorWhite;
+    self.emptyView.backgroundColor = kIMORColorWhite;
+    self.noFavoritesLabel.backgroundColor = kIMORColorWhite;
     
     self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
     
@@ -286,6 +291,7 @@
 }
 
 - (void)viewDidUnload {
+    [self setNoFavoritesLabel:nil];
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 	self.filteredItems = nil;
@@ -297,6 +303,7 @@
     [items release];
     [filteredItems release];
     [emptyView release];
+    [noFavoritesLabel release];
     [super dealloc];
 }
 
