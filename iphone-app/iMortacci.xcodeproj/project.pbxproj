@@ -33,14 +33,17 @@
 		505D5A58133A362500836A38 /* ShareButtonDefaultState@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A54133A362500836A38 /* ShareButtonDefaultState@2x.png */; };
 		505D5A5D133A3EAE00836A38 /* TopRated.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A5B133A3EAE00836A38 /* TopRated.png */; };
 		505D5A5E133A3EAE00836A38 /* TopRated@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A5C133A3EAE00836A38 /* TopRated@2x.png */; };
+		507BC4EE1341D25100E6436E /* IMORNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 507BC4ED1341D25100E6436E /* IMORNavigationBar.m */; };
+		507BC4F21341D8E700E6436E /* NavBarBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 507BC4F01341D8E700E6436E /* NavBarBackground.png */; };
+		507BC4F31341D8E700E6436E /* NavBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 507BC4F11341D8E700E6436E /* NavBarBackground@2x.png */; };
 		5094660D1327C3D80042D81F /* Radar.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466091327C3D80042D81F /* Radar.png */; };
 		5094660E1327C3D80042D81F /* Radar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094660A1327C3D80042D81F /* Radar@2x.png */; };
 		5094660F1327C3D80042D81F /* Inbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094660B1327C3D80042D81F /* Inbox.png */; };
 		509466101327C3D80042D81F /* Inbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5094660C1327C3D80042D81F /* Inbox@2x.png */; };
 		509466131327C5350042D81F /* Credits.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466111327C5350042D81F /* Credits.png */; };
 		509466141327C5350042D81F /* Credits@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466121327C5350042D81F /* Credits@2x.png */; };
-		509466261327C6570042D81F /* NavBarBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466241327C6570042D81F /* NavBarBackground.png */; };
-		509466271327C6570042D81F /* NavBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466251327C6570042D81F /* NavBarBackground@2x.png */; };
+		509466261327C6570042D81F /* IMORNavBarBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466241327C6570042D81F /* IMORNavBarBackground.png */; };
+		509466271327C6570042D81F /* IMORNavBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509466251327C6570042D81F /* IMORNavBarBackground@2x.png */; };
 		509466AA1327C90E0042D81F /* UINavigationBar+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 509466A91327C90E0042D81F /* UINavigationBar+Custom.m */; };
 		509467401327D8450042D81F /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 5094673F1327D8450042D81F /* UIColor-Expanded.m */; };
 		509469B61328DDDC0042D81F /* AdWhirlAdapterAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 509469721328DDDB0042D81F /* AdWhirlAdapterAdMob.m */; };
@@ -358,14 +361,18 @@
 		505D5A54133A362500836A38 /* ShareButtonDefaultState@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ShareButtonDefaultState@2x.png"; sourceTree = "<group>"; };
 		505D5A5B133A3EAE00836A38 /* TopRated.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TopRated.png; sourceTree = "<group>"; };
 		505D5A5C133A3EAE00836A38 /* TopRated@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TopRated@2x.png"; sourceTree = "<group>"; };
+		507BC4EC1341D25100E6436E /* IMORNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMORNavigationBar.h; sourceTree = "<group>"; };
+		507BC4ED1341D25100E6436E /* IMORNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMORNavigationBar.m; sourceTree = "<group>"; };
+		507BC4F01341D8E700E6436E /* NavBarBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavBarBackground.png; sourceTree = "<group>"; };
+		507BC4F11341D8E700E6436E /* NavBarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NavBarBackground@2x.png"; sourceTree = "<group>"; };
 		509466091327C3D80042D81F /* Radar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Radar.png; sourceTree = "<group>"; };
 		5094660A1327C3D80042D81F /* Radar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Radar@2x.png"; sourceTree = "<group>"; };
 		5094660B1327C3D80042D81F /* Inbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Inbox.png; sourceTree = "<group>"; };
 		5094660C1327C3D80042D81F /* Inbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Inbox@2x.png"; sourceTree = "<group>"; };
 		509466111327C5350042D81F /* Credits.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Credits.png; sourceTree = "<group>"; };
 		509466121327C5350042D81F /* Credits@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Credits@2x.png"; sourceTree = "<group>"; };
-		509466241327C6570042D81F /* NavBarBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavBarBackground.png; sourceTree = "<group>"; };
-		509466251327C6570042D81F /* NavBarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NavBarBackground@2x.png"; sourceTree = "<group>"; };
+		509466241327C6570042D81F /* IMORNavBarBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IMORNavBarBackground.png; sourceTree = "<group>"; };
+		509466251327C6570042D81F /* IMORNavBarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IMORNavBarBackground@2x.png"; sourceTree = "<group>"; };
 		509466A81327C90E0042D81F /* UINavigationBar+Custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Custom.h"; sourceTree = "<group>"; };
 		509466A91327C90E0042D81F /* UINavigationBar+Custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Custom.m"; sourceTree = "<group>"; };
 		5094673E1327D8450042D81F /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
@@ -891,6 +898,7 @@
 				50215BBF1340B3A3003F8119 /* default.wav */,
 				50EF16BB1327B67700C965AC /* Icon file */,
 				50EF16A513279DAF00C965AC /* Launch image */,
+				507BC4EF1341D80D00E6436E /* NavigationBar background */,
 				509466071327C2FD0042D81F /* Menu icons */,
 				5094661E1327C6230042D81F /* Other */,
 				5094780C132A24060042D81F /* Playback icons */,
@@ -949,6 +957,17 @@
 			name = "Newest icons";
 			sourceTree = "<group>";
 		};
+		507BC4EF1341D80D00E6436E /* NavigationBar background */ = {
+			isa = PBXGroup;
+			children = (
+				507BC4F01341D8E700E6436E /* NavBarBackground.png */,
+				507BC4F11341D8E700E6436E /* NavBarBackground@2x.png */,
+				509466241327C6570042D81F /* IMORNavBarBackground.png */,
+				509466251327C6570042D81F /* IMORNavBarBackground@2x.png */,
+			);
+			name = "NavigationBar background";
+			sourceTree = "<group>";
+		};
 		509466071327C2FD0042D81F /* Menu icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -967,8 +986,6 @@
 		5094661E1327C6230042D81F /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				509466241327C6570042D81F /* NavBarBackground.png */,
-				509466251327C6570042D81F /* NavBarBackground@2x.png */,
 				50467E5A133D003E006F4CA7 /* DeleteRow.png */,
 				50467E5B133D003E006F4CA7 /* DeleteRow@2x.png */,
 			);
@@ -980,6 +997,8 @@
 			children = (
 				509466A81327C90E0042D81F /* UINavigationBar+Custom.h */,
 				509466A91327C90E0042D81F /* UINavigationBar+Custom.m */,
+				507BC4EC1341D25100E6436E /* IMORNavigationBar.h */,
+				507BC4ED1341D25100E6436E /* IMORNavigationBar.m */,
 			);
 			name = "Custom Categories";
 			sourceTree = "<group>";
@@ -1971,8 +1990,8 @@
 				509466101327C3D80042D81F /* Inbox@2x.png in Resources */,
 				509466131327C5350042D81F /* Credits.png in Resources */,
 				509466141327C5350042D81F /* Credits@2x.png in Resources */,
-				509466261327C6570042D81F /* NavBarBackground.png in Resources */,
-				509466271327C6570042D81F /* NavBarBackground@2x.png in Resources */,
+				509466261327C6570042D81F /* IMORNavBarBackground.png in Resources */,
+				509466271327C6570042D81F /* IMORNavBarBackground@2x.png in Resources */,
 				509469D11328DDDC0042D81F /* AdWhirlWebBrowser.xib in Resources */,
 				5094779A132A1ABA0042D81F /* IMORPlayblackController.xib in Resources */,
 				50947814132A24400042D81F /* PlayButtonHighlightedState.png in Resources */,
@@ -2119,6 +2138,8 @@
 				9A0B37AA133FE82E008ACB88 /* SHKEvernote.md in Resources */,
 				9A0B37AC133FE82E008ACB88 /* FBDialog.bundle in Resources */,
 				50215BC01340B3A3003F8119 /* default.wav in Resources */,
+				507BC4F21341D8E700E6436E /* NavBarBackground.png in Resources */,
+				507BC4F31341D8E700E6436E /* NavBarBackground@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2259,6 +2280,7 @@
 				9A0B37D7133FEA1C008ACB88 /* SBJsonBase.m in Sources */,
 				9A0B37D8133FEA1C008ACB88 /* SBJsonParser.m in Sources */,
 				9A0B37D9133FEA1C008ACB88 /* SBJsonWriter.m in Sources */,
+				507BC4EE1341D25100E6436E /* IMORNavigationBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

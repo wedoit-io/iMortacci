@@ -42,7 +42,4 @@
 
 - (void)populateItems;
 
-- (IBAction)edit:(id)sender;
-- (IBAction)cancel:(id)sender;
-
 @end

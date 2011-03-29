@@ -50,6 +50,7 @@
 #define kIMORColorGreen     [UIColor colorWithHexString:@"3ea5a2"]
 #define kIMORColorBrown     [UIColor colorWithHexString:@"333333"]
 #define kIMORColorGray      [UIColor colorWithHexString:@"555555"]
+#define kIMORColorShadow    [UIColor colorWithHexString:@"256B69"]
 
 // Useful values
 #define kSearchTableRowHeight           60.0

@@ -7,6 +7,7 @@
 //
 
 #import "IMORFavoritesCellController.h"
+#import "iMortacci.h"
 
 
 @implementation IMORFavoritesCellController
@@ -17,34 +18,9 @@
 @synthesize playbackCountTextLabel;
 @synthesize likesTextLabel;
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-	[self setNeedsLayout];
-}
-
-- (void)layoutSubviews
-{
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-    
-	[super layoutSubviews];
-    
-	if (((UITableView *)self.superview).isEditing)
-	{
-		CGRect contentFrame = self.contentView.frame;
-		contentFrame.origin.x = 39.0;
-		self.contentView.frame = contentFrame;
-        self.accessoryType = UITableViewCellAccessoryNone;
-	}
-	else
-	{
-		CGRect contentFrame = self.contentView.frame;
-		contentFrame.origin.x = 0;
-		self.contentView.frame = contentFrame;
-        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	}
-    
-	[UIView commitAnimations];
-}
+//- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+//	[super setEditing:editing animated:animated];
+//}
 
 - (void)dealloc {
     [imageView release];
@@ -55,12 +31,38 @@
     [super dealloc];
 }
 
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+	[super setHighlighted:highlighted animated:animated];
 
-#pragma mark -
-#pragma mark UI actions
+    self.titleTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.descriptionTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.playbackCountTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.likesTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    
+    self.titleTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.descriptionTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.playbackCountTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.likesTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+}
 
-- (IBAction)deleteFavorite:(id)sender {
-    NSLog(@"Delete");
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+	[super setSelected:selected animated:animated];
+    
+    UIView *bgColorView = [[UIView alloc] init];
+    [bgColorView setBackgroundColor:kIMORColorGreen];
+    self.selectedBackgroundView = bgColorView;
+    [bgColorView release];
+    
+    self.titleTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.descriptionTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.playbackCountTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    self.likesTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
+    
+    self.titleTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.descriptionTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.playbackCountTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
+    self.likesTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
 }
 
 @end

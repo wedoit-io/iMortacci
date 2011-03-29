@@ -10,6 +10,7 @@
 
 
 @interface IMORPlayblackCellController : UITableViewCell {
+    UIView *headerView;
     UIImageView *imageView;
     UILabel *titleTextLabel;
     UILabel *descriptionTextLabel;
@@ -18,6 +19,7 @@
     UIButton *likesButton;
 }
 
+@property (nonatomic, retain) IBOutlet UIView *headerView;
 @property (nonatomic, retain) IBOutlet UIImageView *imageView;
 @property (nonatomic, retain) IBOutlet UILabel *titleTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionTextLabel;

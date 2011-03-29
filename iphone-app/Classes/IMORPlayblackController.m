@@ -11,7 +11,7 @@
 #import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "SHK.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 @implementation IMORPlayblackController
 
@@ -37,8 +37,6 @@
     self._tableView.backgroundColor = kIMORColorGreen;
     self._tableView.separatorColor = [UIColor clearColor];
     
-//    [self playTrack:nil];
-    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -48,11 +46,14 @@
     [super viewWillAppear:animated];
 }
 */
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    // Become first responder to handle shake motion
+    // Ref.: https://devforums.apple.com/message/49571#49571
+    [self becomeFirstResponder];
 }
-*/
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -120,6 +121,12 @@
     }
     
     // Configure the cell...
+    
+    /* It's important to remember to pass CG structs like floats and CGColors */
+    [[cell.headerView layer] setShadowOffset:CGSizeMake(0, 5)];
+    [[cell.headerView layer] setShadowColor:[kIMORColorShadow CGColor]];
+    [[cell.headerView layer] setShadowRadius:3.0];
+    [[cell.headerView layer] setShadowOpacity:0.8];
     
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
@@ -248,6 +255,36 @@
     [tempCell release];
     [super dealloc];
 }
+
+
+#pragma mark -
+#pragma mark UIResponder delegate
+
+//-(BOOL)canBecomeFirstResponder {
+//    return YES;
+//}
+
+
+#pragma mark -
+#pragma mark Responding to Motion Events
+
+/*
+ Custom views should implement all motion-event handlers, even if it's a null implementation, and not call super.
+ */
+
+//- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+//    
+//}
+//
+//- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+//	if (motion == UIEventSubtypeMotionShake) {
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.google.com"]];
+//	}
+//}
+//
+//- (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+//    
+//}
 
 
 #pragma mark -

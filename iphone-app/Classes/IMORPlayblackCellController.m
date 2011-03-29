@@ -10,6 +10,7 @@
 
 @implementation IMORPlayblackCellController
 
+@synthesize headerView;
 @synthesize imageView;
 @synthesize titleTextLabel;
 @synthesize descriptionTextLabel;
@@ -18,6 +19,7 @@
 @synthesize likesButton;
 
 - (void)dealloc {
+    [headerView release];
     [imageView release];
     [titleTextLabel release];
     [descriptionTextLabel release];

@@ -59,22 +59,16 @@
         
         self.savedSearchTerm = nil;
     }
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    self._tableView.allowsSelectionDuringEditing = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    [self setEditing:NO animated:NO];
+    
     [self populateItems];
-
-    BOOL hasItems = [items count] > 0;
-
-    self.emptyView.hidden = hasItems;
-    self._tableView.hidden = !hasItems;
 
     [self._tableView deselectRowAtIndexPath:[self._tableView indexPathForSelectedRow] animated:YES];
     
@@ -84,15 +78,8 @@
     self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
     self.searchDisplayController.searchResultsTableView.backgroundColor = kIMORColorWhite;
     self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor whiteColor];
-    
-    // Begin in editing mode disabled, hence 'cancel'(-mode)
-    if (hasItems) {
-        [self._tableView reloadData];
-        [self cancel:nil];
-    }
-    else {
-        self.navigationItem.leftBarButtonItem = nil;
-    }
+
+    [self._tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -202,6 +189,15 @@
 }
 
 
+// Go in and out into editing mode when edit or done button is tapped accordingly
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    
+    if ([items count] > 0) {
+        [super setEditing:editing animated:YES];
+        [self._tableView setEditing:editing animated:animated];
+    }
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -210,19 +206,19 @@
 }
 */
 
-/*
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [[items objectAtIndex:indexPath.row] valueForKey:@"id"]];
+        [[QuickFunctions sharedQuickFunctions].app.favorites removeObjectsInArray:
+         [[QuickFunctions sharedQuickFunctions].app.favorites filteredArrayUsingPredicate:pred]];
+        [self populateItems];
+
+        [self._tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
 }
-*/
 
 
 /*
@@ -247,36 +243,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
 
-    if ([self._tableView isEditing]) {
-        
-        NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [[items objectAtIndex:indexPath.row] valueForKey:@"id"]];
-        [[QuickFunctions sharedQuickFunctions].app.favorites removeObjectsInArray:
-         [[QuickFunctions sharedQuickFunctions].app.favorites filteredArrayUsingPredicate:pred]];
-        
-        [self populateItems];
-        [self._tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        if ([[QuickFunctions sharedQuickFunctions].app.favorites count] > 0) {
-            [self._tableView reloadData];
-        }
-        else {
-            [self viewWillAppear:YES];
-        }
+    IMORPlayblackController *detailViewController = [[IMORPlayblackController alloc]
+                                                     initWithNibName:@"IMORPlayblackController" bundle:nil];
+    
+    if (tableView == self._tableView) {
+        detailViewController.item = [items objectAtIndex:indexPath.row];
     }
     else {
-        IMORPlayblackController *detailViewController = [[IMORPlayblackController alloc]
-                                                         initWithNibName:@"IMORPlayblackController" bundle:nil];
-        
-        if (tableView == self._tableView) {
-            detailViewController.item = [items objectAtIndex:indexPath.row];
-        }
-        else {
-            detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
-        }
-        
-        // Pass the selected object to the new view controller.
-        [self.navigationController pushViewController:detailViewController animated:YES];
-        [detailViewController release];
+        detailViewController.item = [filteredItems objectAtIndex:indexPath.row];
     }
+    
+    // Pass the selected object to the new view controller.
+    [self.navigationController pushViewController:detailViewController animated:YES];
+    [detailViewController release];
 }
 
 
@@ -381,34 +360,15 @@
         NSArray *filtered = [[item valueForKey:@"tracks"] filteredArrayUsingPredicate:pred];
         [items addObjectsFromArray:filtered];
     }];
-}
+    
+    BOOL hasItems = [items count] > 0;
 
-
-#pragma mark -
-#pragma mark UI actions
-
-- (IBAction)edit:(id)sender {
-	UIBarButtonItem *cancelButton = [[[UIBarButtonItem alloc] initWithTitle:@"Annulla"
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(cancel:)]
-                                     autorelease];
-
-    self.navigationItem.leftBarButtonItem = cancelButton;
-
-    [self._tableView setEditing:YES animated:YES];
-}
-
-- (IBAction)cancel:(id)sender {
-	UIBarButtonItem *editButton = [[[UIBarButtonItem alloc] initWithTitle:@"Modifica"
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:self
-                                                                   action:@selector(edit:)]
-                                   autorelease];
-
-    self.navigationItem.leftBarButtonItem = editButton;
-
-    [self._tableView setEditing:NO animated:YES];
+    self.emptyView.hidden = hasItems;
+    self._tableView.hidden = !hasItems;
+    if (!hasItems) {
+        [self setEditing:NO animated:NO];
+        self.navigationItem.leftBarButtonItem = nil;
+    }
 }
 
 @end

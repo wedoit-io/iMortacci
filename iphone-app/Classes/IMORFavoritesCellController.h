@@ -23,6 +23,4 @@
 @property (nonatomic, retain) IBOutlet UILabel *playbackCountTextLabel;
 @property (nonatomic, retain) IBOutlet UILabel *likesTextLabel;
 
-- (IBAction)deleteFavorite:(id)sender;
-
 @end
