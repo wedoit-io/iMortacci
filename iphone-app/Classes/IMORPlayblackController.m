@@ -46,7 +46,7 @@
     [super viewWillAppear:animated];
 }
 */
-
+/*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
@@ -54,6 +54,7 @@
     // Ref.: https://devforums.apple.com/message/49571#49571
     [self becomeFirstResponder];
 }
+*/
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
