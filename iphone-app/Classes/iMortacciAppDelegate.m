@@ -177,7 +177,7 @@
         alertMsg = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
         
         UIAlertView *alert;
-        alert = [[UIAlertView alloc] initWithTitle:@"iMortacci" message:alertMsg delegate:self cancelButtonTitle:@"Chiudi"  otherButtonTitles:@"Visualizza", nil];
+        alert = [[UIAlertView alloc] initWithTitle:@"iMortacci" message:alertMsg delegate:self cancelButtonTitle:@"Chiudi"  otherButtonTitles:nil];
         [alert show]; 
         [alert release];
     }

@@ -81,7 +81,7 @@
 										<int key="IBUIContentMode">7</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-										<string key="IBUIText">Titolo</string>
+										<string key="IBUIText">Title goes here</string>
 										<object class="NSFont" key="IBUIFont">
 											<string key="NSName">Helvetica-Bold</string>
 											<double key="NSSize">20</double>
@@ -113,7 +113,7 @@
 										<int key="IBUIContentMode">7</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-										<string key="IBUIText">Non è che sei brutto, però quelli belli sono diversi continuo a scrivere delle cose</string>
+										<string key="IBUIText">Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt</string>
 										<object class="NSFont" key="IBUIFont">
 											<string key="NSName">Helvetica</string>
 											<double key="NSSize">12</double>
@@ -175,7 +175,7 @@
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<object class="NSCustomResource" key="IBUIImage">
 											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">Favorite.png</string>
+											<string key="NSResourceName">LikeCount.png</string>
 										</object>
 									</object>
 								</object>
@@ -702,12 +702,14 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>addToFavorites:</string>
+							<string>iCanDoBetter:</string>
 							<string>likeIt:</string>
 							<string>playTrack:</string>
 							<string>share:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -719,6 +721,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>addToFavorites:</string>
+							<string>iCanDoBetter:</string>
 							<string>likeIt:</string>
 							<string>playTrack:</string>
 							<string>share:</string>
@@ -727,6 +730,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
 								<string key="name">addToFavorites:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">iCanDoBetter:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -748,11 +755,13 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>_tableView</string>
+							<string>rightButtonView</string>
 							<string>tempCell</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UITableView</string>
+							<string>UIView</string>
 							<string>IMORPlayblackCellController</string>
 						</object>
 					</object>
@@ -761,6 +770,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>_tableView</string>
+							<string>rightButtonView</string>
 							<string>tempCell</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -768,6 +778,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">_tableView</string>
 								<string key="candidateClassName">UITableView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">rightButtonView</string>
+								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">tempCell</string>
@@ -798,11 +812,11 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>Favorite.png</string>
 				<string>FavoriteButtonDefaultState.png</string>
 				<string>FavoriteButtonHighlightedState.png</string>
 				<string>LikeButtonDefaultState.png</string>
 				<string>LikeButtonHighlightedState.png</string>
+				<string>LikeCount.png</string>
 				<string>PlayButtonDefaultState.png</string>
 				<string>PlayButtonHighlightedState.png</string>
 				<string>ShareButtonDefaultState.png</string>
@@ -810,11 +824,11 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{32, 32}</string>
 				<string>{94, 46}</string>
 				<string>{94, 46}</string>
 				<string>{94, 46}</string>
 				<string>{94, 46}</string>
+				<string>{16, 16}</string>
 				<string>{289, 96}</string>
 				<string>{577, 192}</string>
 				<string>{94, 46}</string>

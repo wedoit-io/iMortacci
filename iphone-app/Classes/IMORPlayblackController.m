@@ -291,7 +291,7 @@
                                                   nil]]];
             
             // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
-            HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Favorite.png"]] autorelease];
+            HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Like.png"]] autorelease];
             HUD.mode = MBProgressHUDModeCustomView;
             HUD.labelText = @"Grazie";
             

@@ -45,7 +45,10 @@
     items = [NSMutableArray new];
     for (NSDictionary *counter in sortedCounters) {
         NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [counter valueForKeyPath:@"id"]];
-        [items addObject:[[allItems filteredArrayUsingPredicate:pred] objectAtIndex:0]];
+        NSArray *filtered = [allItems filteredArrayUsingPredicate:pred];
+        if ([filtered count] > 0) {
+            [items addObject:[filtered objectAtIndex:0]];
+        }
     }
 
 //    [items sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
