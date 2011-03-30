@@ -11,6 +11,11 @@
         public const string APIDownloadDirKey = "api_download_dir";
         public const string APIDownloadURLKey = "api_download_url";
         public const string APISuccessMessageKey = "api_success_message";
+
+        public const string APNSEnabledKey = "apns_enabled";
+        public const string APNSAppNameKey = "apns_app_name";
+        public const string APNSAppSecretKey = "apns_app_secret";
+        
         public const string SCAPIURLKey = "sc_api_url";
         public const string SCAppNameKey = "sc_app_name";
         public const string SCClientIdKey = "sc_client_id";

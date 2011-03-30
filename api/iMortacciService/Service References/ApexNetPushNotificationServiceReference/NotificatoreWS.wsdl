@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.progamma.com" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s0="http://www.progamma.com/encodedTypes" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.progamma.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.progamma.com/encodedTypes">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+      <s:complexType name="ArrayOfAnyType">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:attribute wsdl:arrayType="s:anyType[]" ref="soapenc:arrayType" />
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ID_DOExecuteSoapIn">
+    <wsdl:part name="DOXML" type="s:string" />
+    <wsdl:part name="MethodName" type="s:string" />
+    <wsdl:part name="ClassName" type="s:string" />
+    <wsdl:part name="Params" type="s0:ArrayOfAnyType" />
+    <wsdl:part name="RetDoc" type="s:boolean" />
+    <wsdl:part name="RetDocXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ID_DOExecuteSoapOut">
+    <wsdl:part name="ID_DOExecuteResult" type="s:anyType" />
+    <wsdl:part name="RetDocXML" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ID_ReceiveFileSoapIn">
+    <wsdl:part name="FileData" type="s:base64Binary" />
+    <wsdl:part name="Extension" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ID_ReceiveFileSoapOut">
+    <wsdl:part name="ID_ReceiveFileResult" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ID_SendFileSoapIn">
+    <wsdl:part name="FileName" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ID_SendFileSoapOut">
+    <wsdl:part name="ID_SendFileResult" type="s:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="SendNotificationSoapIn">
+    <wsdl:part name="pAuthKey" type="s:string" />
+    <wsdl:part name="pApplicationKey" type="s:string" />
+    <wsdl:part name="pMessage" type="s:string" />
+    <wsdl:part name="pUserName" type="s:string" />
+    <wsdl:part name="pSound" type="s:string" />
+    <wsdl:part name="pBadge" type="s:int" />
+  </wsdl:message>
+  <wsdl:message name="SendNotificationSoapOut">
+    <wsdl:part name="SendNotificationResult" type="s:string" />
+  </wsdl:message>
+  <wsdl:portType name="NotificatoreSoap">
+    <wsdl:operation name="ID_DOExecute" parameterOrder="DOXML MethodName ClassName Params RetDoc RetDocXML">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Executes the given method on a IDDocument object</wsdl:documentation>
+      <wsdl:input message="tns:ID_DOExecuteSoapIn" />
+      <wsdl:output message="tns:ID_DOExecuteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ID_ReceiveFile">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Receive a file from a client application</wsdl:documentation>
+      <wsdl:input message="tns:ID_ReceiveFileSoapIn" />
+      <wsdl:output message="tns:ID_ReceiveFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ID_SendFile">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Sends a file to a client application</wsdl:documentation>
+      <wsdl:input message="tns:ID_SendFileSoapIn" />
+      <wsdl:output message="tns:ID_SendFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Invia una notifica push</wsdl:documentation>
+      <wsdl:input message="tns:SendNotificationSoapIn" />
+      <wsdl:output message="tns:SendNotificationSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NotificatoreSoap" type="tns:NotificatoreSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ID_DOExecute">
+      <soap:operation soapAction="http://www.progamma.com/ID_DOExecute" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ID_ReceiveFile">
+      <soap:operation soapAction="http://www.progamma.com/ID_ReceiveFile" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ID_SendFile">
+      <soap:operation soapAction="http://www.progamma.com/ID_SendFile" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <soap:operation soapAction="http://www.progamma.com/SendNotification" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="NotificatoreSoap12" type="tns:NotificatoreSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ID_DOExecute">
+      <soap12:operation soapAction="http://www.progamma.com/ID_DOExecute" style="rpc" />
+      <wsdl:input>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ID_ReceiveFile">
+      <soap12:operation soapAction="http://www.progamma.com/ID_ReceiveFile" style="rpc" />
+      <wsdl:input>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ID_SendFile">
+      <soap12:operation soapAction="http://www.progamma.com/ID_SendFile" style="rpc" />
+      <wsdl:input>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendNotification">
+      <soap12:operation soapAction="http://www.progamma.com/SendNotification" style="rpc" />
+      <wsdl:input>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="encoded" namespace="http://www.progamma.com" encodingStyle="http://www.w3.org/2003/05/soap-encoding" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Notificatore">
+    <wsdl:port name="NotificatoreSoap" binding="tns:NotificatoreSoap">
+      <soap:address location="http://notificatore.apexnet.it/ws/NotificatoreWS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="NotificatoreSoap12" binding="tns:NotificatoreSoap12">
+      <soap12:address location="http://notificatore.apexnet.it/ws/NotificatoreWS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

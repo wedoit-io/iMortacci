@@ -11,6 +11,7 @@
     using System.ServiceModel.Web;
     using System.Text;
     using System.Web;
+    using ApexNetPushNotificationServiceReference;
     using Gateway.Utilities;
     using Newtonsoft.Json;
 
@@ -241,23 +242,35 @@
         // =====================================================================
         #region Show/hide
 
-        [WebGet(UriTemplate = "reload?format={format}&force={trueFalse}")]
-        public version Reload(string format, string trueFalse)
+        [WebGet(UriTemplate = "reload?format={format}&force={force}&notify={notify}")]
+        public version Reload(string format, string force, string notify)
         {
             this._SetOutgoingResponseFormat(format);
 
-            bool _forceReload;
+            bool _force;
 
             try
             {
-                _forceReload = bool.Parse(trueFalse);
+                _force = bool.Parse(force);
             }
             catch (ArgumentNullException)
             {
-                _forceReload = false;
+                _force = false;
             }
 
-            return this._Reload(_forceReload);
+            bool _notify;
+
+            try
+            {
+                _notify = bool.Parse(notify);
+            }
+            catch (ArgumentNullException)
+            {
+                // By default push notifications will be sent
+                _notify = true;
+            }
+
+            return this._Reload(_force, _notify);
         }
 
         #endregion
@@ -386,7 +399,7 @@
             }
         }
 
-        private version _Reload(bool forceReload = false)
+        private version _Reload(bool forceReload = false, bool notify = true)
         {
             WebClient client = new WebClient();
 
@@ -459,6 +472,9 @@
                 currChecksum != ((version)HttpContext.Current.Application["latest_version"]).hash ||
                 forceReload)
             {
+                uint newAlbumsCounter = 0;
+                uint newTracksCounter = 0;
+
                 using (var context = new IMortacciEntities())
                 {
                     context.ContextOptions.ProxyCreationEnabled = false;
@@ -475,6 +491,7 @@
                         {
                             context.album.AddObject((_album = new album()));
                             _album.id = plist.id;
+                            newAlbumsCounter++;
                         }
 
                         // Update fields
@@ -517,6 +534,7 @@
                             {
                                 _album.tracks.Add((_track = new track()));
                                 _track.id = track.id;
+                                newTracksCounter++;
                             }
 
                             // Update fields
@@ -607,6 +625,77 @@
                         download_url = newVersion.download_url
                     });
                     HttpContext.Current.Application["latest_version"] = newVersion;
+                }
+
+                // If we've got there, then everything went well. Notify users.
+                bool _apnsEnabled;
+                try
+                {
+                    _apnsEnabled = bool.Parse(this.config.GetValueForKey(APIConfiguration.APNSEnabledKey));
+                }
+                catch (Exception)
+                {
+                    _apnsEnabled = false;
+                }
+
+                if (_apnsEnabled && newTracksCounter > 0)
+                {
+                    string msg = string.Empty;
+
+                    if (newAlbumsCounter > 0)
+                    {
+                        if (newAlbumsCounter == 1)
+                        {
+                            msg += "C'è un nuovo dialetto";
+                        }
+                        else
+                        {
+                            msg += string.Format("Ci sono {0} nuovi dialetti", newAlbumsCounter);
+                        }
+                    }
+
+                    if (newTracksCounter == 1)
+                    {
+                        if (string.IsNullOrWhiteSpace(msg))
+                        {
+                            msg += "C'è un mortaccione nuovo che puoi aggiornare!";
+                        }
+                        else
+                        {
+                            msg += " e un mortaccione nuovo che puoi aggiornare!";
+                        }
+                    }
+                    else
+                    {
+                        if (string.IsNullOrWhiteSpace(msg))
+                        {
+                            msg += string.Format("Ci sono {0} mortaccioni nuovi che puoi aggiornare!", newTracksCounter);
+                        }
+                        else
+                        {
+                            msg += string.Format(" e {0} mortaccioni nuovi che puoi aggiornare!", newTracksCounter);
+                        }
+                    }
+
+                    NotificatoreSoapClient apns = new NotificatoreSoapClient();
+                    try
+                    {
+                        apns.SendNotification(
+                            this.config.GetValueForKey(APIConfiguration.APNSAppSecretKey),
+                            this.config.GetValueForKey(APIConfiguration.APNSAppNameKey),
+                            msg,
+                            string.Empty,
+                            "default",
+                            (int)newTracksCounter);
+                    }
+                    catch (Exception ex)
+                    {
+                        apns.Abort();
+
+                        throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+                    }
+
+                    apns.Close();
                 }
             }
 
