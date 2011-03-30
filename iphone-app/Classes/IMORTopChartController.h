@@ -7,10 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AdWhirlView.h"
 
 
-@interface IMORTopChartController : UITableViewController {
+@class IMORTopChartCellController;
 
+
+
+@interface IMORTopChartController : UIViewController <AdWhirlDelegate> {
+
+    UITableView *_tableView;
+
+    NSMutableArray *items;
+    
+    // UI elements
+    IMORTopChartCellController *tempCell;
 }
+
+@property (nonatomic, retain) IBOutlet UITableView *_tableView;
+@property (nonatomic, retain) NSMutableArray *items;
+@property (nonatomic, assign) IBOutlet IMORTopChartCellController *tempCell;
 
 @end

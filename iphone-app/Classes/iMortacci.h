@@ -9,9 +9,16 @@
 #import "UIColor-Expanded.h"
 
 // App settings
-#define kAppName    @"iMortacci"
-#define kAppUrl     @"http://imortacci.com"
-#define kPlayerURL  @"http://imortacci.com/it/player"
+#define kAppName            @"iMortacci"
+
+// Various urls
+#define kAppURL             @"http://www.imortacci.com"
+#define kPlayerURL          @"http://www.imortacci.com/it/player"
+#define kThumbnailURL       @"http://www.imortacci.com/public/imortacci/regioni"
+#define kICanDoBetterURL    @"http://www.imortacci.com/it/p/sai-fare-meglio"
+#define kInfoURL            @"mailto:info@imortacci.com"
+#define k2mlabURL           @"http://www.2mlab.com"
+#define kApexNetURL         @"http://www.apexnet.it"
 
 // iMortacci API and reachability
 #define kAPIURL             @"http://test.apex-net.it/imortacci/api/v1"

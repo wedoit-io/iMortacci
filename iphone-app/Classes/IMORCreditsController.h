@@ -7,10 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AdWhirlView.h"
+
+@class IMORCreditsCellController;
 
 
-@interface IMORCreditsController : UITableViewController {
+@interface IMORCreditsController : UIViewController <AdWhirlDelegate> {
 
+    UITableView *_tableView;
+
+    // UI elements
+    IMORCreditsCellController *tempCell;
 }
+
+@property (nonatomic, retain) IBOutlet UITableView *_tableView;
+@property (nonatomic, assign) IBOutlet IMORCreditsCellController *tempCell;
+
+- (IBAction)info:(id)sender;
+- (IBAction)goto2mlab:(id)sender;
+- (IBAction)gotoApexNet:(id)sender;
 
 @end

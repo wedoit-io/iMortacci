@@ -25,8 +25,10 @@
     
     // UI elements
     IMORPlayblackCellController *tempCell;
+    UIView *rightButtonView;
 }
 
+@property (nonatomic, retain) IBOutlet UIView *rightButtonView;
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
 @property (nonatomic, retain) NSDictionary *item;
 @property (nonatomic, assign) AVAudioPlayer *player;
@@ -36,5 +38,6 @@
 - (IBAction)share:(id)sender;
 - (IBAction)addToFavorites:(id)sender;
 - (IBAction)likeIt:(id)sender;
+- (IBAction)iCanDoBetter:(id)sender;
 
 @end

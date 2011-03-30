@@ -1,22 +1,24 @@
 //
-//  IMORFavoritesCellController.m
+//  IMORTopChartCellController.m
 //  iMortacci
 //
 //  Created by Ali Servet Donmez on 8.3.11.
 //  Copyright 2011 Apex-net srl. All rights reserved.
 //
 
-#import "IMORFavoritesCellController.h"
+#import "IMORTopChartCellController.h"
 #import "iMortacci.h"
 
 
-@implementation IMORFavoritesCellController
+@implementation IMORTopChartCellController
 
 @synthesize imageView;
 @synthesize titleTextLabel;
 @synthesize descriptionTextLabel;
 @synthesize playbackCountTextLabel;
 @synthesize likesTextLabel;
+@synthesize rankView;
+@synthesize rankTextLabel;
 
 - (void)dealloc {
     [imageView release];
@@ -24,6 +26,8 @@
     [descriptionTextLabel release];
     [playbackCountTextLabel release];
     [likesTextLabel release];
+    [rankView release];
+    [rankTextLabel release];
     [super dealloc];
 }
 

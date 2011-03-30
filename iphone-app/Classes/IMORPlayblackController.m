@@ -15,6 +15,7 @@
 
 @implementation IMORPlayblackController
 
+@synthesize rightButtonView;
 @synthesize _tableView;
 @synthesize item;
 @synthesize player;
@@ -37,6 +38,10 @@
     self._tableView.backgroundColor = kIMORColorGreen;
     self._tableView.separatorColor = [UIColor clearColor];
     
+    rightButtonView.backgroundColor = kIMORColorGreen;
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButtonView];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -49,10 +54,6 @@
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    // Become first responder to handle shake motion
-    // Ref.: https://devforums.apple.com/message/49571#49571
-    [self becomeFirstResponder];
 }
 */
 
@@ -245,6 +246,7 @@
 }
 
 - (void)viewDidUnload {
+    [self setRightButtonView:nil];
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
@@ -254,38 +256,9 @@
     [_tableView release];
     [item release];
     [tempCell release];
+    [rightButtonView release];
     [super dealloc];
 }
-
-
-#pragma mark -
-#pragma mark UIResponder delegate
-
-//-(BOOL)canBecomeFirstResponder {
-//    return YES;
-//}
-
-
-#pragma mark -
-#pragma mark Responding to Motion Events
-
-/*
- Custom views should implement all motion-event handlers, even if it's a null implementation, and not call super.
- */
-
-//- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-//    
-//}
-//
-//- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-//	if (motion == UIEventSubtypeMotionShake) {
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.google.com"]];
-//	}
-//}
-//
-//- (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-//    
-//}
 
 
 #pragma mark -
@@ -517,7 +490,16 @@
 	SHKItem *shareItem = [SHKItem URL:url title:[NSString stringWithFormat:@"Ascolta subito: \"%@\"", [item valueForKey:@"title"]]];
     shareItem.text = [NSString stringWithFormat:@"%@", [item valueForKey:@"description"]];
     [shareItem setCustomValue:@"Ali Servet stà utilizzando iMortacci, l'app GRATUITA per iPhone/iPad che ti permette di ascoltare e inviare agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti italiani." forKey:@"description"];
-    [shareItem setCustomValue:@"http://i1.sndcdn.com/artworks-000005393668-9wdjqg-large.jpg" forKey:@"image"];
+
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
+    NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+    if ([filtered count] > 0) {
+        [shareItem setCustomValue:[NSString stringWithFormat:@"%@/%@.png",
+                                   kThumbnailURL, [[filtered objectAtIndex:0] valueForKey:@"slug"]] forKey:@"image"];
+    }
+    else {
+        [shareItem setCustomValue:[NSString stringWithFormat:@"%@/%@.png", kThumbnailURL, @"default"] forKey:@"image"];
+    }
     
 	// Get the ShareKit action sheet
 	SHKActionSheet *actionSheet = [SHKActionSheet actionSheetForItem:shareItem];
@@ -566,6 +548,10 @@
     [HUD show:YES];
     
     [NSThread detachNewThreadSelector:@selector(likeItTask) toTarget:self withObject:nil];
+}
+
+- (IBAction)iCanDoBetter:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kICanDoBetterURL]];
 }
 
 @end

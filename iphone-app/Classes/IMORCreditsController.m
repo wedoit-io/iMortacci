@@ -7,33 +7,51 @@
 //
 
 #import "IMORCreditsController.h"
+#import "iMortacci.h"
+#import "IMORCreditsCellController.h"
 
 
 @implementation IMORCreditsController
+
+@synthesize _tableView;
+@synthesize tempCell;
 
 
 #pragma mark -
 #pragma mark View lifecycle
 
-/*
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    // $$$ Let's make some money! ;-) $$$
+    [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
+    
+    // This is a fake table actually, so we don't want to scroll
+    self._tableView.scrollEnabled = NO;
+    
+    self._tableView.rowHeight = kSingleRowTableRowHeight;
+    self._tableView.separatorColor = [UIColor clearColor];
+
+    self._tableView.backgroundColor = kIMORColorOrange;
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-*/
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 */
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    // Become first responder to handle shake motion
+    // Ref.: https://devforums.apple.com/message/49571#49571
+    [self becomeFirstResponder];
 }
-*/
+
 /*
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -71,14 +89,19 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"IMORCreditsCellController";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    IMORCreditsCellController *cell = (IMORCreditsCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        [[NSBundle mainBundle] loadNibNamed:@"IMORCreditsCellController" owner:self options:nil];
+        cell = tempCell;
+        self.tempCell = nil;
     }
     
     // Configure the cell...
+    
+    // This is a fake table actually, so we don't want to show selected cells
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -150,15 +173,96 @@
 }
 
 - (void)viewDidUnload {
+    [self set_tableView:nil];
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
 
 
 - (void)dealloc {
+    [_tableView release];
     [super dealloc];
 }
 
+
+#pragma mark -
+#pragma mark UIResponder delegate
+
+-(BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Responding to Motion Events
+
+/*
+ Custom views should implement all motion-event handlers, even if it's a null implementation, and not call super.
+ */
+
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+	if (motion == UIEventSubtypeMotionShake) {
+        // TODO shake that booty!
+	}
+}
+
+- (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    
+}
+
+
+#pragma mark -
+#pragma mark AdWhirl delegate methods
+
+- (NSString *)adWhirlApplicationKey {
+    return kAdWhirlApplicationKey;
+}
+
+- (UIViewController *)viewControllerForPresentingModalView {
+    return self;
+}
+
+- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView {
+    CGSize adSize = [adWhirlView actualAdSize];
+    CGRect newAdFrame = adWhirlView.frame;
+    CGRect newTableFrame = self._tableView.frame;
+    
+    newAdFrame.size = adSize;
+    newTableFrame.size.height = self.view.frame.size.height - adSize.height;
+    
+    newAdFrame.origin.x = (self.view.bounds.size.width - adSize.width) / 2;
+    newAdFrame.origin.y = newTableFrame.size.height;
+    
+    adWhirlView.frame = newAdFrame;
+    self._tableView.frame = newTableFrame;
+}
+
+- (void)adWhirlDidFailToReceiveAd:(AdWhirlView *)adWhirlView usingBackup:(BOOL)yesOrNo {
+    if (!yesOrNo) {
+        _tableView.frame = self.view.frame;
+        adWhirlView.frame = CGRectZero;
+    }
+}
+
+
+#pragma mark -
+#pragma mark UI actions
+
+- (IBAction)info:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kInfoURL]];
+}
+
+- (IBAction)goto2mlab:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:k2mlabURL]];
+}
+
+- (IBAction)gotoApexNet:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kApexNetURL]];
+}
 
 @end
 
