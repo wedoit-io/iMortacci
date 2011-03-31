@@ -483,24 +483,35 @@
 }
 
 - (IBAction)share:(id)sender {
-    // Create the item to share (in this example, a url)
-//	NSURL *url = [NSURL URLWithString:[item valueForKey:@"site_url"]];
-//	SHKItem *shareItem = [SHKItem URL:url title:[item valueForKey:@"title"]];
+    // Create the item to share
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", kPlayerURL, [item valueForKey:@"id"]]];
 	SHKItem *shareItem = [SHKItem URL:url title:[NSString stringWithFormat:@"Ascolta subito: \"%@\"", [item valueForKey:@"title"]]];
-    shareItem.text = [NSString stringWithFormat:@"%@", [item valueForKey:@"description"]];
-    [shareItem setCustomValue:@"Ali Servet stà utilizzando iMortacci, l'app GRATUITA per iPhone/iPad che ti permette di ascoltare e inviare agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti italiani." forKey:@"description"];
+
+    [shareItem setCustomValue:@"stà utilizzando iMortacci, l'app GRATUITA per iPhone/iPad che ti permette di ascoltare e inviare \
+agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti italiani." forKey:@"description"];
 
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+    
+    NSString *message;
     if ([filtered count] > 0) {
         [shareItem setCustomValue:[NSString stringWithFormat:@"%@/%@.png",
-                                   kThumbnailURL, [[filtered objectAtIndex:0] valueForKey:@"slug"]] forKey:@"image"];
+                                   kThumbnailURL, [[filtered objectAtIndex:0] valueForKey:@"slug"]]
+                           forKey:@"image"];
+
+        message = [NSString stringWithFormat:@"ha appena tirato un Mortaccione in %@",
+                             [[filtered objectAtIndex:0] valueForKey:@"title"]];
+        [shareItem setCustomValue:message forKey:@"message"];
     }
     else {
         [shareItem setCustomValue:[NSString stringWithFormat:@"%@/%@.png", kThumbnailURL, @"default"] forKey:@"image"];
+        
+        message = @"ha appena tirato un Mortaccione";
+        [shareItem setCustomValue:message forKey:@"message"];
     }
-    
+    [shareItem setCustomValue:[NSString stringWithFormat:@"%@. %@", message, shareItem.title]
+                       forKey:@"imor_custom_twit"];
+
 	// Get the ShareKit action sheet
 	SHKActionSheet *actionSheet = [SHKActionSheet actionSheetForItem:shareItem];
     

@@ -98,71 +98,17 @@ static NSString *const SHKFacebookPendingItem = @"SHKFacebookPendingItem";
 - (NSArray *)shareFormFieldsForType:(SHKShareType)type
 {
 	if (type == SHKShareTypeURL) {
-		NSString *description = [item customValueForKey:@"description"];
-		if(description == nil) description = @"";
-//		return [NSArray arrayWithObjects:
-//				[SHKFormFieldSettings label:SHKLocalizedString(@"Title") key:@"title" type:SHKFormFieldTypeText start:item.title],
-//				[SHKFormFieldSettings label:SHKLocalizedString(@"Description") key:@"description" type:SHKFormFieldTypeText start:description],
-//				[SHKFormFieldSettings label:SHKLocalizedString(@"Comment") key:@"text" type:SHKFormFieldTypeText start:item.text],
-//				nil];
 		return [NSArray arrayWithObjects:
-                [SHKFormFieldSettings label:SHKLocalizedString(@"Comment") key:@"text" type:SHKFormFieldTypeText start:item.text],
+                [SHKFormFieldSettings label:SHKLocalizedString(@"Comment") key:@"comment" type:SHKFormFieldTypeText start:@""],
 				nil];
 	}
 	return nil;
 }
 
 - (BOOL)send {
-	if (item.shareType == SHKShareTypeURL) {
-		NSLog(@"Description: %@", [item customValueForKey:@"description"]);
-		NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									   [item.URL absoluteString], @"link",
-									   item.title, @"name",
-									   @"Ali Servet ha appena tirato un Mortaccione Romagolo", @"message",
-									   [item customValueForKey:@"description"], @"description",
-									   nil];
-        
-        if ([item.text length] > 0) {
-            [params setObject:[NSString stringWithFormat:@"%@: %@", [params valueForKey:@"message"], item.text]
-                       forKey:@"message"];
-        }
-		
-		if ([item customValueForKey:@"image"]) {
-			[params setObject:[item customValueForKey:@"image"] forKey:@"picture"];
-		}
-		
-		[self.facebook requestWithGraphPath:@"me/feed" 
-								  andParams:params 
-							  andHttpMethod:@"POST" 
-								andDelegate:self];
-	}
-	else if (item.shareType == SHKShareTypeText) {
-		NSString *actionLinks = [NSString stringWithFormat:@"{\"name\":\"Get %@\", \"link\":\"%@\"}",
-								 SHKEncode(SHKMyAppName),
-								 SHKEncode(SHKMyAppURL)];
-		
-		NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									   item.text, @"message",
-									   actionLinks, @"actions",
-									   nil];
-		
-		[self.facebook requestWithGraphPath:@"me/feed" 
-								  andParams:params 
-							  andHttpMethod:@"POST" 
-								andDelegate:self];
-	}
-	else if (item.shareType == SHKShareTypeImage) {
-		NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									   item.image, @"source",
-									   item.title, @"message",
-									   nil];
-		
-		[self.facebook requestWithGraphPath:@"me/photos" 
-								  andParams:params 
-							  andHttpMethod:@"POST" 
-								andDelegate:self];
-	}
-	
+    [self.facebook requestWithGraphPath:@"me"
+                            andDelegate:self];
+    
 	[self sendDidStart];
 	
 	return YES;
@@ -214,7 +160,61 @@ static NSString *const SHKFacebookPendingItem = @"SHKFacebookPendingItem";
 #pragma mark FBRequestDelegate methods
 
 - (void)request:(FBRequest*)aRequest didLoad:(id)result {
-	[self sendDidFinish];
+    if ([aRequest.url hasSuffix:@"/me"]) {
+        
+        NSString *firstname = [result valueForKey:@"first_name"];
+        
+        if (item.shareType == SHKShareTypeURL) {
+            NSString *message = [[item customValueForKey:@"comment"] length] > 0
+            ? [NSString stringWithFormat:@"%@: %@", [item customValueForKey:@"message"], [item customValueForKey:@"comment"]]
+            : [NSString stringWithFormat:@"%@!!!", [item customValueForKey:@"message"]];
+            
+            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                           [item.URL absoluteString], @"link",
+                                           item.title, @"name",
+                                           [NSString stringWithFormat:@"%@ %@", firstname, message], @"message",
+                                           [NSString stringWithFormat:@"%@ %@", firstname, [item customValueForKey:@"description"]], @"description",
+                                           nil];
+            
+            if ([item customValueForKey:@"image"]) {
+                [params setObject:[item customValueForKey:@"image"] forKey:@"picture"];
+            }
+            
+            [self.facebook requestWithGraphPath:@"me/feed" 
+                                      andParams:params 
+                                  andHttpMethod:@"POST" 
+                                    andDelegate:self];
+        }
+        else if (item.shareType == SHKShareTypeText) {
+            NSString *actionLinks = [NSString stringWithFormat:@"{\"name\":\"Get %@\", \"link\":\"%@\"}",
+                                     SHKEncode(SHKMyAppName),
+                                     SHKEncode(SHKMyAppURL)];
+            
+            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                           item.text, @"message",
+                                           actionLinks, @"actions",
+                                           nil];
+            
+            [self.facebook requestWithGraphPath:@"me/feed" 
+                                      andParams:params 
+                                  andHttpMethod:@"POST" 
+                                    andDelegate:self];
+        }
+        else if (item.shareType == SHKShareTypeImage) {
+            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                           item.image, @"source",
+                                           item.title, @"message",
+                                           nil];
+            
+            [self.facebook requestWithGraphPath:@"me/photos" 
+                                      andParams:params 
+                                  andHttpMethod:@"POST" 
+                                    andDelegate:self];
+        }
+    }
+    else {
+        [self sendDidFinish];
+    }
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {

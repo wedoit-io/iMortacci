@@ -37,7 +37,7 @@
 
 - (id)init
 {
-	if (self = [super init])
+	if ((self = [super init]))
 	{	
 		// OAUTH		
 		self.consumerKey = SHKCONFIG(twitterConsumerKey);		
@@ -233,7 +233,7 @@
 {	
 	if (![SHK connected])
 	{
-		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.title, [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
+		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", [item customValueForKey:@"imor_custom_twit"], [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
 		[self showTwitterForm];		
 		return;
 	}
@@ -268,7 +268,7 @@
 						   cancelButtonTitle:SHKLocalizedString(@"Continue")
 						   otherButtonTitles:nil] autorelease] show];
 		
-		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : item.title, [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
+		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : [item customValueForKey:@"imor_custom_twit"], [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
 	}
 	
 	else
@@ -277,7 +277,7 @@
 		if ([result isEqualToString:@"ALREADY_A_BITLY_LINK"])
 			result = [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
-		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : item.title, result] forKey:@"status"];
+		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : [item customValueForKey:@"imor_custom_twit"], result] forKey:@"status"];
 	}
 	
 	[self showTwitterForm];
