@@ -136,7 +136,7 @@
 
 + (BOOL)canAutoShare
 {
-	return YES;
+	return NO;
 }
 
 

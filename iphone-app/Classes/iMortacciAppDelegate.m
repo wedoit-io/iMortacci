@@ -47,6 +47,8 @@
     // seconds below
     sleep(3);
     
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    
     // Register with the Apple Push Notification service ("push service")
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
@@ -80,8 +82,6 @@
     [hostReachable startNotifier];
     
     // now patiently wait for the notification...
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     
     // Add the tab bar controller's view to the window and display.
     [self.window addSubview:tabBarController.view];
@@ -170,14 +170,12 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    NSString *alertMsg;
-    
-    // Check alert param
-    if( [[userInfo objectForKey:@"aps"] objectForKey:@"alert"] != NULL) {
-        alertMsg = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
-        
-        UIAlertView *alert;
-        alert = [[UIAlertView alloc] initWithTitle:@"iMortacci" message:alertMsg delegate:self cancelButtonTitle:@"Chiudi"  otherButtonTitles:nil];
+    if([[userInfo objectForKey:@"aps"] objectForKey:@"alert"] != NULL) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iMortacci"
+                                                        message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Chiudi"
+                                              otherButtonTitles:nil];
         [alert show]; 
         [alert release];
     }
