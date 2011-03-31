@@ -238,9 +238,9 @@
             case NotReachable:
             {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                                message:@"A quanto pare non sei connesso a internet, ma non ti preoccupare. iMortacci funzionerà però non sarà possibile aggiornarla con gli ultimi mortaccioni."
+                                                                message:@"Non sei connesso a internet. Collegati per poter aggiornare l'App con gli ultimi mortaccioni."
                                                                delegate:nil
-                                                      cancelButtonTitle:@"Pazienza"
+                                                      cancelButtonTitle:@"Chiudi"
                                                       otherButtonTitles:nil];
                 [alert show];
                 [alert release];
@@ -251,9 +251,9 @@
             case ReachableViaWWAN:
             {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                                message:@"Non sei connesso ad una rete senza fili. iMortacci funzionerà però gli aggiornamenti potrebbero essere molto lenti."
+                                                                message:@"Non sei connesso ad una rete WIFI. Il download potrebbe essere più lento."
                                                                delegate:nil
-                                                      cancelButtonTitle:@"Vabè"
+                                                      cancelButtonTitle:@"Chiudi"
                                                       otherButtonTitles:nil];
                 [alert show];
                 [alert release];
@@ -300,24 +300,20 @@
             if ([[QuickFunctions sharedQuickFunctions] getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
                 taskInProgress = YES;
                 [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
-
-                float progressToReach = HUD.progress + progressStep;
-                while (taskInProgress || HUD.progress < progressToReach) {
-                    if (HUD.progress < progressToReach) {
-                        HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
-                        HUD.progress += 0.001 * ((uint)arc4random() % 15);
-                    }
-                    usleep(100000);
+                while (taskInProgress) {
+                    usleep(500000); // 0.5 seconds
                 }
-                
+
                 [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
             }
+            HUD.progress += progressStep;
+            HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
         }
     }
 
     // Back to indeterminate mode
     HUD.mode = MBProgressHUDModeIndeterminate;
-    HUD.labelText = @"Attendere";
+    HUD.labelText = @"Aspetta un attimo...";
     HUD.detailsLabelText = @"Installo";
 
     // save version.json, albums.json files and update app delegate properties accordingly
@@ -428,7 +424,7 @@
     HUD.opacity = 0.6;
     HUD.animationType = MBProgressHUDAnimationZoom;
     
-    HUD.labelText = @"Attendere";
+    HUD.labelText = @"Aspetta un attimo...";
 	
     // Show the HUD
     [HUD show:YES];

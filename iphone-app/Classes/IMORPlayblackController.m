@@ -302,7 +302,7 @@
             // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
             HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Error.png"]] autorelease];
             HUD.mode = MBProgressHUDModeCustomView;
-            HUD.labelText = @"Già votato";
+            HUD.labelText = @"Hai già votato";
             
             sleep(3);
         }
@@ -331,7 +331,7 @@
         // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
         HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
         HUD.mode = MBProgressHUDModeCustomView;
-        HUD.labelText = @"Preferito";
+        HUD.labelText = @"Aggiunto ai Preferiti";
         
         sleep(1);
     }
@@ -340,7 +340,7 @@
         // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
         HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Error.png"]] autorelease];
         HUD.mode = MBProgressHUDModeCustomView;
-        HUD.labelText = @"Già preferito";
+        HUD.labelText = @"Già nei preferiti";
         
         sleep(1);
     }
@@ -466,8 +466,7 @@
             HUD.animationType = MBProgressHUDAnimationZoom;
             
             HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
-            HUD.labelText = @"Alza il volume";
-            HUD.detailsLabelText = @"Se non senti la voce...";
+            HUD.labelText = @"Alza il volume al massimo!";
             HUD.mode = MBProgressHUDModeCustomView;
             
             // Show the HUD
@@ -553,7 +552,7 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
     HUD.opacity = 0.6;
     HUD.animationType = MBProgressHUDAnimationZoom;
     
-    HUD.labelText = @"Attendere";
+    HUD.labelText = @"Aspetta un attimo...";
 	
     // Show the HUD
     [HUD show:YES];

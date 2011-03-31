@@ -44,7 +44,7 @@
         self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
     }
     else {
-        self.searchDisplayController.searchBar.placeholder = @"Cerca in tutti i dialetti";
+        self.searchDisplayController.searchBar.placeholder = @"Cerca tra i dialetti";
     }
 
 	// create a filtered list that will contain products for the search results table.
