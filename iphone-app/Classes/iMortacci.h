@@ -21,7 +21,7 @@
 #define kApexNetURL         @"http://www.apexnet.it"
 
 // iMortacci API and reachability
-#define kAPIURL             @"http://test.apex-net.it/imortacci/api/v1"
+#define kAPIURL             @"http://imortacci.apexnet.it/api/v1"
 #define kReachabilityHostName   @"google.com"
 
 // Push notifications api
