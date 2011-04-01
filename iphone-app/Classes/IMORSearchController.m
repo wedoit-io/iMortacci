@@ -11,6 +11,7 @@
 #import "QuickFunctions.h"
 #import "IMORSearchCellController.h"
 #import "IMORPlayblackController.h"
+#import "GANTracker.h"
 
 
 @implementation IMORSearchController
@@ -315,10 +316,17 @@
     if (!tracksOnly && tableView == self._tableView) {
         IMORSearchController *detailViewController = [[IMORSearchController alloc]
                                                       initWithNibName:@"IMORSearchController" bundle:nil];
+
         NSDictionary *item = [items objectAtIndex:indexPath.row];
         detailViewController.tracksOnly = YES;
         detailViewController.title = [item valueForKey:@"title"];
         detailViewController.items = [item valueForKey:@"tracks"];
+        
+        [[GANTracker sharedTracker] trackEvent:@"Album"
+                                        action:@"Select"
+                                         label:[item valueForKey:@"slug"]
+                                         value:-1
+                                     withError:nil];
         
         // Pass the selected object to the new view controller.
         [self.navigationController pushViewController:detailViewController animated:YES];
@@ -340,7 +348,13 @@
             detailViewController.item = [[[filteredItems objectAtIndex:indexPath.section]
                                           valueForKey:@"tracks"] objectAtIndex:indexPath.row];
         }
-
+        
+        [[GANTracker sharedTracker] trackEvent:@"Track"
+                                        action:@"Select"
+                                         label:[[detailViewController.item valueForKey:@"id"] stringValue]
+                                         value:-1
+                                     withError:nil];
+        
         // Pass the selected object to the new view controller.
         [self.navigationController pushViewController:detailViewController animated:YES];
         [detailViewController release];

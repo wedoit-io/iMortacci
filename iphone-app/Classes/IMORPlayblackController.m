@@ -12,6 +12,7 @@
 #import "QuickFunctions.h"
 #import "SHK.h"
 #import <QuartzCore/QuartzCore.h>
+#import "GANTracker.h"
 
 @implementation IMORPlayblackController
 
@@ -62,6 +63,12 @@
     
     // This will slowly fade out volume (duration: 1.2 seconds)
     if (player != nil && player.playing) {
+        [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                        action:@"Listen"
+                                         label:@"Cancel"
+                                         value:-1
+                                     withError:nil];
+        
         while (player.volume > 0) {
             player.volume -= 0.01;
             usleep(12000); // this is equal to 0.012 seconds
@@ -416,6 +423,13 @@
 #pragma mark UI actions
 
 - (IBAction)playTrack:(id)sender {
+    
+    [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                    action:@"Button"
+                                     label:@"Play"
+                                     value:-1
+                                 withError:nil];
+    
     if (!player.playing) {
         
         NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
@@ -473,6 +487,12 @@
             [HUD show:YES];
         }
         
+        [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                        action:@"Listen"
+                                         label:@"Begin"
+                                         value:-1
+                                     withError:nil];
+        
         player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
                                                       getTrackWithId:[[item valueForKey:@"id"] intValue]]
                                                error:nil];
@@ -482,6 +502,12 @@
 }
 
 - (IBAction)share:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                    action:@"Button"
+                                     label:@"Share"
+                                     value:-1
+                                 withError:nil];
+    
     // Create the item to share
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", kPlayerURL, [item valueForKey:@"id"]]];
 	SHKItem *shareItem = [SHKItem URL:url title:[NSString stringWithFormat:@"Ascolta subito: \"%@\"", [item valueForKey:@"title"]]];
@@ -519,6 +545,11 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
 }
 
 - (IBAction)addToFavorites:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                    action:@"Button"
+                                     label:@"Favorite"
+                                     value:-1
+                                 withError:nil];
     
 	// The hud will dispable all input on the view
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
@@ -539,6 +570,11 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
 }
 
 - (IBAction)likeIt:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                    action:@"Button"
+                                     label:@"Like"
+                                     value:-1
+                                 withError:nil];
     
 	// The hud will dispable all input on the view
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
@@ -561,6 +597,12 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
 }
 
 - (IBAction)iCanDoBetter:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Playback"
+                                    action:@"Button"
+                                     label:@"ICanDoBetter"
+                                     value:-1
+                                 withError:nil];
+    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kICanDoBetterURL]];
 }
 

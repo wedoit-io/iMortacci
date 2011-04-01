@@ -9,6 +9,7 @@
 #import "IMORCreditsController.h"
 #import "iMortacci.h"
 #import "IMORCreditsCellController.h"
+#import "GANTracker.h"
 
 
 @implementation IMORCreditsController
@@ -207,6 +208,11 @@
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (motion == UIEventSubtypeMotionShake) {
         // TODO shake that booty!
+        [[GANTracker sharedTracker] trackEvent:@"Credits"
+                                        action:@"Shake"
+                                         label:nil
+                                         value:-1
+                                     withError:nil];
 	}
 }
 
@@ -253,14 +259,32 @@
 #pragma mark UI actions
 
 - (IBAction)info:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Credits"
+                                    action:@"Button"
+                                     label:@"Info"
+                                     value:-1
+                                 withError:nil];
+
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kInfoURL]];
 }
 
 - (IBAction)goto2mlab:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Credits"
+                                    action:@"Button"
+                                     label:@"2mlab"
+                                     value:-1
+                                 withError:nil];
+    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:k2mlabURL]];
 }
 
 - (IBAction)gotoApexNet:(id)sender {
+    [[GANTracker sharedTracker] trackEvent:@"Credits"
+                                    action:@"Button"
+                                     label:@"Apex-Net"
+                                     value:-1
+                                 withError:nil];
+    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kApexNetURL]];
 }
 
