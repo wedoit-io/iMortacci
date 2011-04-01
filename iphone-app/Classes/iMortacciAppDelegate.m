@@ -15,7 +15,7 @@
 #import "Reachability.h"
 #import "GTMHTTPFetcher.h"
 #import "SHKFacebook.h"
-
+#import "GANTracker.h"
 
 @implementation iMortacciAppDelegate
 
@@ -53,6 +53,16 @@
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     
+    [[GANTracker sharedTracker] startTrackerWithAccountID:kGANWebPropertyID
+                                           dispatchPeriod:kGANDispatchPeriodSec
+                                                 delegate:nil];
+    
+    [[GANTracker sharedTracker] trackEvent:@"App"
+                                    action:@"Launch"
+                                     label:kAppVersion
+                                     value:-1
+                                 withError:nil];
+
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
         [[QuickFunctions sharedQuickFunctions] saveCurrentVersion:nil];
@@ -67,6 +77,15 @@
     [[QuickFunctions sharedQuickFunctions] updateUserInfo:nil];
     [[QuickFunctions sharedQuickFunctions] updateCounters:nil];
     [[QuickFunctions sharedQuickFunctions] updateFavorites:nil];
+    
+    if ([[currentVersion valueForKey:@"hash"] length] > 0) {
+        [[GANTracker sharedTracker] trackPageview:[NSString stringWithFormat:@"/data/version/%@",
+                                                   [currentVersion valueForKey:@"hash"]]
+                                        withError:nil];
+    }
+    else {
+        [[GANTracker sharedTracker] trackPageview:@"/data/version/unknown" withError:nil];
+    }
     
     // check for internet connection
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -165,6 +184,12 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     GTMHTTPFetcher* fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
     [fetcher beginFetchWithDelegate:nil didFinishSelector:nil];
+
+    [[GANTracker sharedTracker] trackEvent:@"APNS"
+                                    action:@"Register"
+                                     label:myToken
+                                     value:-1
+                                 withError:nil];
 }
 
 
@@ -179,17 +204,27 @@
         [alert show]; 
         [alert release];
     }
+    
+    [[GANTracker sharedTracker] trackEvent:@"APNS"
+                                    action:@"Receive"
+                                     label:@"Foreground"
+                                     value:-1
+                                 withError:nil];
 }
 
 
 #pragma mark -
 #pragma mark UITabBarControllerDelegate methods
 
-/*
 // Optional UITabBarControllerDelegate method.
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+- (void)tabBarController:(UITabBarController *)_tabBarController didSelectViewController:(UIViewController *)viewController {
+    NSArray *items = [NSArray arrayWithObjects:@"Home", @"Favorites", @"Updates", @"Top25", @"Credits", nil];
+    [[GANTracker sharedTracker] trackEvent:@"Tabbar"
+                                    action:@"Select"
+                                     label:[items objectAtIndex:_tabBarController.selectedIndex]
+                                     value:-1
+                                 withError:nil];
 }
-*/
 
 /*
 // Optional UITabBarControllerDelegate method.
@@ -209,6 +244,8 @@
 
 
 - (void)dealloc {
+    [[GANTracker sharedTracker] stopTracker];
+
     [tabBarController release];
     [window release];
     [currentVersion release];
@@ -240,8 +277,28 @@
     switch (internetStatus)
     {
         case ReachableViaWiFi:
+        {
+            [[GANTracker sharedTracker] trackEvent:@"Network"
+                                            action:@"Check"
+                                             label:@"WiFi"
+                                             value:-1
+                                         withError:nil];
+            
+            // Send&receive various stuff if connection is active
+            [self checkLatest];
+            [self sendAndReceiveCounters];
+
+            break;
+        }
+
         case ReachableViaWWAN:
         {
+            [[GANTracker sharedTracker] trackEvent:@"Network"
+                                            action:@"Check"
+                                             label:@"WWAN"
+                                             value:-1
+                                         withError:nil];
+            
             // Send&receive various stuff if connection is active
             [self checkLatest];
             [self sendAndReceiveCounters];
@@ -250,11 +307,20 @@
         }
             
         default:
+        {
+            [[GANTracker sharedTracker] trackEvent:@"Network"
+                                            action:@"Check"
+                                             label:@"None"
+                                             value:-1
+                                         withError:nil];
             break;
+        }
     }
 }
 
 - (void)checkLatest {
+    [[GANTracker sharedTracker] trackPageview:@"/api/latest" withError:nil];
+
     // checks latest version and update badge accordingly
     NSString *urlString = [NSString stringWithFormat:@"%@/latest", kAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];
@@ -265,6 +331,8 @@
 }
 
 - (void)sendAndReceiveCounters {
+    [[GANTracker sharedTracker] trackPageview:@"/api/counters" withError:nil];
+
     // send&receive 'like_status' and 'user_playback_count' information
     NSString *urlString = [NSString stringWithFormat:@"%@/counters", kAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];

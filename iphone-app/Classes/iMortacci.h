@@ -10,6 +10,7 @@
 
 // App settings
 #define kAppName            @"iMortacci"
+#define kAppVersion         @"1.0"
 
 // Various urls
 #define kAppURL             @"http://www.imortacci.com"
@@ -38,6 +39,11 @@
 
 #define kSoundCloudClientId     @"7Eo3B0odlpK5FvOVUKDnQ"
 #define kAdWhirlApplicationKey  @"9036ba7fc12341f0bdadc4c569707817"
+
+// Google Analytics
+#define kGANWebPropertyID       @"UA-20354938-3"
+// Dispatch period in seconds
+#define kGANDispatchPeriodSec   10
 
 // App filenames for convenience
 #define kCurrentVersionFileName     @"version.json"

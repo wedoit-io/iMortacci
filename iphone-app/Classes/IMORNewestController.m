@@ -14,6 +14,7 @@
 #import "GTMHTTPFetcher.h"
 #import "JSON+Extensions.h"
 #import <unistd.h>
+#import "GANTracker.h"
 
 
 @implementation IMORNewestController
@@ -348,6 +349,10 @@
 }
 
 - (void)downloadAlbums {
+    [[GANTracker sharedTracker] trackPageview:[NSString stringWithFormat:@"/download/%@",
+                                               [[QuickFunctions sharedQuickFunctions].app.latestVersion valueForKey:@"hash"]]
+                                    withError:nil];
+    
     NSString *urlString = [[QuickFunctions sharedQuickFunctions].app.latestVersion valueForKey:@"download_url"];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];

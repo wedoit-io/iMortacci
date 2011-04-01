@@ -125,6 +125,8 @@
 		50B1D762132E6D520072E4B7 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B1D761132E6D520072E4B7 /* MBProgressHUD.m */; };
 		50B1D7C1132E71A70072E4B7 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 50B1D7BF132E71A70072E4B7 /* Checkmark.png */; };
 		50B1D7C2132E71A70072E4B7 /* Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50B1D7C0132E71A70072E4B7 /* Checkmark@2x.png */; };
+		50D200D51344ECEB0068B9E6 /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50D200D41344ECEB0068B9E6 /* libGoogleAnalytics.a */; };
+		50D200D71344ED3A0068B9E6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50D200D61344ED390068B9E6 /* CFNetwork.framework */; };
 		50E03222133A49A6009217F6 /* UpdatesUnavailable.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0321E133A49A6009217F6 /* UpdatesUnavailable.png */; };
 		50E03223133A49A6009217F6 /* UpdatesUnavailable@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E0321F133A49A6009217F6 /* UpdatesUnavailable@2x.png */; };
 		50E03224133A49A6009217F6 /* UpdatesAvailable.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E03220133A49A6009217F6 /* UpdatesAvailable.png */; };
@@ -499,6 +501,9 @@
 		50B1D7BF132E71A70072E4B7 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Checkmark.png; sourceTree = "<group>"; };
 		50B1D7C0132E71A70072E4B7 /* Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Checkmark@2x.png"; sourceTree = "<group>"; };
 		50D200D1134490080068B9E6 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "/Users/adonmez/dev/xcode-projects/iMortacci/iphone-app/Classes/ShareKit/Localization/it.lproj/Localizable.strings"; sourceTree = "<absolute>"; };
+		50D200D31344ECEB0068B9E6 /* GANTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GANTracker.h; sourceTree = "<group>"; };
+		50D200D41344ECEB0068B9E6 /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
+		50D200D61344ED390068B9E6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		50E0321E133A49A6009217F6 /* UpdatesUnavailable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UpdatesUnavailable.png; sourceTree = "<group>"; };
 		50E0321F133A49A6009217F6 /* UpdatesUnavailable@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UpdatesUnavailable@2x.png"; sourceTree = "<group>"; };
 		50E03220133A49A6009217F6 /* UpdatesAvailable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UpdatesAvailable.png; sourceTree = "<group>"; };
@@ -807,6 +812,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50D200D71344ED3A0068B9E6 /* CFNetwork.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -824,6 +830,7 @@
 				50946AB71328E6C90042D81F /* libsqlite3.dylib in Frameworks */,
 				50946AB91328E6C90042D81F /* libz.dylib in Frameworks */,
 				50946AC11328E6E70042D81F /* iAd.framework in Frameworks */,
+				50D200D51344ECEB0068B9E6 /* libGoogleAnalytics.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -914,6 +921,7 @@
 				50946AB61328E6C90042D81F /* libsqlite3.dylib */,
 				50946AB81328E6C90042D81F /* libz.dylib */,
 				50946AC01328E6E70042D81F /* iAd.framework */,
+				50D200D61344ED390068B9E6 /* CFNetwork.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1371,6 +1379,15 @@
 			name = Favorites;
 			sourceTree = "<group>";
 		};
+		50D200D21344ECE90068B9E6 /* Google Analytics SDK */ = {
+			isa = PBXGroup;
+			children = (
+				50D200D31344ECEB0068B9E6 /* GANTracker.h */,
+				50D200D41344ECEB0068B9E6 /* libGoogleAnalytics.a */,
+			);
+			path = "Google Analytics SDK";
+			sourceTree = "<group>";
+		};
 		50E2BE6013264206008EAD29 /* Search & Playback */ = {
 			isa = PBXGroup;
 			children = (
@@ -1405,6 +1422,7 @@
 				50B1D55D132E27B20072E4B7 /* gtm-http-fetcher */,
 				50B1D75F132E6D520072E4B7 /* MBProgressHUD */,
 				50467E56133CB6CB006F4CA7 /* TDBadgedCell */,
+				50D200D21344ECE90068B9E6 /* Google Analytics SDK */,
 			);
 			name = "External Sources";
 			path = Classes;
@@ -2328,6 +2346,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/AdMob\"",
+					"\"$(SRCROOT)/Classes/Google Analytics SDK\"",
 				);
 				PRODUCT_NAME = iMortacci;
 			};
@@ -2344,6 +2363,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Classes/AdMob\"",
+					"\"$(SRCROOT)/Classes/Google Analytics SDK\"",
 				);
 				PRODUCT_NAME = iMortacci;
 				VALIDATE_PRODUCT = YES;
