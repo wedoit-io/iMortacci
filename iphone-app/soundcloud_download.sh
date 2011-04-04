@@ -8,7 +8,7 @@
 CONSUMER_KEY="7Eo3B0odlpK5FvOVUKDnQ"
 
 # Latest JSON file URLs
-BASE_URL="http://donmez.apex-net.it/imortacci/api/v1/json"
+BASE_URL="http://imortacci.apexnet.it/api/v1"
 
 DOWNLOAD_DIR=./tracks/
 
@@ -18,7 +18,7 @@ DOWNLOAD_DIR=./tracks/
 
 DEBUG=false
 FILE_EXTENSION="mp3"
-LATEST_FILE=../latest.json
+LATEST_FILE=../version.json
 ALBUMS_FILE=../albums.json
 COUNTS_FILE=../counters.json
 
@@ -47,7 +47,9 @@ done
 curl --silent $BASE_URL"/counters" > $COUNTS_FILE
 
 if [ $DEBUG == false ]; then
-    rm .*~.tmp
+    rm .albums~.tmp
+    rm .download_list~.tmp
+    rm .track_id~.tmp
 fi
 
 echo
@@ -63,3 +65,4 @@ echo "  * Take a deep breath and build! ;-)"
 echo
 
 # End of file
+    
