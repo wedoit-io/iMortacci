@@ -141,11 +141,11 @@
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
     if ([filtered count] > 0) {
         cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
-                                                                                                             AndSize:@"small"]];
+                                                                                                             AndSize:@"medium"]];
     }
     else {
         cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
-                                                                                                             AndSize:@"small"]];
+                                                                                                             AndSize:@"medium"]];
     }
 
     cell.titleTextLabel.text = [item valueForKey:@"title"];
