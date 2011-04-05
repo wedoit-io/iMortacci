@@ -27,7 +27,12 @@
 
 // Push notifications api
 #define kAppServerUrl   @"http://notificatore.apexnet.it/Notificatore.aspx"
-#define kAppKey         @"IMORTACCI"
+
+#if DEBUG
+    #define kAppKey         @"IMORTACCI_DEV"
+#else
+    #define kAppKey         @"IMORTACCI"
+#endif
 
 // Sharing settings
 #define kFacebookAppID          @"138911126174224"

@@ -53,9 +53,11 @@
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeBadge)];
     
+#if !DEBUG
     [[GANTracker sharedTracker] startTrackerWithAccountID:kGANWebPropertyID
                                            dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];
+#endif
     
     [[GANTracker sharedTracker] trackEvent:@"App"
                                     action:@"Launch"
