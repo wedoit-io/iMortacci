@@ -34,11 +34,13 @@
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
 	[super setHighlighted:highlighted animated:animated];
 
+    self.rankTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.titleTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.descriptionTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.playbackCountTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.likesTextLabel.shadowColor = highlighted ? [UIColor darkGrayColor] : [UIColor whiteColor];
     
+    self.rankTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.titleTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.descriptionTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.playbackCountTextLabel.shadowOffset = highlighted ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
@@ -54,11 +56,13 @@
     self.selectedBackgroundView = bgColorView;
     [bgColorView release];
     
+    self.rankTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.titleTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.descriptionTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.playbackCountTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
     self.likesTextLabel.shadowColor = selected ? [UIColor darkGrayColor] : [UIColor whiteColor];
     
+    self.rankTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.titleTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.descriptionTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
     self.playbackCountTextLabel.shadowOffset = selected ? CGSizeMake(0, -1) : CGSizeMake(0, 1);
