@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World!</string>
+    <string name="app_name">Mortacci</string>
+    <string name="URIws">http://imortacci.apexnet.it/api/v1</string>
+    <string name="albumsWithTracksURIws">/albums?loadtracks=true</string>
+    <string name="albumsURIws">/albums</string>
+    <string name="tracksURIws">/tracks</string>
+    <string name="albumsActivity">Dialetti</string>
+</resources>
