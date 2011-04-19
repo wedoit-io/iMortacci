@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout android:layout_width="fill_parent"
-	xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/row_container"
-	android:layout_height="wrap_content" android:padding="5px"
- 	android:shrinkColumns="0">
-		<TableRow>
+
 		<LinearLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="horizontal"
+		android:paddingTop="5dip"
+		android:paddingBottom="5dip"
+		android:paddingLeft="10dip">
+		<ImageView
+		android:id="@+id/image_preview"
+		android:layout_width="40dip"
+		android:layout_height="40dip"		 				
+		/>
 		<TextView android:layout_height="wrap_content"
 			android:layout_width="wrap_content"				
 			android:id="@+id/title_album"
 			android:textColor="@color/black"			
 			android:scrollHorizontally="true"
 			android:drawablePadding="10dip"
+			android:paddingLeft="15dip"
 			android:textStyle="bold"			
 			android:singleLine="true"
 			android:gravity="center">
 		</TextView>
-			</LinearLayout>			
-	</TableRow>
-</TableLayout>
+			</LinearLayout>				
