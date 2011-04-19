@@ -12,10 +12,10 @@ public class Album implements Serializable{
 	public String title;
 	public String description;
 	public String alternateDesc;
-	public List <Track> track;
+	public ArrayList<Track> tracks;
 	
 	public Album ()
 	{
-		this.track = new ArrayList<Track>();
+		this.tracks = new ArrayList<Track>();
 	}
 }
