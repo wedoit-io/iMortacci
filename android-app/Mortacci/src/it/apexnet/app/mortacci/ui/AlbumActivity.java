@@ -1,5 +1,7 @@
 package it.apexnet.app.mortacci.ui;
 
+import java.io.Serializable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -8,17 +10,26 @@ import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
 import it.apexnet.mortacci.io.HttpCall;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class AlbumActivity extends Activity{
 	
@@ -53,6 +64,7 @@ public class AlbumActivity extends Activity{
 							convertView = inflater.inflate(R.layout.list_item_albums, null);
 							viewHolder = new ViewHolder();
 							viewHolder.AlbumTitleTextView = (TextView)convertView.findViewById(R.id.title_album);
+							viewHolder.AlbumImageView = (ImageView)convertView.findViewById(R.id.image_preview);
 							convertView.setTag(viewHolder);
 						}
 						else
@@ -61,12 +73,28 @@ public class AlbumActivity extends Activity{
 						}							
 						Album item = getItem (position);
 						viewHolder.AlbumTitleTextView.setText(item.title);
-						setImgAlbum (item , viewHolder.AlbumTitleTextView);
+						setImgAlbum (item , viewHolder.AlbumImageView);
 						return convertView;
 					}
 				};
 				
 				listView.setAdapter(arrayAdapter);
+				
+				listView.setOnItemClickListener(new OnItemClickListener()
+				{
+					
+					public void onItemClick(AdapterView<?> parent, View view,
+			    	        int position, long id)
+					{
+						
+						Album a = ((Album)parent.getAdapter().getItem(position));
+						Bundle bundle = new Bundle();			
+						bundle.putSerializable("Album", a);
+						Intent intent = new Intent(AlbumActivity.this, TrackActivity.class);
+						intent.putExtras(bundle);
+						startActivity(intent);
+					}
+				});		
 			}
 			catch (Exception ex)
 			{
@@ -75,28 +103,28 @@ public class AlbumActivity extends Activity{
 		}
 	}
 	
-	private void setImgAlbum (Album a, TextView t)
+	private void setImgAlbum (Album a, ImageView i)
 	{
 		if (a.slug.equalsIgnoreCase("calabria"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calabria, 0, 0, 0);
+			i.setImageResource(R.drawable.calabria);
 		else if (a.slug.equalsIgnoreCase("campania"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.campania, 0, 0, 0);
+			i.setImageResource(R.drawable.campania);
 		else if (a.slug.equalsIgnoreCase("puglia"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.puglia, 0, 0, 0);
+			i.setImageResource(R.drawable.puglia);
 		else if (a.slug.equalsIgnoreCase("lazio"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lazio, 0, 0, 0);
+			i.setImageResource(R.drawable.lazio);
 		else if (a.slug.equalsIgnoreCase("toscana"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.toscana, 0, 0, 0);
+			i.setImageResource(R.drawable.toscana);
 		else if (a.slug.equalsIgnoreCase("veneto"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.veneto, 0, 0, 0);
+			i.setImageResource(R.drawable.veneto);
 		else if (a.slug.equalsIgnoreCase("emiliaromagna"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.emiliaromagna, 0, 0, 0);
+			i.setImageResource(R.drawable.emiliaromagna);
 		else if (a.slug.equalsIgnoreCase("sardegna"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sardegna, 0, 0, 0);
+			i.setImageResource(R.drawable.sardegna);
 		else if (a.slug.equalsIgnoreCase("sicilia"))
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sicilia, 0, 0, 0);		
+			i.setImageResource(R.drawable.sicilia);		
 		else
-			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.default_img, 0, 0, 0);
+			i.setImageResource(R.drawable.default_img);
 		
 	}
 	
@@ -138,7 +166,7 @@ public class AlbumActivity extends Activity{
 				JSONArray tracksArray = albumJSONObject.getJSONArray("tracks");
 				for (int j = 0; j < tracksArray.length(); j++)
 				{
-					JSONObject trackJSONObject = tracksArray.getJSONObject(i);
+					JSONObject trackJSONObject = tracksArray.getJSONObject(j);
 					
 					Track track = new Track();
 					track.album_ID = albums[i].ID;
@@ -146,8 +174,9 @@ public class AlbumActivity extends Activity{
 					track.slug = trackJSONObject.getString("slug");
 					track.title = trackJSONObject.getString("title");
 					track.description = trackJSONObject.getString("description");
+					track.playbackCount = trackJSONObject.getInt("playback_count");
 					
-					albums[i].track.add(track);
+					albums[i].tracks.add(track);
 				}				
 			}
 		}
@@ -163,6 +192,6 @@ public class AlbumActivity extends Activity{
     private static class ViewHolder
     {
     	public TextView AlbumTitleTextView;    	
-    	
+		public ImageView AlbumImageView;
     }
 }
