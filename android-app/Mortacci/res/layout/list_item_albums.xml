@@ -14,7 +14,10 @@
 			android:id="@+id/title_album"
 			android:textColor="@color/black"			
 			android:scrollHorizontally="true"
-			android:singleLine="true">
+			android:drawablePadding="10dip"
+			android:textStyle="bold"			
+			android:singleLine="true"
+			android:gravity="center">
 		</TextView>
 			</LinearLayout>			
 	</TableRow>
