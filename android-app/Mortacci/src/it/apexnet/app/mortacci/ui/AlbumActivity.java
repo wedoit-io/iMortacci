@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 public class AlbumActivity extends Activity{
 	
-	private static String TAG = "AlbumActivity";
+	private static String TAG = "AlbumActivity";	
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class AlbumActivity extends Activity{
 						}							
 						Album item = getItem (position);
 						viewHolder.AlbumTitleTextView.setText(item.title);
+						setImgAlbum (item , viewHolder.AlbumTitleTextView);
 						return convertView;
 					}
 				};
@@ -72,6 +73,31 @@ public class AlbumActivity extends Activity{
 				
 			}
 		}
+	}
+	
+	private void setImgAlbum (Album a, TextView t)
+	{
+		if (a.slug.equalsIgnoreCase("calabria"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calabria, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("campania"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.campania, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("puglia"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.puglia, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("lazio"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lazio, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("toscana"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.toscana, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("veneto"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.veneto, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("emiliaromagna"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.emiliaromagna, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("sardegna"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sardegna, 0, 0, 0);
+		else if (a.slug.equalsIgnoreCase("sicilia"))
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sicilia, 0, 0, 0);		
+		else
+			t.setCompoundDrawablesWithIntrinsicBounds(R.drawable.default_img, 0, 0, 0);
+		
 	}
 	
 	private Album [] getAlbums ()
