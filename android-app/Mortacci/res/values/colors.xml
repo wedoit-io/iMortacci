@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="black">#000000</color>
-	<color name="grey">#B2B2B2</color>
+	<color name="background_listview">#ECEBDC</color>
 	<color name="title_background">#99FFCC</color>
 	<color name="title_text">#FFFFFF</color>
+	<color name="window_background">#3EA5A2</color>	
+	<color name="grey">#B2B2B2</color>
 </resources>
