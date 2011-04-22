@@ -2,7 +2,8 @@ package it.apexnet.app.mortacci.library;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+
+import android.widget.ImageView;
 
 @SuppressWarnings("serial")
 public class Album implements Serializable{
@@ -12,7 +13,7 @@ public class Album implements Serializable{
 	public String title;
 	public String description;
 	public String alternateDesc;
-	public ArrayList<Track> tracks;
+	public ArrayList<Track> tracks;	
 	
 	public Album ()
 	{

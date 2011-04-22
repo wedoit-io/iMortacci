@@ -2,6 +2,8 @@ package it.apexnet.app.mortacci.library;
 
 import java.io.Serializable;
 
+import android.widget.ImageView;
+
 
 @SuppressWarnings("serial")
 public class Track implements Serializable{
@@ -19,4 +21,5 @@ public class Track implements Serializable{
 	public String downloadURL;
 	public String streamURL;
 	public String waveformURL;
+	public String slugAlbum;	
 }
