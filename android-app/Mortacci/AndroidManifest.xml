@@ -21,7 +21,9 @@
     
 		<activity android:name=".ui.AlbumActivity" android:label="@string/albumsActivity" >            
         </activity>
-	<activity android:name=".ui.TrackActivity" android:label="@string/albumsActivity" >            
+		<activity android:name=".ui.TrackActivity" android:label="@string/albumsActivity" >            
+        </activity>
+        <activity android:name=".ui.PlayTrackActivity" android:label="@string/albumsActivity" >            
         </activity>
     </application>
     <uses-sdk android:minSdkVersion="4" />
