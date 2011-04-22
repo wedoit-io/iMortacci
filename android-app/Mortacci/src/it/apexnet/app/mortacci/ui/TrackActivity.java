@@ -8,15 +8,18 @@ import it.apexnet.app.mortacci.library.Track;
 import it.apexnet.app.mortacci.library.Tracks;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class TrackActivity extends Activity{
 
@@ -70,6 +73,22 @@ public class TrackActivity extends Activity{
 			};
 			
 			listView.setAdapter(arrayAdapter);
+			
+			listView.setOnItemClickListener(new OnItemClickListener()
+			{
+				
+				public void onItemClick(AdapterView<?> parent, View view,
+		    	        int position, long id)
+				{
+					Track t = new Track();
+					t = ((Track)parent.getAdapter().getItem(position));
+					Bundle bundle = new Bundle();			
+					bundle.putSerializable("Track", t);
+					Intent intent = new Intent(TrackActivity.this, PlayTrackActivity.class);
+					intent.putExtras(bundle);
+					startActivity(intent);			
+				}
+			});		
 		}
 	}
 	

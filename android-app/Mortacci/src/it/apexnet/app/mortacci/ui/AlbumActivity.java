@@ -175,6 +175,7 @@ public class AlbumActivity extends Activity{
 					track.title = trackJSONObject.getString("title");
 					track.description = trackJSONObject.getString("description");
 					track.playbackCount = trackJSONObject.getInt("playback_count");
+					track.slugAlbum = albums[i].slug;
 					
 					albums[i].tracks.add(track);
 				}				
