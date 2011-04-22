@@ -19,7 +19,7 @@ import android.util.Log;
 public class HttpCall {
 
 	private static String TAG = "HttpCall";
-	static int timeout = 15000;		
+	static int timeout = 5000;		
 	
 	public static String getJSONtext (String urlWS)
 	{			
