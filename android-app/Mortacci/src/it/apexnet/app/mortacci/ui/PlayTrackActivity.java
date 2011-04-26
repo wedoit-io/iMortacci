@@ -7,22 +7,29 @@ import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
 import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PlayTrackActivity extends Activity{
+public class PlayTrackActivity extends Activity implements Runnable{
 
+	private static String TAG = "PlayTrackActivity";
+	
 	private String urlMp3Streaming;
 	private MyMediaPlayer mp;
 	private boolean newInstancePlayer;
 	private boolean isPreparedMediaPlayer;
+	private ProgressDialog progDialog;
+	private MediaPlayerThread mediaPlayerThread;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,8 +37,9 @@ public class PlayTrackActivity extends Activity{
         
         setContentView(R.layout.activity_play_track);
         
+        this.progDialog = new ProgressDialog(this);
         
-        Button buttonMatches = (Button)findViewById (R.id.play_btn_img);
+        Button playButton = (Button)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
 		
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -48,53 +56,40 @@ public class PlayTrackActivity extends Activity{
 			((TextView) findViewById(R.id.title_track)).setText(track.title);
 			((TextView) findViewById(R.id.description_track)).setText(track.description);			
 			
-			this.urlMp3Streaming = "http://api.soundcloud.com/tracks/" + Integer.toString(track.ID) + "/stream?client_id=7Eo3B0odlpK5FvOVUKDnQ";
+			this.mediaPlayerThread = new MediaPlayerThread();
+			this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);			
 			this.newInstancePlayer = true;
-			mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
 			
-			buttonMatches.setOnClickListener(new OnClickListener(){
+			mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
+					
+			
+			playButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
+				
+				try
+				{
+				if (!isPreparedMediaPlayer )
+					progDialog.show();
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, "error prog dialog");
+					progDialog.dismiss();
+				}
 				//MediaPlayer mp = MediaPlayer.create(PlayTrackActivity.this, R.raw.file1);
 			    //mp.start();
-				isPreparedMediaPlayer = false;
 				
-				try {
-					mp.setDataSource(urlMp3Streaming);
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				try {
-					mp.prepare();					
-				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				int waited = 0;
-				int timeWaiting = 3000;
-				/*while (!isPreparedMediaPlayer && (waited < timeWaiting))
+				try
 				{
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					waited += 100;
-				}*/
+					Log.i(TAG, "try to start media player");
+					mediaPlayerThread.start();
+				}
+				catch (Exception ex)
+				{
+					Log.e(TAG, ex.getMessage());
+				}
 				
-				mp.start();
-				newInstancePlayer = false;
+				newInstancePlayer = false;		
 			}
 		 });
 			
@@ -102,8 +97,23 @@ public class PlayTrackActivity extends Activity{
 			{
 				public void onPrepared(MediaPlayer mp)
 				{
+					progDialog.dismiss();
 					isPreparedMediaPlayer = true;
+					Log.i(TAG, "media player prepared");
 				}
+			});
+			
+			this.mp.setOnCompletionListener(new OnCompletionListener()
+			{
+
+				public void onCompletion(MediaPlayer mp) {
+					// TODO Auto-generated method stub
+					Log.i(TAG, "on completion media player");
+					mp.reset();
+					isPreparedMediaPlayer = false;
+					mediaPlayerThread.stop();
+				}
+				
 			});
 		}
 	}
@@ -131,5 +141,71 @@ public class PlayTrackActivity extends Activity{
 		else
 			i.setImageResource(R.drawable.default_img);
 		
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	class MediaPlayerThread implements Runnable
+	{
+
+		private Thread mpThread;
+		
+		
+		public void start()
+		{
+			this.mpThread = new Thread()
+			{
+				@Override
+				public void run() {
+					
+					Log.i(TAG, "run mpThread");
+					// TODO Auto-generated method stub
+					try {
+						mp.setDataSource(urlMp3Streaming);
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						mp.prepare();					
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+					Log.i(TAG, "start media player");
+					mp.start();		
+				}
+			};
+			
+			this.mpThread.start();
+		}
+		
+		
+		
+		public void stop()
+		{
+			this.mpThread.interrupt();
+			this.mpThread = null;
+		}
+
+
+
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }
