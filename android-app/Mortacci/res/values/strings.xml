@@ -6,5 +6,9 @@
     <string name="albumsWithTracksURIws">/albums?loadtracks=true</string>
     <string name="albumsURIws">/albums</string>
     <string name="tracksURIws">/tracks</string>
-    <string name="albumsActivity">Dialetti</string>    
+    <string name="albumsActivity">Dialetti</string>
+    <string name="apiSoundCloudURL">http://api.soundcloud.com/tracks/</string>
+    <string name="apiSoundCloudStreamID">/stream?client_id=7Eo3B0odlpK5FvOVUKDnQ</string>
+
+     
 </resources>
