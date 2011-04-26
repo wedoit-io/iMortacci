@@ -1,6 +1,5 @@
 package it.apexnet.app.mortacci.ui;
 
-import java.io.Serializable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,8 +7,8 @@ import org.json.JSONTokener;
 
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
+import it.apexnet.app.mortacci.library.Albums;
 import it.apexnet.app.mortacci.library.Track;
-import it.apexnet.mortacci.io.HttpCall;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,15 +19,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.Toast;
+
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AlbumActivity extends Activity{
@@ -38,7 +37,7 @@ public class AlbumActivity extends Activity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+                
         setContentView(R.layout.activity_albums);
         ((TextView) findViewById(R.id.title_text)).setText(getTitle());
         
@@ -50,8 +49,12 @@ public class AlbumActivity extends Activity{
 		{
 			try
 			{
+				Bundle bundle = getIntent().getExtras();
+				//final Albums albums = (Albums) bundle.get("Albums");
+				String jsonText =  bundle.getString("jsonText");							
+				
 				ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(this,
-						R.layout.list_item_albums, R.id.title_album, this.getAlbums())
+						R.layout.list_item_albums, R.id.title_album, this.getAlbums(jsonText))
 				{
 					
 					@Override
@@ -94,12 +97,18 @@ public class AlbumActivity extends Activity{
 						intent.putExtras(bundle);
 						startActivity(intent);
 					}
-				});		
+				});
 			}
 			catch (Exception ex)
 			{
+				Log.e("Album activity", ex.getMessage());
+				Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
 				
 			}
+		}
+		else
+		{
+			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();			
 		}
 	}
 	
@@ -128,13 +137,9 @@ public class AlbumActivity extends Activity{
 		
 	}
 	
-	private Album [] getAlbums ()
-	{
-		String urlWS = getResources().getString(R.string.URIws) + getResources().getString(R.string.albumsWithTracksURIws);
-		
-		String jsonText = HttpCall.getJSONtext(urlWS);
-		
-		Album albums [] = null;
+	private Albums getAlbums (String jsonText)
+	{		
+		Albums albums = null;
 		
 		try
 		{
@@ -151,17 +156,19 @@ public class AlbumActivity extends Activity{
 				Log.e(TAG, ex.getMessage());
 			}
 			
-			albums = new Album[albumsArray.length()];
+			albums = new Albums();
 			
 			for (int i = 0; i < albumsArray.length(); i++ )
 			{
 				JSONObject albumJSONObject = albumsArray.getJSONObject(i);
 				
-				albums[i] = new Album();
-				albums[i].ID = albumJSONObject.getInt("id");
-				albums[i].slug = albumJSONObject.getString("slug");
-				albums[i].description = albumJSONObject.getString("description");
-				albums[i].title = albumJSONObject.getString("title");
+				Album album = new Album();
+				
+				
+				album.ID = albumJSONObject.getInt("id");
+				album.slug = albumJSONObject.getString("slug");
+				album.description = albumJSONObject.getString("description");
+				album.title = albumJSONObject.getString("title");
 				
 				JSONArray tracksArray = albumJSONObject.getJSONArray("tracks");
 				for (int j = 0; j < tracksArray.length(); j++)
@@ -169,16 +176,17 @@ public class AlbumActivity extends Activity{
 					JSONObject trackJSONObject = tracksArray.getJSONObject(j);
 					
 					Track track = new Track();
-					track.album_ID = albums[i].ID;
+					track.album_ID = album.ID;
 					track.ID = trackJSONObject.getInt("id");
 					track.slug = trackJSONObject.getString("slug");
 					track.title = trackJSONObject.getString("title");
 					track.description = trackJSONObject.getString("description");
 					track.playbackCount = trackJSONObject.getInt("playback_count");
-					track.slugAlbum = albums[i].slug;
+					track.slugAlbum = album.slug;
 					
-					albums[i].tracks.add(track);
-				}				
+					album.tracks.add(track);
+				}
+				albums.add(album);
 			}
 		}
 		catch (Exception ex)

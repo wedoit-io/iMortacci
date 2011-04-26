@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class TrackActivity extends Activity{
@@ -34,6 +35,8 @@ public class TrackActivity extends Activity{
         ListView listView = (ListView) findViewById(R.id.tracksListView);
         
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+        try
+        {
 		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
 		{
 			Bundle bundle = getIntent().getExtras();
@@ -90,6 +93,14 @@ public class TrackActivity extends Activity{
 				}
 			});		
 		}
+		else
+		{
+			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();			
+		}
+        }catch (Exception e)
+        {
+        	Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
+        }
 	}
 	
 	private void setImgAlbum (Album a, ImageView i)

@@ -71,7 +71,12 @@ public class HttpCall {
 			
 			jsonText = MyLibrary.convertStreamToString(instream);
 		}
-		
+		try {
+			instream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return jsonText;
 	}
 }

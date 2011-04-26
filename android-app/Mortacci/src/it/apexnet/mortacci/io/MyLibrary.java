@@ -31,7 +31,7 @@ public class MyLibrary {
 	            e.printStackTrace();
 	        } finally {
 	            try {
-	                is.close();
+	            	inputStreamReader.close();
 	            } catch (IOException e) {
 	                e.printStackTrace();
 	            }
