@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".ui.PlayTrackActivity" android:label="@string/albumsActivity" >            
         </activity>
+        <activity android:name="com.google.ads.AdActivity" 
+              android:configChanges="keyboard|keyboardHidden|orientation"/>
     </application>
     <uses-sdk android:minSdkVersion="4" />
 
