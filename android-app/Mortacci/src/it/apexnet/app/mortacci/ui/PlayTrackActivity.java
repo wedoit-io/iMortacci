@@ -3,7 +3,6 @@ package it.apexnet.app.mortacci.ui;
 import java.io.IOException;
 
 import it.apexnet.app.mortacci.R;
-import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
 import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
@@ -19,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PlayTrackActivity extends Activity implements Runnable{
 
@@ -45,76 +45,87 @@ public class PlayTrackActivity extends Activity implements Runnable{
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
 		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
 		{
-			mp = null;
-			Bundle bundle = getIntent().getExtras();
-			
-			Track track = (Track)bundle.get("Track");
-			setImgAlbum (track , trackImage);
-			
-			((TextView) findViewById(R.id.title_text)).setText(track.title);
-			
-			((TextView) findViewById(R.id.title_track)).setText(track.title);
-			((TextView) findViewById(R.id.description_track)).setText(track.description);			
-			
-			this.mediaPlayerThread = new MediaPlayerThread();
-			this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);			
-			this.newInstancePlayer = true;
-			
-			mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
+			try
+			{
+				mp = null;
+				Bundle bundle = getIntent().getExtras();
+				
+				Track track = (Track)bundle.get("Track");
+				setImgAlbum (track , trackImage);
+				
+				((TextView) findViewById(R.id.title_text)).setText(track.title);
+				
+				((TextView) findViewById(R.id.title_track)).setText(track.title);
+				((TextView) findViewById(R.id.description_track)).setText(track.description);			
+				
+				this.mediaPlayerThread = new MediaPlayerThread();
+				this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);			
+				this.newInstancePlayer = true;
+				
+				mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
+						
+				
+				playButton.setOnClickListener(new OnClickListener(){
+				public void onClick(View arg0) {
 					
-			
-			playButton.setOnClickListener(new OnClickListener(){
-			public void onClick(View arg0) {
+					try
+					{
+					if (!isPreparedMediaPlayer )
+						progDialog.show();
+					}
+					catch (Exception e)
+					{
+						Log.e(TAG, "error prog dialog");
+						progDialog.dismiss();
+					}
+					//MediaPlayer mp = MediaPlayer.create(PlayTrackActivity.this, R.raw.file1);
+				    //mp.start();
+					
+					try
+					{
+						Log.i(TAG, "try to start media player");
+						mediaPlayerThread.start();
+					}
+					catch (Exception ex)
+					{
+						Log.e(TAG, ex.getMessage());
+					}
+					
+					newInstancePlayer = false;		
+				}
+			 });
 				
-				try
+				this.mp.setOnPreparedListener(new OnPreparedListener()
 				{
-				if (!isPreparedMediaPlayer )
-					progDialog.show();
-				}
-				catch (Exception e)
-				{
-					Log.e(TAG, "error prog dialog");
-					progDialog.dismiss();
-				}
-				//MediaPlayer mp = MediaPlayer.create(PlayTrackActivity.this, R.raw.file1);
-			    //mp.start();
+					public void onPrepared(MediaPlayer mp)
+					{
+						progDialog.dismiss();
+						isPreparedMediaPlayer = true;
+						Log.i(TAG, "media player prepared");
+					}
+				});
 				
-				try
+				this.mp.setOnCompletionListener(new OnCompletionListener()
 				{
-					Log.i(TAG, "try to start media player");
-					mediaPlayerThread.start();
-				}
-				catch (Exception ex)
-				{
-					Log.e(TAG, ex.getMessage());
-				}
-				
-				newInstancePlayer = false;		
+	
+					public void onCompletion(MediaPlayer mp) {
+						// TODO Auto-generated method stub
+						Log.i(TAG, "on completion media player");
+						mp.reset();
+						isPreparedMediaPlayer = false;
+						mediaPlayerThread.stop();
+					}
+					
+				});
 			}
-		 });
-			
-			this.mp.setOnPreparedListener(new OnPreparedListener()
+			catch (Exception e)
 			{
-				public void onPrepared(MediaPlayer mp)
-				{
-					progDialog.dismiss();
-					isPreparedMediaPlayer = true;
-					Log.i(TAG, "media player prepared");
-				}
-			});
-			
-			this.mp.setOnCompletionListener(new OnCompletionListener()
-			{
-
-				public void onCompletion(MediaPlayer mp) {
-					// TODO Auto-generated method stub
-					Log.i(TAG, "on completion media player");
-					mp.reset();
-					isPreparedMediaPlayer = false;
-					mediaPlayerThread.stop();
-				}
-				
-			});
+				Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
+			}
+		}
+		else
+		{
+			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
 		}
 	}
 		 
