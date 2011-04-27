@@ -13,17 +13,21 @@
   	android:layout_width="fill_parent"  	
 	android:id="@+id/row_container"
 	android:layout_height="wrap_content" android:padding="5px"
-	android:background="@color/background_listview"
+	android:background="@color/title_background"
+	android:paddingTop="20dip"
  	android:shrinkColumns="0">
  	<TableRow>
  		<LinearLayout		
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:paddingBottom="20dip"
+		android:paddingTop="20dip">
 			<ImageView
 			android:id="@+id/image_preview"
 		 	android:layout_width="wrap_content"
-			android:layout_height="wrap_content"/>	
+			android:layout_height="wrap_content"
+			/>	
 			
 			<LinearLayout 
 			android:layout_width="wrap_content"
@@ -33,32 +37,35 @@
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"				
 				android:id="@+id/title_track"
-				android:textColor="@color/window_background"			
-				android:scrollHorizontally="true"
-				android:drawablePadding="10dip"
+				android:textColor="@color/titleTrack"			
+				android:scrollHorizontally="true"				
 				android:paddingLeft="15dip"
 				android:textStyle="bold"			
 				android:singleLine="true"
-				android:gravity="center">
+				android:gravity="center"
+				android:textSize="@dimen/text_size_medium">
 			</TextView>		
-			<TextView 
+			<it.apexnet.app.mortacci.widget.ScrollingTextView 
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/description_track"
 				android:textColor="@color/grey"
-				android:textSize="@dimen/text_size_medium"
+				android:textSize="@dimen/text_size_description"
 				android:paddingLeft="15dip"
 				android:maxLines="1"
-				android:scrollHorizontally="true">
-			</TextView>				
+				android:scrollHorizontally="true"
+				android:ellipsize="marquee"
+				android:marqueeRepeatLimit="marquee_forever">
+			</it.apexnet.app.mortacci.widget.ScrollingTextView>				
 		</LinearLayout>
 								
 		</LinearLayout> 		
  	</TableRow>
   </TableLayout>
   <Button android:id="@+id/play_btn_img"                                               
-                android:drawableTop="@drawable/play_btn_img"
+                android:drawableTop="@drawable/play_button_img_selector"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="25dip"
                 android:background="@null"/>
 </LinearLayout>

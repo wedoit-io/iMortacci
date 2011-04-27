@@ -4,7 +4,7 @@
 	<style name="MyTheme" parent="android:Theme.Light">
 		<item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:windowBackground">@color/window_background</item>        
 	</style>
 	
 	<style name="TitleBar">
@@ -29,6 +29,10 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>        
     </style>
+    	
+   	<style name="MyListView">
+   		
+   	</style>
     	
     <style name="MyItemListView">
     </style>	
