@@ -124,6 +124,13 @@ public class TrackActivity extends Activity{
 		public TextView PlaybackCountTextView;
 		public ImageView TrackImageView;
 	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();	
+		this.finish();		
+	}
 }
 
 

@@ -19,19 +19,24 @@ import android.util.Log;
 public class HttpCall {
 
 	private static String TAG = "HttpCall";
-	static int timeout = 5000;		
+	static int timeout = 5000;	
+	private static InputStream instream;
+	private static HttpGet get;
+	
 	
 	public static String getJSONtext (String urlWS)
 	{			
-
+		
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters, timeout);		
 		HttpClient client = new DefaultHttpClient();
 		String jsonText = "";
-		HttpGet get = new HttpGet(urlWS);
+		get = new HttpGet(urlWS);
 		HttpResponse response = null;
-		InputStream instream= null;
-						
+		instream = null;
+		try
+		{
+		
 		try 
 		{
 			response = client.execute(get);
@@ -72,11 +77,42 @@ public class HttpCall {
 			jsonText = MyLibrary.convertStreamToString(instream);
 		}
 		try {
-			instream.close();
-		} catch (IOException e) {
+			closeStream();
+			
+			//instream.notifyAll();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		}
+		catch (Exception e)
+		{
+			closeStream();
+		}
 		return jsonText;
+	}
+	
+	public static void closeStream()
+	{
+		if (instream != null)
+		{
+			try {
+				instream.close();
+								
+				instream.notifyAll();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (Exception e)
+			{}			
+		}
+		try
+		{
+		if (get != null && !get.isAborted())
+			get.abort();
+		}
+		catch (Exception e)
+		{}
 	}
 }

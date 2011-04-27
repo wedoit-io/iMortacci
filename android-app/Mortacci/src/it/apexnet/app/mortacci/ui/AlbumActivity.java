@@ -222,4 +222,11 @@ public class AlbumActivity extends Activity implements AdListener{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();		
+		android.os.Process.killProcess(android.os.Process.myPid());
+	}
 }

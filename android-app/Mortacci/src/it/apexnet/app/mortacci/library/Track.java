@@ -27,47 +27,47 @@ public class Track implements Serializable{
 	
 	public void setImgAlbum (ImageView i)
 	{
-		if (this.slug.equalsIgnoreCase("abruzzo"))
+		if (this.slugAlbum.equalsIgnoreCase("abruzzo"))
 			i.setImageResource(R.drawable.abruzzo);
-		else if (this.slug.equalsIgnoreCase("basilicata"))
+		else if (this.slugAlbum.equalsIgnoreCase("basilicata"))
 			i.setImageResource(R.drawable.basilicata);
-		else if (this.slug.equalsIgnoreCase("calabria"))
+		else if (this.slugAlbum.equalsIgnoreCase("calabria"))
 			i.setImageResource(R.drawable.calabria);
-		else if (this.slug.equalsIgnoreCase("campania"))
+		else if (this.slugAlbum.equalsIgnoreCase("campania"))
 			i.setImageResource(R.drawable.campania);
-		else if (this.slug.equalsIgnoreCase("emiliaromagna"))			
+		else if (this.slugAlbum.equalsIgnoreCase("emiliaromagna"))			
 			i.setImageResource(R.drawable.emiliaromagna);
-		else if (this.slug.equalsIgnoreCase("friuli"))			
+		else if (this.slugAlbum.equalsIgnoreCase("friuli"))			
 			i.setImageResource(R.drawable.friuli);
-		else if (this.slug.equalsIgnoreCase("lazio"))
+		else if (this.slugAlbum.equalsIgnoreCase("lazio"))
 			i.setImageResource(R.drawable.lazio);		
-		else if (this.slug.equalsIgnoreCase("liguria"))			
+		else if (this.slugAlbum.equalsIgnoreCase("liguria"))			
 			i.setImageResource(R.drawable.liguria);
-		else if (this.slug.equalsIgnoreCase("lombardia"))			
+		else if (this.slugAlbum.equalsIgnoreCase("lombardia"))			
 			i.setImageResource(R.drawable.lombardia);									
-		else if (this.slug.equalsIgnoreCase("marche"))			
+		else if (this.slugAlbum.equalsIgnoreCase("marche"))			
 			i.setImageResource(R.drawable.marche);
-		else if (this.slug.equalsIgnoreCase("molise"))			
+		else if (this.slugAlbum.equalsIgnoreCase("molise"))			
 			i.setImageResource(R.drawable.molise);
-		else if (this.slug.equalsIgnoreCase("piemonte"))			
+		else if (this.slugAlbum.equalsIgnoreCase("piemonte"))			
 			i.setImageResource(R.drawable.piemonte);
-		else if (this.slug.equalsIgnoreCase("puglia"))
+		else if (this.slugAlbum.equalsIgnoreCase("puglia"))
 			i.setImageResource(R.drawable.puglia);
-		else if (this.slug.equalsIgnoreCase("sardegna"))
+		else if (this.slugAlbum.equalsIgnoreCase("sardegna"))
 			i.setImageResource(R.drawable.sardegna);
-		else if (this.slug.equalsIgnoreCase("sicilia"))
+		else if (this.slugAlbum.equalsIgnoreCase("sicilia"))
 			i.setImageResource(R.drawable.sicilia);		
-		else if (this.slug.equalsIgnoreCase("toscana"))
+		else if (this.slugAlbum.equalsIgnoreCase("toscana"))
 			i.setImageResource(R.drawable.toscana);
-		else if (this.slug.equalsIgnoreCase("trentino"))
+		else if (this.slugAlbum.equalsIgnoreCase("trentino"))
 			i.setImageResource(R.drawable.trentino);
-		else if (this.slug.equalsIgnoreCase("umbria"))
+		else if (this.slugAlbum.equalsIgnoreCase("umbria"))
 			i.setImageResource(R.drawable.umbria);
-		else if (this.slug.equalsIgnoreCase("valledaosta"))
+		else if (this.slugAlbum.equalsIgnoreCase("valledaosta"))
 			i.setImageResource(R.drawable.valledaosta);
-		else if (this.slug.equalsIgnoreCase("veneto"))
+		else if (this.slugAlbum.equalsIgnoreCase("veneto"))
 			i.setImageResource(R.drawable.veneto);
-		else if (this.slug.equalsIgnoreCase("reggiano"))
+		else if (this.slugAlbum.equalsIgnoreCase("reggiano"))
 			i.setImageResource(R.drawable.emiliaromagna);
 		else
 			i.setImageResource(R.drawable.default_img);
