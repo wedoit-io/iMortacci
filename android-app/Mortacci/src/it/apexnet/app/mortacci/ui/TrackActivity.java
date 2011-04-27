@@ -2,10 +2,13 @@ package it.apexnet.app.mortacci.ui;
 
 import java.util.ArrayList;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
-import it.apexnet.app.mortacci.library.Tracks;
+import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +74,7 @@ public class TrackActivity extends Activity{
 					Track item = getItem (position);
 					viewHolder.TrackTitleTextView.setText(item.title);
 					viewHolder.PlaybackCountTextView.setText(String.valueOf(item.playbackCount) + " ascolti");
-					setImgAlbum (album , viewHolder.TrackImageView);
+					album.setImgAlbum(viewHolder.TrackImageView);
 					return convertView;
 				}				
 			};
@@ -101,32 +105,18 @@ public class TrackActivity extends Activity{
         {
         	Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
         }
+        // Create the adView
+		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
+	    // Lookup your LinearLayout assuming it’s been given
+	    // the attribute android:id="@+id/mainLayout"
+	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
+	    // Add the adView to it
+	    AdRequest request = new AdRequest();
+	    request.setTesting(true);
+    	layout.addView(adView);		    	
+	    adView.loadAd(request);
 	}
 	
-	private void setImgAlbum (Album a, ImageView i)
-	{
-		if (a.slug.equalsIgnoreCase("calabria"))
-			i.setImageResource(R.drawable.calabria);
-		else if (a.slug.equalsIgnoreCase("campania"))
-			i.setImageResource(R.drawable.campania);
-		else if (a.slug.equalsIgnoreCase("puglia"))
-			i.setImageResource(R.drawable.puglia);
-		else if (a.slug.equalsIgnoreCase("lazio"))
-			i.setImageResource(R.drawable.lazio);
-		else if (a.slug.equalsIgnoreCase("toscana"))
-			i.setImageResource(R.drawable.toscana);
-		else if (a.slug.equalsIgnoreCase("veneto"))
-			i.setImageResource(R.drawable.veneto);
-		else if (a.slug.equalsIgnoreCase("emiliaromagna"))
-			i.setImageResource(R.drawable.emiliaromagna);
-		else if (a.slug.equalsIgnoreCase("sardegna"))
-			i.setImageResource(R.drawable.sardegna);
-		else if (a.slug.equalsIgnoreCase("sicilia"))
-			i.setImageResource(R.drawable.sicilia);		
-		else
-			i.setImageResource(R.drawable.default_img);
-		
-	}
 	
 	private static class ViewHolder
 	{

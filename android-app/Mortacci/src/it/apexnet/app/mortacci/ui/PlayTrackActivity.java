@@ -2,8 +2,12 @@ package it.apexnet.app.mortacci.ui;
 
 import java.io.IOException;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Track;
+import it.apexnet.app.mortacci.widget.AdViewLoader;
 import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,10 +17,12 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +45,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
         
         this.progDialog = new ProgressDialog(this);
         
-        Button playButton = (Button)findViewById (R.id.play_btn_img);
+        ImageButton playButton = (ImageButton)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
 		
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -51,7 +57,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				Bundle bundle = getIntent().getExtras();
 				
 				Track track = (Track)bundle.get("Track");
-				setImgAlbum (track , trackImage);
+				track.setImgAlbum (trackImage);
 				
 				((TextView) findViewById(R.id.title_text)).setText(track.title);
 				
@@ -127,32 +133,19 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		{
 			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
 		}
-	}
-		 
-	private void setImgAlbum (Track t, ImageView i)
-	{
-		if (t.slugAlbum.equalsIgnoreCase("calabria"))
-			i.setImageResource(R.drawable.calabria);
-		else if (t.slugAlbum.equalsIgnoreCase("campania"))
-			i.setImageResource(R.drawable.campania);
-		else if (t.slugAlbum.equalsIgnoreCase("puglia"))
-			i.setImageResource(R.drawable.puglia);
-		else if (t.slugAlbum.equalsIgnoreCase("lazio"))
-			i.setImageResource(R.drawable.lazio);
-		else if (t.slugAlbum.equalsIgnoreCase("toscana"))
-			i.setImageResource(R.drawable.toscana);
-		else if (t.slugAlbum.equalsIgnoreCase("veneto"))
-			i.setImageResource(R.drawable.veneto);
-		else if (t.slugAlbum.equalsIgnoreCase("emiliaromagna"))
-			i.setImageResource(R.drawable.emiliaromagna);
-		else if (t.slugAlbum.equalsIgnoreCase("sardegna"))
-			i.setImageResource(R.drawable.sardegna);
-		else if (t.slugAlbum.equalsIgnoreCase("sicilia"))
-			i.setImageResource(R.drawable.sicilia);		
-		else
-			i.setImageResource(R.drawable.default_img);
 		
-	}
+		// Create the adView
+		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
+	    // Lookup your LinearLayout assuming it’s been given
+	    // the attribute android:id="@+id/mainLayout"
+	    LinearLayout layout = (LinearLayout)findViewById(R.id.banner_layout);
+	    // Add the adView to it
+	    AdRequest request = new AdRequest();
+	    request.setTesting(true);
+	    adView.setGravity(Gravity.BOTTOM);
+    	layout.addView(adView);		    	
+	    adView.loadAd(request);
+	}		
 
 	public void run() {
 		// TODO Auto-generated method stub

@@ -5,10 +5,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdRequest.ErrorCode;
+
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Albums;
 import it.apexnet.app.mortacci.library.Track;
+import it.apexnet.app.mortacci.widget.AdViewLoader;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +29,7 @@ import android.view.ViewGroup;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import android.widget.ImageView;
@@ -30,9 +38,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class AlbumActivity extends Activity{
+public class AlbumActivity extends Activity implements AdListener{
 	
-	private static String TAG = "AlbumActivity";	
+	private static String TAG = "AlbumActivity";			
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +84,7 @@ public class AlbumActivity extends Activity{
 						}							
 						Album item = getItem (position);
 						viewHolder.AlbumTitleTextView.setText(item.title);
-						setImgAlbum (item , viewHolder.AlbumImageView);
+						item.setImgAlbum (viewHolder.AlbumImageView);
 						return convertView;
 					}
 				};
@@ -110,32 +118,18 @@ public class AlbumActivity extends Activity{
 		{
 			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();			
 		}
-	}
-	
-	private void setImgAlbum (Album a, ImageView i)
-	{
-		if (a.slug.equalsIgnoreCase("calabria"))
-			i.setImageResource(R.drawable.calabria);
-		else if (a.slug.equalsIgnoreCase("campania"))
-			i.setImageResource(R.drawable.campania);
-		else if (a.slug.equalsIgnoreCase("puglia"))
-			i.setImageResource(R.drawable.puglia);
-		else if (a.slug.equalsIgnoreCase("lazio"))
-			i.setImageResource(R.drawable.lazio);
-		else if (a.slug.equalsIgnoreCase("toscana"))
-			i.setImageResource(R.drawable.toscana);
-		else if (a.slug.equalsIgnoreCase("veneto"))
-			i.setImageResource(R.drawable.veneto);
-		else if (a.slug.equalsIgnoreCase("emiliaromagna"))
-			i.setImageResource(R.drawable.emiliaromagna);
-		else if (a.slug.equalsIgnoreCase("sardegna"))
-			i.setImageResource(R.drawable.sardegna);
-		else if (a.slug.equalsIgnoreCase("sicilia"))
-			i.setImageResource(R.drawable.sicilia);		
-		else
-			i.setImageResource(R.drawable.default_img);
 		
-	}
+		// Create the adView
+		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
+	    // Lookup your LinearLayout assuming it’s been given
+	    // the attribute android:id="@+id/mainLayout"
+	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
+	    // Add the adView to it
+	    AdRequest request = new AdRequest();
+	    request.setTesting(true);
+    	layout.addView(adView);		    	
+	    adView.loadAd(request);
+	}	
 	
 	private Albums getAlbums (String jsonText)
 	{		
@@ -203,4 +197,29 @@ public class AlbumActivity extends Activity{
     	public TextView AlbumTitleTextView;    	
 		public ImageView AlbumImageView;
     }
+
+	public void onDismissScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onLeaveApplication(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onPresentScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onReceiveAd(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
