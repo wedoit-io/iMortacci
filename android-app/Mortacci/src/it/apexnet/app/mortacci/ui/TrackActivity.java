@@ -28,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class TrackActivity extends Activity{
 
-	private static String TAG = "TrackActivity";
+	//private static String TAG = "TrackActivity";
 		
 	@Override
     public void onCreate(Bundle savedInstanceState) {

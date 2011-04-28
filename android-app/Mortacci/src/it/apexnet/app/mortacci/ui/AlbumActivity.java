@@ -165,7 +165,7 @@ public class AlbumActivity extends Activity implements AdListener{
 				album.title = albumJSONObject.getString("title");
 				
 				JSONArray tracksArray = albumJSONObject.getJSONArray("tracks");
-				for (int j = 0; j < tracksArray.length(); j++)
+				for (int j = tracksArray.length() -1 ; j >= 0 ; j--)
 				{
 					JSONObject trackJSONObject = tracksArray.getJSONObject(j);
 					

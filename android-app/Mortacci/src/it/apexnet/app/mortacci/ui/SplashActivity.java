@@ -1,8 +1,5 @@
 package it.apexnet.app.mortacci.ui;
 
-
-import java.nio.channels.ClosedByInterruptException;
-
 import it.apexnet.app.mortacci.R;
 import it.apexnet.mortacci.io.HttpCall;
 import android.app.Activity;
@@ -19,7 +16,7 @@ public class SplashActivity extends Activity implements Runnable {
 
 	private static String TAG = "SplashActivity";
 	protected boolean _active = true;
-	protected int _splashTime = 800;
+	protected int _splashTime = 1000; // 10 sec
 	protected int _minSplashTime = 2000;
 	protected int waited;
 	Thread getDataThread, splashThread;
