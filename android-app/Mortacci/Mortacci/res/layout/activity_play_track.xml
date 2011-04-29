@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/relative_layout"
+        android:background="@color/playActivityBackground">
+
+<LinearLayout  
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:id="@+id/root_linear_layout">
+  
+  <LinearLayout style="@style/TitleBar">
+  <ImageButton style="@style/TitleBarAction" 
+         	android:id="@+id/home_image_button"        	
+            android:contentDescription="@string/description_home"            
+   			android:src="@drawable/home_img" />
+		<TextView style="@style/TitleBarText" />  
+  	</LinearLayout>
+  	
+  <TableLayout
+  	android:layout_width="fill_parent"  	
+	android:id="@+id/row_container"
+	android:layout_height="wrap_content" android:padding="5px"
+	android:background="@color/title_background"
+	android:paddingTop="20dip"
+ 	android:shrinkColumns="0">
+ 	<TableRow>
+ 		<LinearLayout		
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:paddingBottom="20dip"
+		android:paddingTop="20dip">
+			<ImageView
+			android:id="@+id/image_preview"
+		 	android:layout_width="100dip"
+			android:layout_height="100dip"
+			/>	
+			
+			<LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+			<TextView 
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"				
+				android:id="@+id/title_track"
+				android:textColor="@color/titleTrack"			
+				android:scrollHorizontally="true"				
+				android:paddingLeft="15dip"
+				android:textStyle="bold"			
+				android:singleLine="true"
+				android:gravity="center"
+				android:textSize="@dimen/text_size_medium">
+			</TextView>		
+			<it.apexnet.app.mortacci.widget.ScrollingTextView 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/description_track"
+				android:textColor="@color/grey"
+				android:textSize="@dimen/text_size_description"
+				android:paddingLeft="15dip"
+				android:maxLines="1"
+				android:scrollHorizontally="true"
+				android:ellipsize="marquee"
+				android:marqueeRepeatLimit="marquee_forever">
+			</it.apexnet.app.mortacci.widget.ScrollingTextView>				
+		</LinearLayout>
+								
+		</LinearLayout> 		
+ 	</TableRow>
+  </TableLayout>
+  <ImageButton android:id="@+id/play_btn_img"                                               
+                android:src="@drawable/play_button_img_selector"
+                android:layout_width="300dip"
+                android:layout_height="100dip"
+                android:scaleType="fitXY"   
+                android:layout_marginTop="25dip"
+                android:soundEffectsEnabled="true"
+                android:background="@color/playActivityBackground"
+                android:layout_gravity="center"/>
+</LinearLayout>
+<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:id="@+id/banner_layout"
+		android:layout_alignParentBottom="true">
+</LinearLayout>
+
+</RelativeLayout>
