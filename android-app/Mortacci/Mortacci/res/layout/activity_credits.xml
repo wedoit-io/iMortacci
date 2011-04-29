@@ -3,16 +3,20 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:background="@color/orange">
   
   	<LinearLayout style="@style/TitleBar">  	
 		<TextView style="@style/TitleBarText" />
 	</LinearLayout>
 	
-	<LinearLayout
-		android:background="@drawable/credits_background"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent">
-	</LinearLayout>	
+	<ImageView		
+	 	android:layout_width="wrap_content"	
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/credits_background"
+        android:scaleType="fitStart">
+        
+	</ImageView>	
 	  	
 </LinearLayout>

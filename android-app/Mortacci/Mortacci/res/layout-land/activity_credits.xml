@@ -11,7 +11,7 @@
 	</LinearLayout>
 	
 	<ImageView
-		android:src="@drawable/credits_background"
+		android:src="@drawable/credits_background_land"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent">
 	</ImageView>	
