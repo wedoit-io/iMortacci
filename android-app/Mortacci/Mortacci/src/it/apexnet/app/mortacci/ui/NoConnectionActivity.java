@@ -29,7 +29,7 @@ public class NoConnectionActivity extends Activity{
 		 Intent creditsIntent = new Intent(this, CreditsActivity.class);
 		 creditsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		 
-		 menu.add(0, 0, order++, "Credits").setIcon(R.drawable.credits).setIntent(creditsIntent);;
+		 menu.add(0, 0, order++, "Credits").setIcon(R.drawable.credits).setIntent(creditsIntent);
 			
 		 menu.add(0, 0, order++, "Exit").setIcon(R.drawable.exit).setOnMenuItemClickListener(new OnMenuItemClickListener()
 		 {

@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -125,7 +126,7 @@ public class AlbumActivity extends Activity implements AdListener{
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
 	    // Add the adView to it
 	    AdRequest request = new AdRequest();
-	    request.setTesting(true);
+	    request.setTesting(true);	    
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
 	}	

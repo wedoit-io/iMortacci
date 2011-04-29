@@ -101,35 +101,45 @@ public class SplashActivity extends Activity implements Runnable {
 	    getDataThread = new Thread(){
 	    	@Override
 	    	 public void run() {
+	    		
+	    		boolean hasJson = false;
 	    		 try
 	    		 {
 	    			 noConnection = true;
-	    			 sleep(1);	  
+	    			 
 	    			 Log.i(TAG, "getDataThread");
 	    			 String urlWS = getResources().getString(R.string.URIws) + getResources().getString(R.string.albumsWithTracksURIws);
-	    			 noConnection = false;
-	    			 jsonText = "";
-	    			 ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
-	    			 if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+	    			 
+	    			 
+	    			 while (!hasJson)
 	    			 {
-	    				 Log.i(TAG, "http call");
-						jsonText = HttpCall.getJSONtext(urlWS);
+		    			 jsonText = "";
+		    			 noConnection = false;
+		    			 ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+		    			 if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+		    			 {
+		    				 Log.i(TAG, "http call");
+							jsonText = HttpCall.getJSONtext(urlWS);
+		    			 }
+		    		 	    			 
+		    			 if (! jsonText.equals("") && !noConnection)
+		    			 {
+		    				 Log.i("Noconnection", "false");
+		    				 Log.i("jsonText", jsonText);
+		    				 noConnection = false;
+		    				 hasJson = true;
+		    				 notifyAlbums(jsonText);	
+		    				 splashThread.interrupt();
+			    			 interrupt();
+		    			 }
+		    			 sleep(1000);	  
 	    			 }
-	    		 	    			 
-	    			 if (! jsonText.equals("") && !noConnection)
-	    			 {
-	    				 Log.i("Noconnection", "false");
-	    				 Log.i("jsonText", jsonText);
-	    				 noConnection = false;
-	    				 notifyAlbums(jsonText);	
-	    				 splashThread.interrupt();
-		    			 interrupt();
-	    			 }	
 	    			 
 	    		 }	    		 
 	    		 catch (InterruptedException ex)
 	    		 {
-	    			 //
+	    			 //getDataThread has received an interrupt, so hasJson variable stop while cycle
+	    			 hasJson = true;
 	    			 HttpCall.closeStream();
 	    		 }
 	    		 catch (Exception  e)
