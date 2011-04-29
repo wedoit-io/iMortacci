@@ -1,7 +1,7 @@
 package it.apexnet.app.mortacci.ui;
 
 import it.apexnet.app.mortacci.R;
-import it.apexnet.mortacci.io.HttpCall;
+import it.apexnet.app.mortacci.io.HttpCall;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.ConnectivityManager;
