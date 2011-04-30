@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="black">#000000</color>
+	<color name="background_listview">#FFFFFF</color>
+	<color name="title_background">#ECEBDC</color>
+	<color name="title_text">#FFFFFF</color>
+	<color name="window_background">#ECEBDC</color>	
+	<color name="grey">#B2B2B2</color>
+	<color name="white">#FFFFFF</color>
+	<color name="titleTrack">#e35b1b</color>
+	<color name="yellow">#fbbd10</color>
+	<color name="orange">#e35b1b</color>
+	<color name="playActivityBackground">#3EA5A2</color>
+</resources>

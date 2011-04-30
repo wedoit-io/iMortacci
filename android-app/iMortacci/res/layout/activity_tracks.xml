@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/root_linear_layout"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+  <LinearLayout style="@style/TitleBar">
+  		<ImageButton style="@style/TitleBarAction" 
+         	android:id="@+id/home_image_button"        	
+            android:contentDescription="@string/description_home"            
+   			android:src="@drawable/home_img" />
+		<TextView style="@style/TitleBarText" />  
+         
+  	</LinearLayout>
+  	
+  <ListView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/tracksListView"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"	
+	android:layout_weight="3"			
+	android:scrollbars="vertical"
+	android:fastScrollEnabled="true"
+	android:background="@layout/rounded_corner"></ListView>
+</LinearLayout>
