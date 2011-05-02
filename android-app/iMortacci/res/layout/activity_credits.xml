@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:src="@drawable/credits_background"
-        android:scaleType="fitStart">
+        android:scaleType="fitCenter">
         
 	</ImageView>	
 	  	
