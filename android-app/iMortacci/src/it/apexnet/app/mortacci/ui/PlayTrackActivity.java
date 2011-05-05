@@ -12,6 +12,7 @@ import it.apexnet.app.mortacci.widget.AdViewLoader;
 import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -46,6 +47,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
         
         this.progDialog = new ProgressDialog(this);
         
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        
         ImageButton playButton = (ImageButton)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
 		
@@ -76,7 +79,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				public void onClick(View arg0) {
 					
 					try
-					{
+					{					
 					if (!isPreparedMediaPlayer )
 						progDialog.show();
 					}
@@ -120,7 +123,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						Log.i(TAG, "on completion media player");
 						mp.reset();
 						isPreparedMediaPlayer = false;
-						mediaPlayerThread.stop();
+						if (mediaPlayerThread != null)
+							mediaPlayerThread.stop();
 					}
 					
 				});
@@ -150,8 +154,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	    // the attribute android:id="@+id/mainLayout"
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.banner_layout);
 	    // Add the adView to it
-	    AdRequest request = new AdRequest();
-	    request.setTesting(true);
+	    AdRequest request = new AdRequest();	    
 	    adView.setGravity(Gravity.BOTTOM);
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
@@ -170,11 +173,10 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	class MediaPlayerThread implements Runnable
 	{
 
-		private Thread mpThread;
-		
+		private Thread mpThread;		
 		
 		public void start()
-		{
+		{						
 			this.mpThread = new Thread()
 			{
 				@Override
@@ -216,8 +218,11 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		
 		public void stop()
 		{
-			this.mpThread.interrupt();
-			this.mpThread = null;
+			if (this.mpThread != null)
+			{
+				this.mpThread.interrupt();
+				this.mpThread = null;
+			}
 		}
 
 

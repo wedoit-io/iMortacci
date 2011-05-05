@@ -46,7 +46,7 @@ public class SplashActivity extends Activity implements Runnable {
 		    		Intent intent = new Intent(SplashActivity.this, AlbumActivity.class);		    		
 		    		intent.putExtras(bundle);
 		    		startActivity(intent);
-		    		Log.i("myGetDataThreadHandler", "siConnection");
+    		Log.i("myGetDataThreadHandler", "siConnection");
 		    		finish();	 
 	    		}
 	    			   		
@@ -121,7 +121,7 @@ public class SplashActivity extends Activity implements Runnable {
 		    				 Log.i(TAG, "http call");
 							jsonText = HttpCall.getJSONtext(urlWS);
 		    			 }
-		    		 	    			 
+    		 	    			 
 		    			 if (! jsonText.equals("") && !noConnection)
 		    			 {
 		    				 Log.i("Noconnection", "false");

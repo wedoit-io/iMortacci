@@ -20,6 +20,7 @@ import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,8 @@ public class AlbumActivity extends Activity implements AdListener{
                 
         setContentView(R.layout.activity_albums);
         ((TextView) findViewById(R.id.title_text)).setText(getTitle());
+        
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         // obtain reference to listview
 		ListView listView = (ListView) findViewById(R.id.dialettiListView);
@@ -124,8 +127,7 @@ public class AlbumActivity extends Activity implements AdListener{
 	    // the attribute android:id="@+id/mainLayout"
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
 	    // Add the adView to it
-	    AdRequest request = new AdRequest();
-	    request.setTesting(true);	    
+	    AdRequest request = new AdRequest();	       
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
 	}	

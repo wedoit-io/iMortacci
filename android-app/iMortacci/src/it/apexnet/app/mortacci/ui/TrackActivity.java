@@ -13,6 +13,7 @@ import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ public class TrackActivity extends Activity{
         setContentView(R.layout.activity_tracks);        
         
         ListView listView = (ListView) findViewById(R.id.tracksListView);
+        
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
         try
@@ -124,8 +127,7 @@ public class TrackActivity extends Activity{
 	    // the attribute android:id="@+id/mainLayout"
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
 	    // Add the adView to it
-	    AdRequest request = new AdRequest();
-	    request.setTesting(true);
+	    AdRequest request = new AdRequest();	    
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
 	}
