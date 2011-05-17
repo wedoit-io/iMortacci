@@ -46,7 +46,7 @@ public class SplashActivity extends Activity implements Runnable {
 		    		Intent intent = new Intent(SplashActivity.this, AlbumActivity.class);		    		
 		    		intent.putExtras(bundle);
 		    		startActivity(intent);
-    		Log.i("myGetDataThreadHandler", "siConnection");
+	    			Log.i("myGetDataThreadHandler", "siConnection");
 		    		finish();	 
 	    		}
 	    			   		
@@ -91,7 +91,7 @@ public class SplashActivity extends Activity implements Runnable {
 		    		getDataThread.interrupt();
 		    		interrupt();
 	            } catch(InterruptedException e) {
-	                // do nothing
+	                // do nothing	            	
 	            } finally {	            	
 	            }
 	        }

@@ -51,6 +51,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
         
         ImageButton playButton = (ImageButton)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
+		ImageButton shareButton = (ImageButton)findViewById(R.id.share_btn_img);
 		
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
 		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
@@ -60,7 +61,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				mp = null;
 				Bundle bundle = getIntent().getExtras();
 				
-				Track track = (Track)bundle.get("Track");
+				final Track track = (Track)bundle.get("Track");
 				track.setImgAlbum (trackImage);
 				
 				((TextView) findViewById(R.id.title_text)).setText(track.title);
@@ -80,13 +81,14 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					
 					try
 					{					
-					if (!isPreparedMediaPlayer )
+					if (!isPreparedMediaPlayer && progDialog != null)
 						progDialog.show();
 					}
 					catch (Exception e)
 					{
 						Log.e(TAG, "error prog dialog");
-						progDialog.dismiss();
+						if (progDialog != null && progDialog.isShowing())
+							progDialog.dismiss();
 					}
 					//MediaPlayer mp = MediaPlayer.create(PlayTrackActivity.this, R.raw.file1);
 				    //mp.start();
@@ -109,7 +111,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				{
 					public void onPrepared(MediaPlayer mp)
 					{
-						progDialog.dismiss();
+						if (progDialog != null && progDialog.isShowing())
+							progDialog.dismiss();
 						isPreparedMediaPlayer = true;
 						Log.i(TAG, "media player prepared");
 					}
@@ -125,6 +128,22 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						isPreparedMediaPlayer = false;
 						if (mediaPlayerThread != null)
 							mediaPlayerThread.stop();
+					}
+					
+				});
+				
+				
+				shareButton.setOnClickListener(new OnClickListener()
+				{
+
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						try
+						{
+							UIUtils.share(track.title, track.description, "http://www.imortacci.com/it/player/" + track.ID, PlayTrackActivity.this);
+						}
+						catch (Exception ex)
+						{}
 					}
 					
 				});
@@ -147,19 +166,32 @@ public class PlayTrackActivity extends Activity implements Runnable{
 			}
 			
 		});
+				
 		
 		// Create the adView
 		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
 	    // Lookup your LinearLayout assuming it’s been given
 	    // the attribute android:id="@+id/mainLayout"
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.banner_layout);
+	    layout.setGravity(Gravity.BOTTOM);
 	    // Add the adView to it
 	    AdRequest request = new AdRequest();	    
 	    adView.setGravity(Gravity.BOTTOM);
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
-	}		
-
+	}			
+	
+	@Override
+	public void onStop()
+	{
+		super.onStop();		
+		if (this.progDialog != null && this.progDialog.isShowing())
+			this.progDialog.dismiss();
+		
+		if (mediaPlayerThread != null)
+			mediaPlayerThread.stop();
+	}
+	
 	public void run() {
 		// TODO Auto-generated method stub
 		
