@@ -25,8 +25,7 @@ public class HttpCall {
 	
 	
 	public static String getJSONtext (String urlWS)
-	{			
-		
+	{					
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters, timeout);		
 		HttpClient client = new DefaultHttpClient();
@@ -98,8 +97,8 @@ public class HttpCall {
 		{
 			try {
 				instream.close();
-								
-				instream.notifyAll();
+				instream = null;				
+				//instream.notifyAll();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -110,7 +109,11 @@ public class HttpCall {
 		try
 		{
 		if (get != null && !get.isAborted())
+		{
 			get.abort();
+			get = null;
+		}
+			
 		}
 		catch (Exception e)
 		{}
