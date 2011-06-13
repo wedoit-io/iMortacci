@@ -2,6 +2,7 @@ package it.apexnet.app.mortacci.ui;
 
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.io.HttpCall;
+import it.apexnet.app.mortacci.provider.IMortacciDBProvider;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -23,6 +24,7 @@ public class SplashActivity extends Activity implements Runnable {
 	private boolean noConnection;
 	private String jsonText;
 	private Handler myGetDataThreadHandler, mySplashThreadHandler;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

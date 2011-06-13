@@ -97,6 +97,10 @@ public class TrackActivity extends Activity{
 					t = ((Track)parent.getAdapter().getItem(position));
 					Bundle bundle = new Bundle();			
 					bundle.putSerializable("Track", t);
+					bundle.putString("album_title", album.title);
+					bundle.putInt("album_id", album.ID);
+					bundle.putString("album_description", album.description);
+					bundle.putString("album_slug", album.slug);					
 					Intent intent = new Intent(TrackActivity.this, PlayTrackActivity.class);
 					intent.putExtras(bundle);
 					startActivity(intent);			
@@ -121,6 +125,15 @@ public class TrackActivity extends Activity{
 			
 		});
         
+		ImageButton favouriteButton = (ImageButton)findViewById(R.id.favourite_image_button);
+		favouriteButton.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View arg0) {
+				startActivity(new Intent(TrackActivity.this, FavouriteTracksActivity.class));
+			}
+			
+		});
+		
         // Create the adView
 		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
 	    // Lookup your LinearLayout assuming it’s been given

@@ -1,23 +1,34 @@
 package it.apexnet.app.mortacci.ui;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 
 import it.apexnet.app.mortacci.R;
+import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
+import it.apexnet.app.mortacci.provider.IMortacciDBContract.FavouriteTracksViewColumns;
+import it.apexnet.app.mortacci.provider.IMortacciDBContract.Tables;
+import it.apexnet.app.mortacci.provider.IMortacciDBContract.Views;
+import it.apexnet.app.mortacci.provider.IMortacciDBProvider;
+import it.apexnet.app.mortacci.util.MediaUtil;
 import it.apexnet.app.mortacci.util.UIUtils;
 import it.apexnet.app.mortacci.widget.AdViewLoader;
 import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -33,11 +44,15 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	private static String TAG = "PlayTrackActivity";
 	
 	private String urlMp3Streaming;
+	private String urlMp3Downloading;
 	private MyMediaPlayer mp;
 	private boolean newInstancePlayer;
 	private boolean isPreparedMediaPlayer;
 	private ProgressDialog progDialog;
 	private MediaPlayerThread mediaPlayerThread;
+	private IMortacciDBProvider db = new IMortacciDBProvider(this);
+	private Track track;
+	private boolean isFavouriteTrack = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,17 +67,23 @@ public class PlayTrackActivity extends Activity implements Runnable{
         ImageButton playButton = (ImageButton)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
 		ImageButton shareButton = (ImageButton)findViewById(R.id.share_btn_img);
+		ImageButton favouriteButton = (ImageButton)findViewById(R.id.favourite_btn_img);
 		
+		final Bundle bundle = getIntent().getExtras();
+		
+		Cursor cursor = this.db.query(false, Views.FAVOURITE_TRACKS_VIEW, new String[] {FavouriteTracksViewColumns._ID} , FavouriteTracksViewColumns.TRACK_ID +"=?",new String[] {Integer.toString(track.ID)}, null, null, null, null);
+		this.isFavouriteTrack = cursor.getCount() != 0;
+		cursor.close();		
         ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
 		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
 		{
 			try
 			{
 				mp = null;
-				Bundle bundle = getIntent().getExtras();
 				
-				final Track track = (Track)bundle.get("Track");
-				track.setImgAlbum (trackImage);
+				
+				this.track = (Track)bundle.get("Track");
+				this.track.setImgAlbum (trackImage);			
 				
 				((TextView) findViewById(R.id.title_text)).setText(track.title);
 				
@@ -70,11 +91,10 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				((TextView) findViewById(R.id.description_track)).setText(track.description);			
 				
 				this.mediaPlayerThread = new MediaPlayerThread();
-				this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);			
+				this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);				
 				this.newInstancePlayer = true;
 				
 				mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
-						
 				
 				playButton.setOnClickListener(new OnClickListener(){
 				public void onClick(View arg0) {
@@ -90,12 +110,10 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						if (progDialog != null && progDialog.isShowing())
 							progDialog.dismiss();
 					}
-					//MediaPlayer mp = MediaPlayer.create(PlayTrackActivity.this, R.raw.file1);
-				    //mp.start();
 					
 					try
 					{
-						Log.i(TAG, "try to start media player");
+						Log.i(TAG, "trying to start media player");
 						mediaPlayerThread.start();
 					}
 					catch (Exception ex)
@@ -117,6 +135,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						Log.i(TAG, "media player prepared");
 					}
 				});
+				
 				
 				this.mp.setOnCompletionListener(new OnCompletionListener()
 				{
@@ -147,6 +166,20 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					}
 					
 				});
+								
+				
+				favouriteButton.setOnClickListener (new OnClickListener() {
+					
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						try
+						{
+							new FavouriteSync().execute(bundle);
+						}
+						catch (Exception ex)
+						{}						
+					}
+				});
 			}
 			catch (Exception e)
 			{
@@ -166,12 +199,11 @@ public class PlayTrackActivity extends Activity implements Runnable{
 			}
 			
 		});
-				
 		
 		// Create the adView
 		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
 	    // Lookup your LinearLayout assuming it’s been given
-	    // the attribute android:id="@+id/mainLayout"
+	    // the attribute android:id="@+id/mainLayout"	
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.banner_layout);
 	    layout.setGravity(Gravity.BOTTOM);
 	    // Add the adView to it
@@ -180,6 +212,13 @@ public class PlayTrackActivity extends Activity implements Runnable{
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
 	}			
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();	
+		this.db.close();
+	}
 	
 	@Override
 	public void onStop()
@@ -202,6 +241,97 @@ public class PlayTrackActivity extends Activity implements Runnable{
     	UIUtils.goHome(this);
     }
 	
+	private class FavouriteSync extends AsyncTask<Bundle, Void, Void>
+	{
+
+		private final ProgressDialog dialog = new ProgressDialog(PlayTrackActivity.this);
+		
+		@Override
+		protected void onPreExecute() {			
+            this.dialog.show();		            
+		}
+		
+		@Override
+		protected Void doInBackground(Bundle... bundles) {
+			// TODO Auto-generated method stub
+			for (Bundle bundle : bundles)
+			{			
+				try
+				{
+					if (! isFavouriteTrack)
+					{					
+						final String albumTitle = (String)bundle.get("album_title");
+						final int albumId = (Integer)bundle.get("album_id");
+						final String albumDescription = (String)bundle.get("album_description");
+						final String albumSlug = (String)bundle.get("album_slug");
+						
+						ContentValues cValuesAlbum = new ContentValues();
+						cValuesAlbum.put(Album.ALBUM_ID, albumId);
+						cValuesAlbum.put(Album.DESCRIPTION, albumDescription);
+						cValuesAlbum.put(Album.SLUG, albumSlug);
+						cValuesAlbum.put(Album.TITLE, albumTitle);
+						db.insert(Tables.ALBUMS, Album.DESCRIPTION, cValuesAlbum);
+						
+						ContentValues cValuesTracks = new ContentValues();
+						cValuesTracks.put(Track.ALBUM_ID, albumId);
+						cValuesTracks.put(Track.DOWNLOAD_URL, track.downloadURL);
+						cValuesTracks.put(Track.TRACK_ID, track.ID);
+						cValuesTracks.put(Track.LIKE_COUNT, track.likeCount);
+						cValuesTracks.put(Track.PLAYBACK_COUNT, track.playbackCount);
+						cValuesTracks.put(Track.SLUG, track.slug);
+						cValuesTracks.put(Track.TITLE, track.title);
+						cValuesTracks.put(Track.DESCRIPTION, track.description);
+						cValuesTracks.put(Track.WAVEFORM_URL, track.waveformURL);
+						cValuesTracks.put(Track.FAVOURITE, 1);
+						db.insert(Tables.TRACKS, Track.TITLE, cValuesTracks);	
+						
+						ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+						if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+						{
+							String state = Environment.getExternalStorageState();
+							
+							// check if media is available, so i can read and write the media
+							if (Environment.MEDIA_MOUNTED.equals(state))
+							{
+								urlMp3Downloading = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudDownloadID);
+								try {
+									MediaUtil.createExternalStoragePrivateFileTrack(PlayTrackActivity.this, Integer.toString(track.ID) + ".mp3", urlMp3Downloading);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									Log.e(TAG, "Error dowloading track from soundcloud");							
+								}
+							}
+							else
+							{
+								// NO media mounted, roollnack insert on db
+							}
+						}
+						else
+						{
+							// NO connection, rollback insert on db
+						}
+							
+					}
+					else
+						Toast.makeText(PlayTrackActivity.this, "Mortaccione già tra i preferiti",  Toast.LENGTH_SHORT).show();
+					}
+				catch (Exception ex)
+				{
+					//rollback
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void x)
+		{
+			if(this.dialog.isShowing())
+                this.dialog.dismiss();
+		}
+		
+	}
+	
 	class MediaPlayerThread implements Runnable
 	{
 
@@ -217,7 +347,15 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					Log.i(TAG, "run mpThread");
 					// TODO Auto-generated method stub
 					try {
-						mp.setDataSource(urlMp3Streaming);
+						if (! isFavouriteTrack)
+							mp.setDataSource(urlMp3Streaming);
+						else
+						{
+							//
+							File file = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), Integer.toString(track.ID)+ ".mp3");
+							Log.i(TAG, file.getPath());
+							mp.setDataSource(file.getPath());
+						}
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -244,20 +382,16 @@ public class PlayTrackActivity extends Activity implements Runnable{
 			};
 			
 			this.mpThread.start();
-		}
-		
-		
+		}				
 		
 		public void stop()
 		{
-			if (this.mpThread != null)
+			if (this.mpThread != null)	
 			{
 				this.mpThread.interrupt();
 				this.mpThread = null;
 			}
 		}
-
-
 
 		public void run() {
 			// TODO Auto-generated method stub
