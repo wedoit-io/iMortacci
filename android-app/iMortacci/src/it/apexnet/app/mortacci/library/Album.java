@@ -1,14 +1,16 @@
 package it.apexnet.app.mortacci.library;
 
 import it.apexnet.app.mortacci.R;
+import it.apexnet.app.mortacci.provider.IMortacciDBContract.AlbumsColumns;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import android.provider.BaseColumns;
 import android.widget.ImageView;
 
 @SuppressWarnings("serial")
-public class Album implements Serializable{
+public class Album implements Serializable, AlbumsColumns, BaseColumns{
 	
 	public int ID;
 	public String slug;

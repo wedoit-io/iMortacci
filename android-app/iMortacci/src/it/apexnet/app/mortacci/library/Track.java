@@ -4,11 +4,13 @@ import it.apexnet.app.mortacci.R;
 
 import java.io.Serializable;
 
+import android.provider.BaseColumns;
 import android.widget.ImageView;
 
+import it.apexnet.app.mortacci.provider.IMortacciDBContract.TracksColumns;
 
 @SuppressWarnings("serial")
-public class Track implements Serializable{
+public class Track implements Serializable, TracksColumns, BaseColumns{
 	public static final String CLIENT_ID = "7Eo3B0odlpK5FvOVUKDnQ";
 	
 	public int album_ID;
