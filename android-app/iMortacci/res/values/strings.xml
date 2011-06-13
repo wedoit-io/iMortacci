@@ -8,6 +8,7 @@
     <string name="albumsActivity">Dialetti</string>
     <string name="apiSoundCloudURL">http://api.soundcloud.com/tracks/</string>
     <string name="apiSoundCloudStreamID">/stream?client_id=7Eo3B0odlpK5FvOVUKDnQ</string>
+    <string name="apiSoundCloudDownloadID">/download?client_id=7Eo3B0odlpK5FvOVUKDnQ</string>
 	<string name="description_home">home</string>
 	<string name="creditsActivity">Credits</string>
     <string name="share">Condividi ...</string> 

@@ -7,8 +7,11 @@
   android:layout_height="fill_parent">
   
   <LinearLayout style="@style/TitleBar">
-		<TextView style="@style/TitleBarText" />  
-         
+  		<ImageButton style="@style/TitleBarAction" 
+         	android:id="@+id/favourite_image_button"        	
+            android:contentDescription="@string/description_home"            
+   			android:src="@drawable/favourite_img" />
+		<TextView style="@style/TitleBarText" />           
   	</LinearLayout>
   	
   <ListView xmlns:android="http://schemas.android.com/apk/res/android" 

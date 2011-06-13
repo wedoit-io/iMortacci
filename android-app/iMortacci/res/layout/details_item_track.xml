@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"		
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingBottom="20dip"
+		android:paddingTop="20dip" android:orientation="horizontal">
+			<ImageView
+			android:id="@+id/image_preview"
+		 	android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:maxWidth="100dip"
+			android:maxHeight="100dip"
+			android:adjustViewBounds="true"					
+			/>	
+			
+			<LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+			<TextView 
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"				
+				android:id="@+id/title_track"
+				android:textColor="@color/titleTrack"			
+				android:scrollHorizontally="true"				
+				android:paddingLeft="15dip"
+				android:textStyle="bold"			
+				android:singleLine="true"
+				android:gravity="center"
+				android:textSize="@dimen/text_size_medium"
+				android:adjustViewBounds="true"	>
+			</TextView>		
+			<it.apexnet.app.mortacci.widget.ScrollingTextView 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/description_track"
+				android:textColor="@color/grey"
+				android:textSize="@dimen/text_size_description"
+				android:paddingLeft="15dip"
+				android:maxLines="1"
+				android:scrollHorizontally="true"
+				android:ellipsize="marquee"
+				android:marqueeRepeatLimit="marquee_forever"
+				android:adjustViewBounds="true"	>
+			</it.apexnet.app.mortacci.widget.ScrollingTextView>			 
+		</LinearLayout>							
+</LinearLayout>

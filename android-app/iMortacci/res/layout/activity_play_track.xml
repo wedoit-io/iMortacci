@@ -29,54 +29,8 @@
  	android:shrinkColumns="0"
  	android:adjustViewBounds="true"	
  	android:layout_weight="3">
- 	<TableRow>
- 		<LinearLayout		
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:paddingBottom="20dip"
-		android:paddingTop="20dip">
-			<ImageView
-			android:id="@+id/image_preview"
-		 	android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:maxWidth="100dip"
-			android:maxHeight="100dip"
-			android:adjustViewBounds="true"					
-			/>	
-			
-			<LinearLayout 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
-			<TextView 
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"				
-				android:id="@+id/title_track"
-				android:textColor="@color/titleTrack"			
-				android:scrollHorizontally="true"				
-				android:paddingLeft="15dip"
-				android:textStyle="bold"			
-				android:singleLine="true"
-				android:gravity="center"
-				android:textSize="@dimen/text_size_medium"
-				android:adjustViewBounds="true"	>
-			</TextView>		
-			<it.apexnet.app.mortacci.widget.ScrollingTextView 
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/description_track"
-				android:textColor="@color/grey"
-				android:textSize="@dimen/text_size_description"
-				android:paddingLeft="15dip"
-				android:maxLines="1"
-				android:scrollHorizontally="true"
-				android:ellipsize="marquee"
-				android:marqueeRepeatLimit="marquee_forever"
-				android:adjustViewBounds="true"	>
-			</it.apexnet.app.mortacci.widget.ScrollingTextView>				
-		</LinearLayout>
-								
-		</LinearLayout> 		
+ 	<TableRow >
+ 		<include layout="@layout/details_item_track"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
  	</TableRow>
   </TableLayout>
   <ImageButton android:id="@+id/play_btn_img"                                               
@@ -93,20 +47,39 @@
                 android:layout_gravity="center"
                 android:layout_weight="3"/>
                 
-                
-   <ImageButton android:id="@+id/share_btn_img"                                               
+	<LinearLayout android:layout_width="wrap_content"
+  		android:layout_height="wrap_content"
+	 	android:layout_weight="1"
+		android:orientation="horizontal"
+		android:layout_gravity="center"
+		android:adjustViewBounds="true"
+		android:layout_marginTop="25dip">       
+   		<ImageButton android:id="@+id/share_btn_img"                                               
 	  			android:src="@drawable/share_btn_img_selector"
 	  			android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 	  			android:maxWidth="100dip"
                 android:maxHeight="50dip"
                 android:adjustViewBounds="true"
-	  			android:scaleType="fitXY"   
-	  			android:layout_marginTop="25dip"
+	  			android:scaleType="fitXY"   	  			
 	  			android:soundEffectsEnabled="true"
 	  			android:background="@color/playActivityBackground"
-	  			android:layout_gravity="center"
-	  			android:layout_weight="1"/>
+	  			android:layout_gravity="left"
+	  			android:layout_marginRight="15dip"/>
+	  			
+		<ImageButton android:id="@+id/favourite_btn_img"                                               
+                android:src="@drawable/favourite_btn_img_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="100dip"
+                android:maxHeight="50dip"
+                android:scaleType="fitXY"                   
+                android:soundEffectsEnabled="true"                                
+                android:background="@color/playActivityBackground"
+                android:layout_gravity="right"
+                android:layout_marginLeft="15dip"/>	
+   	</LinearLayout>
 </LinearLayout>
 <LinearLayout
 		android:layout_width="fill_parent"
