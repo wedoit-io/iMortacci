@@ -2,7 +2,6 @@ package it.apexnet.app.mortacci.provider;
 
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
-import it.apexnet.app.mortacci.library.Track;
 import it.apexnet.app.mortacci.provider.IMortacciDBContract.FavouriteTracksViewColumns;
 import android.content.Context;
 import android.database.Cursor;

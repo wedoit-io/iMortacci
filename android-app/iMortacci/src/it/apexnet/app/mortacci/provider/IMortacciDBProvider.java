@@ -18,20 +18,27 @@ public class IMortacciDBProvider {
 	{
 		this.dbHelper = new IMortacciDB(context);
 	}
+		
+	public SQLiteDatabase getWritableDatabase()
+	{
+		return this.dbHelper.getWritableDatabase();
+	}
 	
 	public Cursor query (boolean distinct, String table, String [] columns, String selection,
 						String [] selectionArgs, String groupBy, String having, String orderBy,
 						String limit)
-	{
-		final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
-		
-		return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+	{		
+		return getWritableDatabase().query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
 	}
 	
 	public long insert (String table, String nullColumnHack, ContentValues values)
+	{		
+		return getWritableDatabase().insert(table, nullColumnHack, values);
+	}
+	
+	public void beginTransaction()
 	{
-		final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
-		return db.insert(table, nullColumnHack, values);
+		
 	}
 	
 	public void close()
