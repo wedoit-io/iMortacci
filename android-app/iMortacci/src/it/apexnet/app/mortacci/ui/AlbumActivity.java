@@ -11,6 +11,7 @@ import com.google.ads.AdSize;
 import com.google.ads.AdRequest.ErrorCode;
 
 import it.apexnet.app.mortacci.R;
+import it.apexnet.app.mortacci.io.HttpCall;
 import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Albums;
 import it.apexnet.app.mortacci.library.Track;
@@ -39,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AlbumActivity extends Activity {
@@ -46,6 +48,7 @@ public class AlbumActivity extends Activity {
 	private static String TAG = "AlbumActivity";
 	private final IMortacciDBProvider db = new IMortacciDBProvider(this);
 	private ListView listView;
+	private ArrayAdapter<Album> arrayAdapter;
 		
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,30 +62,81 @@ public class AlbumActivity extends Activity {
         // obtain reference to listview
 		this.listView = (ListView) findViewById(R.id.dialettiListView);        		
 		
+		final String urlWS = getResources().getString(R.string.URIws) + getResources().getString(R.string.albumsWithTracksURIws);
+		
 		//this.db = new IMortacciDBProvider(this);				
 		//Cursor cursor = this.db.query(false, Views.FAVOURITE_TRACKS_VIEW, FavouriteTracksViewColumns.COLUMNS , null, null, null, null, null, null);
 		
-		ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
-		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
-		{
+		//ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+		//if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+		//
+		
 			try
 			{
 				Bundle bundle = getIntent().getExtras();
 				//final Albums albums = (Albums) bundle.get("Albums");
-				String jsonText =  bundle.getString("jsonText");							
+				String jsonText = bundle != null ? bundle.getString("jsonText") : "";							
+				
+								
+				this.arrayAdapter = new ArrayAdapter<Album>(AlbumActivity.this,
+						R.layout.list_item_albums, R.id.title_album)
+				{
+					
+					@Override
+					public View getView (int position, View convertView, ViewGroup parent)
+					{
+						ViewHolder viewHolder = null;
+						if (convertView == null)
+						{
+							LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+							convertView = inflater.inflate(R.layout.list_item_albums, null);
+							viewHolder = new ViewHolder();
+							viewHolder.AlbumTitleTextView = (TextView)convertView.findViewById(R.id.title_album);
+							viewHolder.AlbumImageView = (ImageView)convertView.findViewById(R.id.image_preview);
+							convertView.setTag(viewHolder);
+						}
+						else
+						{
+							viewHolder = (ViewHolder)convertView.getTag();
+						}							
+						Album item = getItem (position);
+						viewHolder.AlbumTitleTextView.setText(item.title);
+						item.setImgAlbum (viewHolder.AlbumImageView);
+						return convertView;
+					}
+				};
+				
+				listView.setAdapter(arrayAdapter);
+				
+				listView.setOnItemClickListener(new OnItemClickListener()
+				{
+					
+					public void onItemClick(AdapterView<?> parent, View view,
+			    	        int position, long id)
+					{
+						
+						Album a = ((Album)parent.getAdapter().getItem(position));
+						Bundle bundle = new Bundle();			
+						bundle.putSerializable("Album", a);
+						Intent intent = new Intent(AlbumActivity.this, TrackActivity.class);						
+						intent.putExtras(bundle);
+						startActivity(intent);
+					}
+				});
+				
 				
 				new CreateAlbumsListSync().execute(jsonText);				
 			}
 			catch (Exception ex)
 			{
-				Log.e("Album activity", ex.getMessage());
-				startActivity (new Intent (this, NoConnectionActivity.class));
+				Log.e(TAG, ex.getMessage());
+				//Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
 			}
-		}
-		else
+		//}
+		/*else
 		{
-			startActivity (new Intent (this, NoConnectionActivity.class));			
-		}
+			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
+		}*/
 		
 		ImageButton favouriteButton = (ImageButton)findViewById(R.id.favourite_image_button);
 		favouriteButton.setOnClickListener(new OnClickListener()
@@ -91,6 +145,15 @@ public class AlbumActivity extends Activity {
 				startActivity(new Intent(AlbumActivity.this, FavouriteTracksActivity.class));
 			}
 			
+		});
+		
+		ImageButton refreshButton = (ImageButton)findViewById(R.id.refresh_image_button);
+		refreshButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				new RefreshAlbumsListSync().execute(urlWS);
+			}
 		});
 		
 		// Create the adView
@@ -105,7 +168,63 @@ public class AlbumActivity extends Activity {
 	}
 		
 	
-	private class CreateAlbumsListSync extends AsyncTask<String, Void, ArrayAdapter<Album>>
+	private class RefreshAlbumsListSync extends AsyncTask<String, Void, Albums>
+	{
+		private final ProgressDialog dialog = new ProgressDialog(AlbumActivity.this);
+		
+		@Override
+		protected void onPreExecute() {
+			this.dialog.setMessage("Loading ...");
+            this.dialog.show();		            
+		}
+		
+		@Override
+		protected Albums doInBackground(String... urlsWs) {
+			// TODO Auto-generated method stub
+			String jsonText = "";
+			Albums albums = null;
+			
+			for (String urlWs : urlsWs)
+			{
+				ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+				 if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+				 {
+					 Log.i(TAG, "http call");
+					 jsonText = HttpCall.getJSONtext(urlWs);
+					 
+					 if (!jsonText.equals(""))
+					 {																	
+						albums = getAlbums(jsonText);										
+					 }
+				 }
+			}
+			 			
+			return albums;
+		}
+		
+		@Override
+		protected void onPostExecute(Albums albums)
+		{		
+			if (albums != null && !albums.isEmpty())
+			{
+				arrayAdapter.clear();
+				
+				for (Album album : albums)
+					arrayAdapter.add(album);
+				
+				arrayAdapter.notifyDataSetChanged();
+			}
+			else
+			{
+				Toast.makeText(AlbumActivity.this, "No connection ...",  Toast.LENGTH_SHORT).show();
+			}			
+			
+			if(this.dialog.isShowing())
+                this.dialog.dismiss();
+		}
+	}
+	
+	private class CreateAlbumsListSync extends AsyncTask<String, Void, Albums>
 	{
 		private final ProgressDialog dialog = new ProgressDialog(AlbumActivity.this);
 		
@@ -115,65 +234,28 @@ public class AlbumActivity extends Activity {
 		}
 		
 		@Override
-		protected ArrayAdapter<Album> doInBackground(String... jsonTexts) {
+		protected Albums doInBackground(String... jsonTexts) {
 			// TODO Auto-generated method stub
 			Albums albums = null;
 			
 			for (String jsonText : jsonTexts)
 				albums = getAlbums(jsonText);
 			
-			ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(AlbumActivity.this,
-					R.layout.list_item_albums, R.id.title_album, albums)
-			{
-				
-				@Override
-				public View getView (int position, View convertView, ViewGroup parent)
-				{
-					ViewHolder viewHolder = null;
-					if (convertView == null)
-					{
-						LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						convertView = inflater.inflate(R.layout.list_item_albums, null);
-						viewHolder = new ViewHolder();
-						viewHolder.AlbumTitleTextView = (TextView)convertView.findViewById(R.id.title_album);
-						viewHolder.AlbumImageView = (ImageView)convertView.findViewById(R.id.image_preview);
-						convertView.setTag(viewHolder);
-					}
-					else
-					{
-						viewHolder = (ViewHolder)convertView.getTag();
-					}							
-					Album item = getItem (position);
-					viewHolder.AlbumTitleTextView.setText(item.title);
-					item.setImgAlbum (viewHolder.AlbumImageView);
-					return convertView;
-				}
-			};
-			
-			return arrayAdapter;
+			return albums;
 		}
 		
 		@Override
-		protected void onPostExecute(ArrayAdapter<Album> arrayAdapter)
-		{									
-			listView.setAdapter(arrayAdapter);
-			
-			listView.setOnItemClickListener(new OnItemClickListener()
+		protected void onPostExecute(Albums albums)
+		{				
+			if (albums != null && !albums.isEmpty())
 			{
+				arrayAdapter.clear();
 				
-				public void onItemClick(AdapterView<?> parent, View view,
-		    	        int position, long id)
-				{
-					
-					Album a = ((Album)parent.getAdapter().getItem(position));
-					Bundle bundle = new Bundle();			
-					bundle.putSerializable("Album", a);
-					Intent intent = new Intent(AlbumActivity.this, TrackActivity.class);						
-					intent.putExtras(bundle);
-					startActivity(intent);
-				}
-			});
-			
+				for (Album album : albums)
+					arrayAdapter.add(album);
+				
+				arrayAdapter.notifyDataSetChanged();			
+			}
 			if(this.dialog.isShowing())
                 this.dialog.dismiss();
 		}		
@@ -181,7 +263,7 @@ public class AlbumActivity extends Activity {
 	
 	private Albums getAlbums (String jsonText)
 	{		
-		Albums albums = null;
+		Albums albums = null;		
 		
 		try
 		{
@@ -236,7 +318,7 @@ public class AlbumActivity extends Activity {
 		}
 		catch (Exception ex)
 		{
-			Log.e("getAlbums", ex.getMessage());
+			Log.e("getAlbums", TAG);
 		}
 		
 		return albums;

@@ -7,21 +7,26 @@ import it.apexnet.app.mortacci.provider.IMortacciDBContract.FavouriteTracksViewC
 import it.apexnet.app.mortacci.provider.IMortacciDBContract.Views;
 import it.apexnet.app.mortacci.provider.IMortacciDBProvider;
 import it.apexnet.app.mortacci.util.UIUtils;
+import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
 import com.google.ads.AdRequest.ErrorCode;
 
 public class FavouriteTracksActivity extends Activity implements AdListener{
@@ -54,7 +59,19 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 			});
         }
         catch (Exception ex)
-        {}
+        {
+        	Log.e(TAG, "error");
+        }
+        
+     // Create the adView
+		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
+	    // Lookup your LinearLayout assuming it’s been given
+	    // the attribute android:id="@+id/mainLayout"
+	    LinearLayout layout = (LinearLayout)findViewById(R.id.root_linear_layout);
+	    // Add the adView to it
+	    AdRequest request = new AdRequest();	       
+    	layout.addView(adView);		    	
+	    adView.loadAd(request);
 	}
 	
 	private void onHomeClick ()

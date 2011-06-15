@@ -20,7 +20,9 @@ import it.apexnet.app.mortacci.widget.MyMediaPlayer;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -41,6 +43,14 @@ import android.widget.Toast;
 
 public class PlayTrackActivity extends Activity implements Runnable{
 
+	enum FavouriteResult
+	{
+		noSDMounted,
+		noConnectionNoMortaccione,
+		mortaccioneGiaPreferito,
+		Yeah
+	}
+	
 	private static String TAG = "PlayTrackActivity";
 	
 	private String urlMp3Streaming;
@@ -50,7 +60,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	private boolean isPreparedMediaPlayer;
 	private ProgressDialog progDialog;
 	private MediaPlayerThread mediaPlayerThread;
-	private IMortacciDBProvider db = new IMortacciDBProvider(this);
+	private IMortacciDBProvider db;
 	private Track track;
 	private boolean isFavouriteTrack = false;
 	
@@ -70,132 +80,134 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		ImageButton favouriteButton = (ImageButton)findViewById(R.id.favourite_btn_img);
 		
 		final Bundle bundle = getIntent().getExtras();
+		this.track = (Track)bundle.get("Track");
+		
+		this.db = new IMortacciDBProvider(this);
 		
 		Cursor cursor = this.db.query(false, Views.FAVOURITE_TRACKS_VIEW, new String[] {FavouriteTracksViewColumns._ID} , FavouriteTracksViewColumns.TRACK_ID +"=?",new String[] {Integer.toString(track.ID)}, null, null, null, null);
 		this.isFavouriteTrack = cursor.getCount() != 0;
 		cursor.close();		
-        ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
-		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+        
+		try
 		{
-			try
+			mp = null;
+			this.track.setImgAlbum (trackImage);			
+			
+			((TextView) findViewById(R.id.title_text)).setText(track.title);
+			
+			((TextView) findViewById(R.id.title_track)).setText(track.title);
+			((TextView) findViewById(R.id.description_track)).setText(track.description);			
+			
+			this.mediaPlayerThread = new MediaPlayerThread();
+			this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);				
+			this.newInstancePlayer = true;
+			
+			mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
+			
+			playButton.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				
+				try
+				{					
+				if (!isPreparedMediaPlayer && progDialog != null)
+					progDialog.show();
+				}
+				catch (Exception e)
+				{
+					Log.e(TAG, "error prog dialog");
+					if (progDialog != null && progDialog.isShowing())
+						progDialog.dismiss();
+				}
+				
+				try
+				{
+					Log.i(TAG, "trying to start media player");
+					mediaPlayerThread.start();
+				}
+				catch (Exception ex)
+				{
+					Log.e(TAG, ex.getMessage());
+				}
+				
+				newInstancePlayer = false;		
+			}
+		 });
+			
+			this.mp.setOnPreparedListener(new OnPreparedListener()
 			{
-				mp = null;
+				public void onPrepared(MediaPlayer mp)
+				{
+					if (progDialog != null && progDialog.isShowing())
+						progDialog.dismiss();
+					isPreparedMediaPlayer = true;
+					Log.i(TAG, "media player prepared");
+				}
+			});
+			
+			
+			this.mp.setOnCompletionListener(new OnCompletionListener()
+			{
+
+				public void onCompletion(MediaPlayer mp) {
+					// TODO Auto-generated method stub
+					Log.i(TAG, "on completion media player");
+					mp.reset();
+					isPreparedMediaPlayer = false;
+					if (mediaPlayerThread != null)
+						mediaPlayerThread.stop();
+				}
 				
-				
-				this.track = (Track)bundle.get("Track");
-				this.track.setImgAlbum (trackImage);			
-				
-				((TextView) findViewById(R.id.title_text)).setText(track.title);
-				
-				((TextView) findViewById(R.id.title_track)).setText(track.title);
-				((TextView) findViewById(R.id.description_track)).setText(track.description);			
-				
-				this.mediaPlayerThread = new MediaPlayerThread();
-				this.urlMp3Streaming = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudStreamID);				
-				this.newInstancePlayer = true;
-				
-				mp = MyMediaPlayer.getMyMediaPlayer(newInstancePlayer);
-				
-				playButton.setOnClickListener(new OnClickListener(){
-				public void onClick(View arg0) {
-					
-					try
-					{					
-					if (!isPreparedMediaPlayer && progDialog != null)
-						progDialog.show();
-					}
-					catch (Exception e)
-					{
-						Log.e(TAG, "error prog dialog");
-						if (progDialog != null && progDialog.isShowing())
-							progDialog.dismiss();
-					}
-					
+			});
+			
+			
+			shareButton.setOnClickListener(new OnClickListener()
+			{
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
 					try
 					{
-						Log.i(TAG, "trying to start media player");
-						mediaPlayerThread.start();
+						UIUtils.share(track.title, track.description, "http://www.imortacci.com/it/player/" + track.ID, PlayTrackActivity.this);
 					}
 					catch (Exception ex)
-					{
-						Log.e(TAG, ex.getMessage());
-					}
-					
-					newInstancePlayer = false;		
+					{}
 				}
-			 });
 				
-				this.mp.setOnPreparedListener(new OnPreparedListener()
-				{
-					public void onPrepared(MediaPlayer mp)
+			});
+							
+			
+			favouriteButton.setOnClickListener (new OnClickListener() {
+				
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					try
 					{
-						if (progDialog != null && progDialog.isShowing())
-							progDialog.dismiss();
-						isPreparedMediaPlayer = true;
-						Log.i(TAG, "media player prepared");
+						new FavouriteSync().execute(bundle);
 					}
-				});
-				
-				
-				this.mp.setOnCompletionListener(new OnCompletionListener()
-				{
-	
-					public void onCompletion(MediaPlayer mp) {
-						// TODO Auto-generated method stub
-						Log.i(TAG, "on completion media player");
-						mp.reset();
-						isPreparedMediaPlayer = false;
-						if (mediaPlayerThread != null)
-							mediaPlayerThread.stop();
-					}
-					
-				});
-				
-				
-				shareButton.setOnClickListener(new OnClickListener()
-				{
-
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						try
-						{
-							UIUtils.share(track.title, track.description, "http://www.imortacci.com/it/player/" + track.ID, PlayTrackActivity.this);
-						}
-						catch (Exception ex)
-						{}
-					}
-					
-				});
-								
-				
-				favouriteButton.setOnClickListener (new OnClickListener() {
-					
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						try
-						{
-							new FavouriteSync().execute(bundle);
-						}
-						catch (Exception ex)
-						{}						
-					}
-				});
-			}
-			catch (Exception e)
-			{
-				Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
-			}
+					catch (Exception ex)
+					{}						
+				}
+			});
 		}
-		else
+		catch (Exception e)
 		{
-			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
-		}
+			//Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
+		}		
 		
 		ImageButton homeButton = (ImageButton)findViewById(R.id.home_image_button);
 		homeButton.setOnClickListener(new OnClickListener()
 		{
 			public void onClick(View arg0) {
 				onHomeClick();
+			}
+			
+		});
+		
+		ImageButton favouriteActivityButton = (ImageButton)findViewById(R.id.favourite_image_button);
+		favouriteActivityButton.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View arg0) {
+				startActivity(new Intent(PlayTrackActivity.this, FavouriteTracksActivity.class));
 			}
 			
 		});
@@ -241,23 +253,30 @@ public class PlayTrackActivity extends Activity implements Runnable{
     	UIUtils.goHome(this);
     }
 	
-	private class FavouriteSync extends AsyncTask<Bundle, Void, Void>
+	private class FavouriteSync extends AsyncTask<Bundle, Void, FavouriteResult>
 	{
 
 		private final ProgressDialog dialog = new ProgressDialog(PlayTrackActivity.this);
 		
 		@Override
-		protected void onPreExecute() {			
+		protected void onPreExecute() {
+			this.dialog.setMessage(getResources().getString(R.string.downloading));
             this.dialog.show();		            
 		}
 		
 		@Override
-		protected Void doInBackground(Bundle... bundles) {
+		protected FavouriteResult doInBackground(Bundle... bundles) {
 			// TODO Auto-generated method stub
+			
+			final SQLiteDatabase database = db.getWritableDatabase();
+			FavouriteResult result = FavouriteResult.Yeah;
+			
 			for (Bundle bundle : bundles)
-			{			
+			{
+				database.beginTransaction();
 				try
 				{
+					
 					if (! isFavouriteTrack)
 					{					
 						final String albumTitle = (String)bundle.get("album_title");
@@ -270,7 +289,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						cValuesAlbum.put(Album.DESCRIPTION, albumDescription);
 						cValuesAlbum.put(Album.SLUG, albumSlug);
 						cValuesAlbum.put(Album.TITLE, albumTitle);
-						db.insert(Tables.ALBUMS, Album.DESCRIPTION, cValuesAlbum);
+						database.insert(Tables.ALBUMS, Album.DESCRIPTION, cValuesAlbum);
 						
 						ContentValues cValuesTracks = new ContentValues();
 						cValuesTracks.put(Track.ALBUM_ID, albumId);
@@ -283,7 +302,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						cValuesTracks.put(Track.DESCRIPTION, track.description);
 						cValuesTracks.put(Track.WAVEFORM_URL, track.waveformURL);
 						cValuesTracks.put(Track.FAVOURITE, 1);
-						db.insert(Tables.TRACKS, Track.TITLE, cValuesTracks);	
+						database.insert(Tables.TRACKS, Track.TITLE, cValuesTracks);	
 						
 						ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
 						if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
@@ -296,6 +315,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 								urlMp3Downloading = getResources().getString(R.string.apiSoundCloudURL) + Integer.toString(track.ID) + getResources().getString(R.string.apiSoundCloudDownloadID);
 								try {
 									MediaUtil.createExternalStoragePrivateFileTrack(PlayTrackActivity.this, Integer.toString(track.ID) + ".mp3", urlMp3Downloading);
+									database.setTransactionSuccessful();
+									result = FavouriteResult.Yeah;
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									Log.e(TAG, "Error dowloading track from soundcloud");							
@@ -303,31 +324,54 @@ public class PlayTrackActivity extends Activity implements Runnable{
 							}
 							else
 							{
-								// NO media mounted, roollnack insert on db
+								result = FavouriteResult.noSDMounted;								
 							}
 						}
 						else
 						{
-							// NO connection, rollback insert on db
+							result = FavouriteResult.noConnectionNoMortaccione;							
 						}
 							
 					}
 					else
-						Toast.makeText(PlayTrackActivity.this, "Mortaccione già tra i preferiti",  Toast.LENGTH_SHORT).show();
-					}
+						result = FavouriteResult.mortaccioneGiaPreferito;						
+				}
 				catch (Exception ex)
 				{
-					//rollback
+					database.endTransaction();
+					Log.e(TAG, ex.getMessage());
+				}
+				finally
+				{
+					database.endTransaction();
 				}
 			}
-			return null;
+			return result;
 		}
 		
 		@Override
-		protected void onPostExecute(Void x)
+		protected void onPostExecute(FavouriteResult result)
 		{
 			if(this.dialog.isShowing())
                 this.dialog.dismiss();
+			
+			
+			switch (result) {
+				case noSDMounted:
+					Toast.makeText(PlayTrackActivity.this, getResources().getString(R.string.noSDMounted),  Toast.LENGTH_SHORT).show();														
+					break;
+				case noConnectionNoMortaccione:
+					Toast.makeText(PlayTrackActivity.this, getResources().getString(R.string.noConnectionNoMortaccione),  Toast.LENGTH_SHORT).show();
+					break;
+				case mortaccioneGiaPreferito:
+					Toast.makeText(PlayTrackActivity.this,getResources().getString(R.string.mortaccioneGiaPreferito),  Toast.LENGTH_SHORT).show();
+					break;	
+				case Yeah:
+					Toast.makeText(PlayTrackActivity.this,getResources().getString(R.string.mortaccioneScaricatoEPreferito),  Toast.LENGTH_SHORT).show();
+					break;	
+			default:
+				break;
+			}
 		}
 		
 	}
@@ -348,7 +392,19 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					// TODO Auto-generated method stub
 					try {
 						if (! isFavouriteTrack)
-							mp.setDataSource(urlMp3Streaming);
+						{
+							ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+							if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+							{
+								mp.setDataSource(urlMp3Streaming);
+							}
+							else
+							{
+								Toast.makeText(PlayTrackActivity.this, "No connection", Toast.LENGTH_SHORT).show();
+								if (progDialog != null && progDialog.isShowing())
+									progDialog.dismiss();
+							}
+						}
 						else
 						{
 							//
