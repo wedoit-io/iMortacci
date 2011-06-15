@@ -10,6 +10,16 @@
     <string name="apiSoundCloudStreamID">/stream?client_id=7Eo3B0odlpK5FvOVUKDnQ</string>
     <string name="apiSoundCloudDownloadID">/download?client_id=7Eo3B0odlpK5FvOVUKDnQ</string>
 	<string name="description_home">home</string>
+	<string name="description_favourite">preferiti</string>
+	<string name="refresh">refresh</string>
 	<string name="creditsActivity">Credits</string>
     <string name="share">Condividi ...</string> 
+    <string name="noSDMounted">Nessuna scheda sd montata</string>
+    <string name="noConnectionNoMortaccione">No connection ... no Mortaccione !!!</string>
+    <string name="mortaccioneGiaPreferito">Mortaccione già tra i preferiti</string>
+    <string name="mortaccioneScaricatoEPreferito">Mortaccione scaricato e aggiunto tra i preferiti !!!</string>
+    <string name="noConnection">No connection ...</string>
+    <string name="loading">Loading ...</string>
+    <string name="downloading">Downloading ...</string>
+    
 </resources>

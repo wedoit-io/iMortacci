@@ -8,9 +8,13 @@
   
   <LinearLayout style="@style/TitleBar">
   		<ImageButton style="@style/TitleBarAction" 
+         	android:id="@+id/refresh_image_button"        	
+            android:contentDescription="@string/refresh"            
+   			android:src="@drawable/refresh_img" />
+  		<ImageButton style="@style/TitleBarAction" 
          	android:id="@+id/favourite_image_button"        	
-            android:contentDescription="@string/description_home"            
-   			android:src="@drawable/favourite_img" />
+            android:contentDescription="@string/description_favourite"            
+   			android:src="@drawable/favourite_img" />		
 		<TextView style="@style/TitleBarText" />           
   	</LinearLayout>
   	

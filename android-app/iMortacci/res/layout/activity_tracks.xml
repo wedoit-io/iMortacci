@@ -13,7 +13,7 @@
    			android:src="@drawable/home_img" />
    			<ImageButton style="@style/TitleBarAction" 
          	android:id="@+id/favourite_image_button"        	
-            android:contentDescription="@string/description_home"            
+            android:contentDescription="@string/description_favourite"            
    			android:src="@drawable/favourite_img" />
 		<TextView style="@style/TitleBarText" />  
          
