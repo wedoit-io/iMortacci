@@ -10,7 +10,7 @@ import android.content.Context;
 import android.os.Environment;
 
 public class MediaUtil {
-
+	
 	/***
 	 * Create a path where we will place our private file on external storage
 	 * @throws Exception 
@@ -23,5 +23,11 @@ public class MediaUtil {
 		
 		os.write(MyLibrary.DownloadFromURL(fileURL));			
 	}   
+	
+	public static void FileTrackOnExternalStorageDelete (Context context, String fileName) throws Exception {
+		
+		File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), fileName);
+		file.delete();
+	}
 		
 }
