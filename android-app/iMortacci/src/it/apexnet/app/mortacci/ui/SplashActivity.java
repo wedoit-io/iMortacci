@@ -99,7 +99,9 @@ public class SplashActivity extends Activity {
 		{			
 			if (!GetHasConnection())
 			{				
-				startActivity (new Intent (SplashActivity.this, FavouriteTracksActivity.class));
+				Intent i = new Intent (SplashActivity.this, FavouriteTracksActivity.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				startActivity (i);
     			Log.i("mySplashThreadHandler", "noconnection");
     			finish();
 			}

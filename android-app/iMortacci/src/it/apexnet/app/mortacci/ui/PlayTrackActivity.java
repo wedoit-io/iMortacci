@@ -93,7 +93,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 			mp = null;
 			this.track.setImgAlbum (trackImage);			
 			
-			((TextView) findViewById(R.id.title_text)).setText(track.title);
+			((TextView) findViewById(R.id.title_text)).setText(((String)bundle.get("album_title")));
 			
 			((TextView) findViewById(R.id.title_track)).setText(track.title);
 			((TextView) findViewById(R.id.description_track)).setText(track.description);			
@@ -226,6 +226,22 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	}			
 	
 	@Override
+	protected void onRestart()
+	{
+		try
+		{
+		super.onRestart();
+		this.db = new IMortacciDBProvider(this);
+		
+		Cursor cursor = this.db.query(false, Views.FAVOURITE_TRACKS_VIEW, new String[] {FavouriteTracksViewColumns._ID} , FavouriteTracksViewColumns.TRACK_ID +"=?",new String[] {Integer.toString(track.ID)}, null, null, null, null);
+		this.isFavouriteTrack = cursor.getCount() != 0;
+		cursor.close();
+		}
+		catch(Exception ex)
+		{}
+	}
+	
+	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();	
@@ -304,11 +320,10 @@ public class PlayTrackActivity extends Activity implements Runnable{
 						cValuesTracks.put(Track.FAVOURITE, 1);
 						database.insert(Tables.TRACKS, Track.TITLE, cValuesTracks);	
 						
+						String state = Environment.getExternalStorageState();
 						ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
 						if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
-						{
-							String state = Environment.getExternalStorageState();
-							
+						{							
 							// check if media is available, so i can read and write the media
 							if (Environment.MEDIA_MOUNTED.equals(state))
 							{
@@ -344,6 +359,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				finally
 				{
 					database.endTransaction();
+					database.close();
 				}
 			}
 			return result;
@@ -368,6 +384,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					break;	
 				case Yeah:
 					Toast.makeText(PlayTrackActivity.this,getResources().getString(R.string.mortaccioneScaricatoEPreferito),  Toast.LENGTH_SHORT).show();
+					isFavouriteTrack = true;
 					break;	
 			default:
 				break;

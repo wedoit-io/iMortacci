@@ -156,6 +156,7 @@ public class AlbumActivity extends Activity {
 			}
 		});
 		
+		
 		// Create the adView
 		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
 	    // Lookup your LinearLayout assuming it’s been given
@@ -340,7 +341,7 @@ public class AlbumActivity extends Activity {
 		 {
 
 			public boolean onMenuItemClick(MenuItem arg0) {
-				android.os.Process.killProcess(android.os.Process.myPid());
+				finish();
 				return false;
 			}
 			 
