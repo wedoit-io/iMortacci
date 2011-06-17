@@ -19,7 +19,7 @@ public class IMortacciDBContract {
 	}
 	
 	public interface TracksColumns
-	{
+	{		
 		String ALBUM_ID = "album_id";
 		String FK_ALBUM_ID = "fk_album_id";
 		String TRACK_ID = "track_id";		

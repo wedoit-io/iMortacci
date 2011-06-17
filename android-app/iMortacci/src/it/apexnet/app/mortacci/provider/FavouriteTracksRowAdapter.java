@@ -24,10 +24,10 @@ public class FavouriteTracksRowAdapter extends CursorAdapter{
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 
-		TextView titleTrack = (TextView)view.findViewById(R.id.title_track);
+		TextView titleAlbum = (TextView)view.findViewById(R.id.album_title);
 		
-		titleTrack.setText(cursor.getString(
-									cursor.getColumnIndex(FavouriteTracksViewColumns.TRACK_TITLE)));
+		titleAlbum.setText(cursor.getString(
+									cursor.getColumnIndex(FavouriteTracksViewColumns.ALBUM_TITLE)));
 		
 		Album a = new Album();
 		a.slug = cursor.getString(
@@ -35,16 +35,20 @@ public class FavouriteTracksRowAdapter extends CursorAdapter{
 		ImageView albumImage = (ImageView)view.findViewById(R.id.image_preview);			
 		a.setImgAlbum(albumImage);
 		
+		TextView titleTracktTextView = (TextView)view.findViewById(R.id.title_track);
+		titleTracktTextView.setText(cursor.getString(
+											cursor.getColumnIndex(FavouriteTracksViewColumns.TRACK_TITLE)));
 		
-		TextView playCountTextView = (TextView)view.findViewById(R.id.playback_count);
-		playCountTextView.setText(cursor.getString(
-											cursor.getColumnIndex(FavouriteTracksViewColumns.TRACK_PLAYBACK_COUNT)));
+		
+		TextView descriptionTrack = (TextView)view.findViewById(R.id.description_track);
+		descriptionTrack.setText(cursor.getString(
+											cursor.getColumnIndex(FavouriteTracksViewColumns.TRACK_DESCRIPTION)));
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		
-		final View view = this.mInflater.inflate(R.layout.list_item_tracks, parent, false);
+		final View view = this.mInflater.inflate(R.layout.list_item_favourite_tracks, parent, false);
 		bindView(view, context, cursor);
 		return view;
 	}	
