@@ -7,14 +7,22 @@
   android:layout_height="fill_parent">
   
   <LinearLayout style="@style/TitleBar">
+  	<ImageView style="@style/TitleBarSeparator" />
+  	
   		<ImageButton style="@style/TitleBarAction" 
          	android:id="@+id/refresh_image_button"        	
             android:contentDescription="@string/refresh"            
    			android:src="@drawable/refresh_img" />
+   			
+  		<ImageView style="@style/TitleBarSeparator" />
+  		
   		<ImageButton style="@style/TitleBarAction" 
          	android:id="@+id/favourite_image_button"        	
             android:contentDescription="@string/description_favourite"            
-   			android:src="@drawable/favourite_img" />		
+   			android:src="@drawable/favourite_img" />
+   		
+   		<ImageView style="@style/TitleBarSeparator" />
+   				
 		<TextView style="@style/TitleBarText" />           
   	</LinearLayout>
   	
