@@ -23,5 +23,7 @@
     <string name="loading">Loading ...</string>
     <string name="downloading">Downloading ...</string>
     <string name="cancelOption">Cancella Mortaccione ...</string>
-    <string name="description_search">search</string>    
+    <string name="description_search">search</string>  
+    <string name="analyticsUACode">UA-20354938-3</string>
+      
 </resources>
