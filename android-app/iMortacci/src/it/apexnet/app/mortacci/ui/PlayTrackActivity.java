@@ -40,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class PlayTrackActivity extends Activity implements Runnable{
 
@@ -51,7 +52,9 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		Yeah
 	}
 	
-	private static String TAG = "PlayTrackActivity";
+	GoogleAnalyticsTracker tracker;
+	
+	private static String TAG = "/PlayTrackActivity";
 	
 	private String urlMp3Streaming;
 	private String urlMp3Downloading;
@@ -70,9 +73,13 @@ public class PlayTrackActivity extends Activity implements Runnable{
         
         setContentView(R.layout.activity_play_track);
         
+        this.tracker = GoogleAnalyticsTracker.getInstance();
+        
         this.progDialog = new ProgressDialog(this);
         
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        
+        this.tracker.start(getResources().getString(R.string.analyticsUACode), 5, this);
         
         ImageButton playButton = (ImageButton)findViewById (R.id.play_btn_img);
 		ImageView trackImage = (ImageView)findViewById (R.id.image_preview);		
@@ -88,6 +95,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		this.isFavouriteTrack = cursor.getCount() != 0;
 		cursor.close();		
         
+		this.tracker.trackPageView(TAG);
+		
 		try
 		{
 			mp = null;
@@ -121,7 +130,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				
 				try
 				{
-					Log.i(TAG, "trying to start media player");
+					Log.i(TAG, "trying to start media player");		
+					tracker.trackEvent("Track", "play", track.title, 50);
 					mediaPlayerThread.start();
 				}
 				catch (Exception ex)
@@ -167,6 +177,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 					// TODO Auto-generated method stub
 					try
 					{
+						tracker.trackEvent("Track", "share", track.title, 40);
 						UIUtils.share(track.title, track.description, "http://www.imortacci.com/it/player/" + track.ID, PlayTrackActivity.this);
 					}
 					catch (Exception ex)
@@ -181,7 +192,8 @@ public class PlayTrackActivity extends Activity implements Runnable{
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					try
-					{
+					{		
+						tracker.trackEvent("Track", "add to Favourite", track.title, 30);
 						new FavouriteSync().execute(bundle);
 					}
 					catch (Exception ex)
@@ -206,7 +218,7 @@ public class PlayTrackActivity extends Activity implements Runnable{
 		ImageButton favouriteActivityButton = (ImageButton)findViewById(R.id.favourite_image_button);
 		favouriteActivityButton.setOnClickListener(new OnClickListener()
 		{
-			public void onClick(View arg0) {
+			public void onClick(View arg0) {								
 				startActivity(new Intent(PlayTrackActivity.this, FavouriteTracksActivity.class));
 			}
 			
@@ -245,6 +257,10 @@ public class PlayTrackActivity extends Activity implements Runnable{
 	public void onDestroy()
 	{
 		super.onDestroy();	
+		
+		this.tracker.dispatch();		
+		this.tracker.stop();
+		
 		this.db.close();
 	}
 	

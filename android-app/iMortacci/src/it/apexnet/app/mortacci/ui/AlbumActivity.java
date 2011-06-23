@@ -42,13 +42,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class AlbumActivity extends Activity {
 	
-	private static String TAG = "AlbumActivity";
+	private static String TAG = "/AlbumActivity";
 	private final IMortacciDBProvider db = new IMortacciDBProvider(this);
 	private ListView listView;
 	private ArrayAdapter<Album> arrayAdapter;
+	GoogleAnalyticsTracker tracker;
+	CreateAlbumsListSync createAlbumsThread;
+	RefreshAlbumsListSync refreshAlbumsThread;
 		
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class AlbumActivity extends Activity {
                 
         setContentView(R.layout.activity_albums);
         ((TextView) findViewById(R.id.title_text)).setText(getTitle());
+        this.tracker = GoogleAnalyticsTracker.getInstance();
         
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
@@ -63,7 +68,7 @@ public class AlbumActivity extends Activity {
 		this.listView = (ListView) findViewById(R.id.dialettiListView);        		
 		
 		final String urlWS = getResources().getString(R.string.URIws) + getResources().getString(R.string.albumsWithTracksURIws);
-		
+		this.tracker.start(getResources().getString(R.string.analyticsUACode), 5, this);
 		//this.db = new IMortacciDBProvider(this);				
 		//Cursor cursor = this.db.query(false, Views.FAVOURITE_TRACKS_VIEW, FavouriteTracksViewColumns.COLUMNS , null, null, null, null, null, null);
 		
@@ -77,7 +82,8 @@ public class AlbumActivity extends Activity {
 				//final Albums albums = (Albums) bundle.get("Albums");
 				String jsonText = bundle != null ? bundle.getString("jsonText") : "";							
 				
-								
+				tracker.trackPageView(TAG);
+				
 				this.arrayAdapter = new ArrayAdapter<Album>(AlbumActivity.this,
 						R.layout.list_item_albums, R.id.title_album)
 				{
@@ -119,13 +125,14 @@ public class AlbumActivity extends Activity {
 						Bundle bundle = new Bundle();			
 						bundle.putSerializable("Album", a);
 						Intent intent = new Intent(AlbumActivity.this, TrackActivity.class);						
-						intent.putExtras(bundle);
+						intent.putExtras(bundle);								
+						tracker.trackEvent("Album", "view", a.title, 10);						
 						startActivity(intent);
 					}
 				});
 				
-				
-				new CreateAlbumsListSync().execute(jsonText);				
+				this.createAlbumsThread = new CreateAlbumsListSync(); 
+				this.createAlbumsThread.execute(jsonText);				
 			}
 			catch (Exception ex)
 			{
@@ -152,7 +159,8 @@ public class AlbumActivity extends Activity {
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				new RefreshAlbumsListSync().execute(urlWS);
+				refreshAlbumsThread = new RefreshAlbumsListSync();
+				refreshAlbumsThread.execute(urlWS);
 			}
 		});
 		
@@ -334,7 +342,7 @@ public class AlbumActivity extends Activity {
 		 Intent creditsIntent = new Intent(this, CreditsActivity.class);
 		 creditsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		 
-		 menu.add(0, 0, order++, "Credits").setIcon(R.drawable.credits).setIntent(creditsIntent);;
+		 menu.add(0, 0, order++, "Credits").setIcon(R.drawable.credits).setIntent(creditsIntent);
 					 
 		 
 		 menu.add(0, 0, order++, "Exit").setIcon(R.drawable.exit).setOnMenuItemClickListener(new OnMenuItemClickListener()
@@ -387,10 +395,25 @@ public class AlbumActivity extends Activity {
 	}		
 	
 	@Override
+	public void onStop()
+	{
+		super.onStop();
+		
+		if (this.createAlbumsThread != null  && !this.createAlbumsThread.isCancelled())
+			this.createAlbumsThread.cancel(true);
+		
+		if (this.refreshAlbumsThread != null && !this.refreshAlbumsThread.isCancelled())
+			this.refreshAlbumsThread.cancel(true);		
+	}
+	
+	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();	
+		this.tracker.dispatch();
 		this.db.close();
+		this.tracker.stop();
+				
 		//this.dbHelper.close();
 		//android.os.Process.killProcess(android.os.Process.myPid());
 	}

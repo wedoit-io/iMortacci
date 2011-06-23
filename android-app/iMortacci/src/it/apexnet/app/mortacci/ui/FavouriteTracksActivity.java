@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
@@ -41,12 +42,13 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 
 	private final static int DELETE_MENU_OPTION = 1;
 	
-	private static String TAG = "FavouriteTracksActivity";
+	private static String TAG = "/FavouriteTracksActivity";
 	private FavouriteTracksRowAdapter adapter;
 	private Cursor cursor;
 	private IMortacciDBProvider db;
 	private ListView trackList;	
 	
+	GoogleAnalyticsTracker tracker;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,9 +56,14 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
         
         setContentView(R.layout.activity_favourite_tracks);
         ((TextView) findViewById(R.id.title_text)).setText(getTitle());
-             
+        
+        this.tracker = GoogleAnalyticsTracker.getInstance();
+        
         try
         {
+        	this.tracker.start(getResources().getString(R.string.analyticsUACode), 5, this);
+        	this.tracker.trackPageView(TAG);
+        	
 	        new CreateFavouriteListTracksSync().execute((Void []) null);
 	        
 	        this.trackList = (ListView) findViewById(R.id.favouriteTracksListView);       
@@ -97,7 +104,7 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 	protected void onRestart()
 	{
 		super.onRestart();
-		updateListView();
+		updateListView();		
 	}
 	
 	@Override
@@ -237,6 +244,9 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 						bundle.putString("album_slug", albumSlug);
 						Intent intent = new Intent(FavouriteTracksActivity.this, PlayTrackActivity.class);
 						intent.putExtras(bundle);
+						
+						tracker.trackEvent("Track", "view", track.title, 20);
+						
 						startActivity(intent);
 					}
 					
@@ -283,6 +293,10 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 	protected void onDestroy()
 	{
 		super.onDestroy();
+		
+		this.tracker.dispatch();		
+		this.tracker.stop();
+		
 		if (this.cursor != null)
 			this.cursor.close();
 		if (this.db != null)

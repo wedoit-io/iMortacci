@@ -14,7 +14,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +28,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class TrackActivity extends Activity{
 
-	//private static String TAG = "TrackActivity";
+	private static String TAG = "/TrackActivity";
+	GoogleAnalyticsTracker tracker;
 		
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,18 +42,27 @@ public class TrackActivity extends Activity{
         setContentView(R.layout.activity_tracks);        
         
         ListView listView = (ListView) findViewById(R.id.tracksListView);
+        listView.setTextFilterEnabled(true);
+        
+        this.tracker = GoogleAnalyticsTracker.getInstance();
         
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
-        ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+        //ConnectivityManager conn = (ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
         try
         {
-		if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
-		{
+		//if (conn.getActiveNetworkInfo() != null && conn.getActiveNetworkInfo().isConnected())
+		//{
+			
+			this.tracker.start(getResources().getString(R.string.analyticsUACode), 5, this);
 			Bundle bundle = getIntent().getExtras();
 					
+			
 			final Album album = (Album)bundle.get("Album");
 			((TextView) findViewById(R.id.title_text)).setText(album.title);
+			
+			this.tracker.trackPageView(TAG);
+						
 			
 			ArrayList<Track> trackList = album.tracks;
 			
@@ -102,16 +112,19 @@ public class TrackActivity extends Activity{
 					bundle.putString("album_description", album.description);
 					bundle.putString("album_slug", album.slug);					
 					Intent intent = new Intent(TrackActivity.this, PlayTrackActivity.class);
-					intent.putExtras(bundle);
+					intent.putExtras(bundle);					
+					
+					tracker.trackEvent("Track", "view", t.title, 20);
+					
 					startActivity(intent);			
 				}
 			});		
 		}
-		else
+		/*else
 		{
 			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();			
 		}
-        }catch (Exception e)
+        }*/catch (Exception e)
         {
         	Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
         }
@@ -161,6 +174,8 @@ public class TrackActivity extends Activity{
 	public void onDestroy()
 	{
 		super.onDestroy();	
+		this.tracker.dispatch();		
+		this.tracker.stop();
 		//this.finish();		
 	}
 }

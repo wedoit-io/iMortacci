@@ -21,7 +21,8 @@ public class SplashActivity extends Activity {
 	protected int _minSplashTime = 2000;
 	protected int waited;	
 	private boolean hasConnection;		
-	
+	SplashSync splashSync;
+	GetDataSync getDataSync;
 	
 	public boolean GetHasConnection()
 	{
@@ -45,8 +46,11 @@ public class SplashActivity extends Activity {
 	    this.hasConnection = false;	    
 	    this.waited = 0;
 	    	    
-	    new SplashSync().execute();
-	    new GetDataSync().execute();	    	      
+	    this.splashSync = new SplashSync();
+	    this.getDataSync = new GetDataSync();
+	    
+	    this.splashSync.execute();
+	    this.getDataSync.execute();
 	}
 
 	
@@ -59,6 +63,12 @@ public class SplashActivity extends Activity {
 			HttpCall.closeStream();			
 			SetHasConnection(false);	
 		    this.waited = 0;
+		    
+		    if (this.splashSync != null && !this.splashSync.isCancelled())
+		    	this.splashSync.cancel(true);
+		    
+		    if (this.getDataSync != null && !this.getDataSync.isCancelled())
+		    	this.getDataSync.cancel(true);
 		}
 		catch(Exception e)
 		{}
@@ -99,8 +109,7 @@ public class SplashActivity extends Activity {
 		{			
 			if (!GetHasConnection())
 			{				
-				Intent i = new Intent (SplashActivity.this, FavouriteTracksActivity.class);
-				i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				Intent i = new Intent (SplashActivity.this, FavouriteTracksActivity.class);				
 				startActivity (i);
     			Log.i("mySplashThreadHandler", "noconnection");
     			finish();
