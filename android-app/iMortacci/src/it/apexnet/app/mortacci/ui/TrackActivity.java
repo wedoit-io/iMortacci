@@ -1,14 +1,12 @@
 package it.apexnet.app.mortacci.ui;
 
-import java.util.ArrayList;
-
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 
 import it.apexnet.app.mortacci.R;
 import it.apexnet.app.mortacci.library.Album;
 import it.apexnet.app.mortacci.library.Track;
-import it.apexnet.app.mortacci.util.UIUtils;
+import it.apexnet.app.mortacci.provider.TracksArrayAdapter;
 import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.content.Context;
@@ -17,12 +15,10 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,7 +37,7 @@ public class TrackActivity extends Activity{
         
         setContentView(R.layout.activity_tracks);        
         
-        ListView listView = (ListView) findViewById(R.id.tracksListView);
+        final ListView listView = (ListView) findViewById(R.id.tracksListView);
         listView.setTextFilterEnabled(true);
         
         this.tracker = GoogleAnalyticsTracker.getInstance();
@@ -62,12 +58,12 @@ public class TrackActivity extends Activity{
 			((TextView) findViewById(R.id.title_text)).setText(album.title);
 			
 			this.tracker.trackPageView(TAG);
-						
+								
 			
-			ArrayList<Track> trackList = album.tracks;
+			TracksArrayAdapter arrayAdapter = new TracksArrayAdapter(this, album, (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE));
 			
-			ArrayAdapter<Track> arrayAdapter = new ArrayAdapter<Track>(this,
-					R.layout.list_item_albums, R.id.title_album, trackList)
+			/*ArrayAdapter<Track> arrayAdapter = new ArrayAdapter<Track>(this,
+					R.layout.list_item_tracks, R.id.title_track, trackList)
 			{
 				@Override
 				public View getView (int position, View convertView, ViewGroup parent)
@@ -94,7 +90,7 @@ public class TrackActivity extends Activity{
 					return convertView;
 				}				
 			};
-			
+					*/	
 			listView.setAdapter(arrayAdapter);
 			
 			listView.setOnItemClickListener(new OnItemClickListener()
@@ -127,22 +123,25 @@ public class TrackActivity extends Activity{
         }*/catch (Exception e)
         {
         	Toast.makeText(this, "No connection", Toast.LENGTH_SHORT).show();
-        }
-        
-        ImageButton homeButton = (ImageButton)findViewById(R.id.home_image_button);
-		homeButton.setOnClickListener(new OnClickListener()
-		{
-			public void onClick(View arg0) {
-				onHomeClick();
-			}
-			
-		});
+        }               
         
 		ImageButton favouriteButton = (ImageButton)findViewById(R.id.favourite_image_button);
 		favouriteButton.setOnClickListener(new OnClickListener()
 		{
 			public void onClick(View arg0) {
 				startActivity(new Intent(TrackActivity.this, FavouriteTracksActivity.class));
+			}
+			
+		});
+		
+		ImageButton searchButton = (ImageButton)findViewById(R.id.search_image_button);
+		searchButton.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View arg0) {									
+				
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				listView.requestFocus();
+				imm.toggleSoftInput(2  ,2);					
 			}
 			
 		});
@@ -157,18 +156,7 @@ public class TrackActivity extends Activity{
     	layout.addView(adView);		    	
 	    adView.loadAd(request);
 	}
-		
-	private void onHomeClick ()
-    {
-    	UIUtils.goHome(this);
-    }
-	
-	private static class ViewHolder
-	{
-		public TextView TrackTitleTextView;    	
-		public TextView PlaybackCountTextView;
-		public ImageView TrackImageView;
-	}
+
 	
 	@Override
 	public void onDestroy()

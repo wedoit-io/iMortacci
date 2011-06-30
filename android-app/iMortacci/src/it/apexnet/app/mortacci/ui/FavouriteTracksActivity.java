@@ -12,6 +12,7 @@ import it.apexnet.app.mortacci.util.UIUtils;
 import it.apexnet.app.mortacci.widget.AdViewLoader;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageButton;
@@ -66,7 +68,8 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
         	
 	        new CreateFavouriteListTracksSync().execute((Void []) null);
 	        
-	        this.trackList = (ListView) findViewById(R.id.favouriteTracksListView);       
+	        this.trackList = (ListView) findViewById(R.id.favouriteTracksListView); 
+	        this.trackList.setTextFilterEnabled(true);
 	        registerForContextMenu(this.trackList);	        
         }
         catch (Exception ex)
@@ -83,6 +86,18 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 			
 		});
         
+		ImageButton searchButton = (ImageButton)findViewById(R.id.search_image_button);
+		searchButton.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View arg0) {									
+				
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				trackList.requestFocus();
+				imm.toggleSoftInput(2  ,2);					
+			}
+			
+		});
+		
      // Create the adView
 		AdViewLoader adView = new AdViewLoader(this, AdSize.BANNER);			    
 	    // Lookup your LinearLayout assuming it’s been given
@@ -182,7 +197,7 @@ public class FavouriteTracksActivity extends Activity implements AdListener{
 			try
 			{
 			
-				adapter = new FavouriteTracksRowAdapter(FavouriteTracksActivity.this, cursor);
+				adapter = new FavouriteTracksRowAdapter(FavouriteTracksActivity.this, cursor, db);
 				trackList.setAdapter(adapter);
 				
 				trackList.setOnItemClickListener(new OnItemClickListener() {
