@@ -42,7 +42,7 @@ public class IMortacciDBProvider {
 		SQLiteDatabase database = getWritableDatabase();
 		long _id = database.insert(table, nullColumnHack, values);
 		database.close();
-		return _id;*/
+		return _id;*/		
 	}
 	
 	public int delete (String table, String whereClause, String [] whereArgs)
