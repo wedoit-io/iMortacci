@@ -13,6 +13,11 @@
             android:contentDescription="@string/description_home"            
    			android:src="@drawable/home_img" />
   <ImageView style="@style/TitleBarSeparator" />
+  		<ImageButton style="@style/TitleBarAction" 
+         	android:id="@+id/search_image_button"        	
+            android:contentDescription="@string/description_search"            
+   			android:src="@drawable/search_img" />
+  <ImageView style="@style/TitleBarSeparator" /> 			
 		<TextView style="@style/TitleBarText" />  
          
   	</LinearLayout>
