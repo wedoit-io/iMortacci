@@ -80,7 +80,9 @@
     <Compile Include="configuration.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="APIConfiguration.cs" />
+    <Compile Include="APIConfiguration_v2.cs" />
+    <Compile Include="APIConfiguration_v1.cs" />
+    <Compile Include="Service_v2.cs" />
     <Compile Include="EntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

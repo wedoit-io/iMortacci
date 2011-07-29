@@ -9,14 +9,17 @@
     {
         public void Application_Start(object sender, EventArgs e)
         {
-            HttpContext.Current.Application["api_config"] = new APIConfiguration();
+            HttpContext.Current.Application["api_config_cache"] = new APIConfiguration_v2();
+            
             this.RegisterRoutes();
         }
 
         private void RegisterRoutes()
         {
-            // Edit the base address of ServiceV1 by replacing the "ServiceV1" string below
-            RouteTable.Routes.Add(new ServiceRoute("api/v1", new WebServiceHostFactory(), typeof(Service_v1)));
+            WebServiceHostFactory factory = new WebServiceHostFactory();
+
+            RouteTable.Routes.Add(new ServiceRoute("api/v1", factory, typeof(Service_v1)));
+            RouteTable.Routes.Add(new ServiceRoute("api/v2", factory, typeof(Service_v2)));
         }
     }
 }

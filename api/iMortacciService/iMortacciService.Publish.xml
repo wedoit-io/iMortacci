@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
-  <publishProfile publishUrl="O:\imortacci" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Default" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
-    <file relUrl="bin/iMortacciService.dll" publishTime="03/28/2011 18:01:40" />
+  <publishProfile publishUrl="O:\Apex-net TEST\imortacci" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Default" publishMethod="FileSystem" replaceMatchingFiles="True" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="bin/iMortacciService.dll" publishTime="07/28/2011 17:44:35" />
     <file relUrl="bin/UtilitiesLibrary.dll" publishTime="02/24/2011 14:31:08" />
-    <file relUrl="Web.config" publishTime="03/28/2011 18:01:49" />
+    <file relUrl="Web.config" publishTime="07/28/2011 17:44:42" />
     <file relUrl="Global.asax" publishTime="02/21/2011 14:42:05" />
-    <file relUrl="bin/iMortacciService.pdb" publishTime="03/28/2011 18:01:40" />
+    <file relUrl="bin/iMortacciService.pdb" publishTime="07/28/2011 17:44:35" />
     <file relUrl="bin/Newtonsoft.Json.dll" publishTime="01/04/2011 13:48:10" />
   </publishProfile>
 </publishData>
