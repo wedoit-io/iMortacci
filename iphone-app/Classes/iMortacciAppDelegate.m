@@ -355,7 +355,7 @@
     NSURL *url = [NSURL URLWithString:urlString];
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    [request addRequestHeader:@"application/json" value:@"Content-Type"];
+    [request addRequestHeader:@"Content-Type" value:@"application/json"];
     [request appendPostData:[[localUserInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
     // Default becomes POST when you use appendPostData: / appendPostDataFromFile: / setPostBody:
     [request setRequestMethod:@"PUT"];
