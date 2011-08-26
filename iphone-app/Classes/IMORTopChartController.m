@@ -23,14 +23,17 @@
 #pragma mark -
 #pragma mark View lifecycle
 
+NSInteger likesCountSort(id obj1, id obj2, void *context)
+{
+    return (NSComparisonResult)[(NSNumber *)[obj1 valueForKey:@"like_count"] compare:
+                                (NSNumber *)[obj2 valueForKey:@"like_count"]] * -1;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     // Sort counter array
-    NSArray *sortedCounters = [[QuickFunctions sharedQuickFunctions].app.counters sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        return (NSComparisonResult)[(NSNumber *)[obj1 valueForKey:@"like_count"] compare:
-                (NSNumber *)[obj2 valueForKey:@"like_count"]] * -1;
-    }];
+    NSArray *sortedCounters = [[QuickFunctions sharedQuickFunctions].app.counters sortedArrayUsingFunction:likesCountSort context:NULL];
     
     // Take top 25
     if ([sortedCounters count] > 25) {

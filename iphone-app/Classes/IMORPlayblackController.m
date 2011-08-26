@@ -128,10 +128,12 @@
     // Configure the cell...
     
     /* It's important to remember to pass CG structs like floats and CGColors */
-    [[cell.headerView layer] setShadowOffset:CGSizeMake(0, 5)];
-    [[cell.headerView layer] setShadowColor:[kIMORColorShadow CGColor]];
-    [[cell.headerView layer] setShadowRadius:3.0];
-    [[cell.headerView layer] setShadowOpacity:0.8];
+    if ([[cell.headerView layer] respondsToSelector:@selector(shadowOffset)]) {
+        [[cell.headerView layer] setShadowOffset:CGSizeMake(0, 5)];
+        [[cell.headerView layer] setShadowColor:[kIMORColorShadow CGColor]];
+        [[cell.headerView layer] setShadowRadius:3.0];
+        [[cell.headerView layer] setShadowOpacity:0.8];
+    }
     
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];

@@ -488,14 +488,15 @@
         [self.filteredItems addObjectsFromArray:[items filteredArrayUsingPredicate:pred]];
     }
     else {
-        [items enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
-            NSMutableDictionary *item = [NSMutableDictionary dictionaryWithDictionary:obj];
+        for (NSDictionary *item in items) {
             NSArray *filtered = [[item valueForKey:@"tracks"] filteredArrayUsingPredicate:pred];
             if ([filtered count] > 0) {
-                [item setObject:filtered forKey:@"tracks"];
-                [self.filteredItems addObject:item];
+                NSMutableDictionary *newItem = [item mutableCopy];
+                [newItem setObject:filtered forKey:@"tracks"];
+                [self.filteredItems addObject:newItem];
+                [newItem release];
             }
-        }];
+        }
     }
     
     // Return YES to cause the search result table view to be reloaded.

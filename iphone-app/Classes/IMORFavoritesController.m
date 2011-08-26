@@ -357,11 +357,10 @@
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id IN %@",
                          [[QuickFunctions sharedQuickFunctions].app.favorites valueForKeyPath:@"id"]];
     
-    [[QuickFunctions sharedQuickFunctions].app.currentAlbums enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSMutableDictionary *item = [NSMutableDictionary dictionaryWithDictionary:obj];
+    for (NSMutableDictionary *item in [QuickFunctions sharedQuickFunctions].app.currentAlbums) {
         NSArray *filtered = [[item valueForKey:@"tracks"] filteredArrayUsingPredicate:pred];
         [items addObjectsFromArray:filtered];
-    }];
+    }
     
     BOOL hasItems = [items count] > 0;
 

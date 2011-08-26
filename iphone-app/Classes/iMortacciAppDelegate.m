@@ -43,7 +43,12 @@
     
     firstPlay = YES;
     
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
+    }
+    else {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+    }
     
     // Register with the Apple Push Notification service ("push service")
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
