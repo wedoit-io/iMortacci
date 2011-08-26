@@ -207,7 +207,6 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (motion == UIEventSubtypeMotionShake) {
-        // TODO shake that booty!
         [[GANTracker sharedTracker] trackEvent:@"Credits"
                                         action:@"Shake"
                                          label:nil
