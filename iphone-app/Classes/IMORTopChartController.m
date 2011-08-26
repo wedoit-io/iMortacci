@@ -50,6 +50,7 @@
             [items addObject:[filtered objectAtIndex:0]];
         }
     }
+    [allItems release];
 
 //    [items sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 //        NSPredicate *pred1 = [NSPredicate predicateWithFormat:@"id = %@", [obj1 valueForKey:@"id"]];
