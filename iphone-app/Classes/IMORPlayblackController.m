@@ -464,10 +464,10 @@
 
         if ([QuickFunctions sharedQuickFunctions].app.firstPlay) {
             // The hud will dispable all input on the view
-            HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+            HUD = [[MBProgressHUD alloc] initWithView:self.view.window];
             
             // Add HUD to screen
-            [self.navigationController.view addSubview:HUD];
+            [self.view.window addSubview:HUD];
             
             // Register for HUD callbacks so we can remove it from the window at the right time
             HUD.delegate = self;
@@ -557,10 +557,10 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
                                  withError:nil];
     
 	// The hud will dispable all input on the view
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view.window];
 	
     // Add HUD to screen
-    [self.navigationController.view addSubview:HUD];
+    [self.view.window addSubview:HUD];
 	
     // Register for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
@@ -584,10 +584,10 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
                                  withError:nil];
     
 	// The hud will dispable all input on the view
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view.window];
 	
     // Add HUD to screen
-    [self.navigationController.view addSubview:HUD];
+    [self.view.window addSubview:HUD];
 	
     // Register for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;

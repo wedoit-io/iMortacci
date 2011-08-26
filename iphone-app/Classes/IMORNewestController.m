@@ -464,10 +464,10 @@
 
 - (IBAction)update:(id)sender {
 	// The hud will dispable all input on the view
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view.window];
 	
     // Add HUD to screen
-    [self.navigationController.view addSubview:HUD];
+    [self.view.window addSubview:HUD];
 	
     // Register for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
