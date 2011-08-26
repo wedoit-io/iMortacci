@@ -337,7 +337,7 @@
         latestVersion = [[jsonString JSONValue] retain];
         [jsonString release];
 
-        if (latestVersion != nil && ![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
+        if (latestVersion != nil) {
             newItemsCount = [[latestVersion valueForKey:@"object_count"] intValue] - [[currentVersion valueForKey:@"object_count"] intValue];
             
             // Any change on SoundCloud will generate a new version of albums database, but
