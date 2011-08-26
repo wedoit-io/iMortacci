@@ -135,7 +135,8 @@
         else {
             return [filteredItems count];
         }
-    } else {
+    }
+    else {
         if (tableView == self._tableView) {
             return [items count];
         }
@@ -151,9 +152,8 @@
     if (!tracksOnly && tableView == self.searchDisplayController.searchResultsTableView) {
         return [[filteredItems objectAtIndex:section] valueForKey:@"title"];
     }
-    else {
-        return nil;
-    }
+
+    return nil;
 }
 
 
@@ -172,21 +172,21 @@
         : [[[filteredItems objectAtIndex:indexPath.section] valueForKey:@"tracks"] objectAtIndex:indexPath.row];
     }
     
+    static NSString *CellIdentifier = @"IMORSearchCellController";
+    
+    IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        [[NSBundle mainBundle] loadNibNamed:@"IMORSearchCellController" owner:self options:nil];
+        cell = tempCell;
+        self.tempCell = nil;
+    }
+
+    // Configure the cell...
+    
     if (!tracksOnly && tableView == self._tableView) {
         /*
          * All albums are listed (master only)
          */
-        static NSString *CellIdentifier = @"IMORSearchCellController";
-        
-        IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
-            [[NSBundle mainBundle] loadNibNamed:@"IMORSearchCellController" owner:self options:nil];
-            cell = tempCell;
-            self.tempCell = nil;
-        }
-
-        // Configure the cell...
-        
         cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
                                                                                       AndSize:@"small"];
         
@@ -201,17 +201,6 @@
         return cell;
     }
     else {
-        static NSString *CellIdentifier = @"IMORSearchCellController";
-        
-        IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
-            [[NSBundle mainBundle] loadNibNamed:@"IMORSearchCellController" owner:self options:nil];
-            cell = tempCell;
-            self.tempCell = nil;
-        }
-
-        // Configure the cell...
-        
         if (tracksOnly) {
             /*
              * All tracks of a single album are listed (detail only)
