@@ -69,10 +69,6 @@
                                          value:-1
                                      withError:nil];
         
-        while (player.volume > 0) {
-            player.volume -= 0.01;
-            usleep(12000); // this is equal to 0.012 seconds
-        }
         [player stop];
     }
 }
@@ -277,8 +273,6 @@
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    sleep(3);
-    
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
     if ([filtered count] > 0) {
@@ -302,7 +296,7 @@
             HUD.mode = MBProgressHUDModeCustomView;
             HUD.labelText = @"Grazie";
             
-            sleep(2);
+            sleep(kSleepTimeOK);
         }
         else {
             
@@ -311,7 +305,7 @@
             HUD.mode = MBProgressHUDModeCustomView;
             HUD.labelText = @"Hai già votato";
             
-            sleep(3);
+            sleep(kSleepTimeError);
         }
     }
     
@@ -340,7 +334,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Aggiunto ai Preferiti";
         
-        sleep(1);
+        sleep(kSleepTimeOK);
     }
     else {
         
@@ -349,7 +343,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Già nei preferiti";
         
-        sleep(1);
+        sleep(kSleepTimeError);
     }
 
     // Hide the HUD

@@ -73,3 +73,7 @@
 // Useful values
 #define kSearchTableRowHeight           60.0
 #define kSingleRowTableRowHeight        317.0
+
+// Pre-defined sleep times
+#define kSleepTimeOK        1.0
+#define kSleepTimeError     1.5

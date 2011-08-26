@@ -274,9 +274,6 @@
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    uint sleepTime = (uint)arc4random() % 4;
-    sleepTime = sleepTime < 2 ? 2 : sleepTime;
-    
     // Indeterminate mode
     taskInProgress = YES;
     [self performSelectorOnMainThread:@selector(downloadAlbums) withObject:nil waitUntilDone:NO];
@@ -284,8 +281,6 @@
         sleep(0.1);
     }
 
-    sleep(sleepTime);
-    
     // Switch to determinate mode
     HUD.mode = MBProgressHUDModeDeterminate;
     HUD.progress = 0.0f;
@@ -302,7 +297,7 @@
                 taskInProgress = YES;
                 [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
                 while (taskInProgress) {
-                    usleep(500000); // 0.5 seconds
+                    sleep(0.1);
                 }
 
                 [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
@@ -325,8 +320,6 @@
     [[QuickFunctions sharedQuickFunctions] updateCurrentVersion:[QuickFunctions sharedQuickFunctions].app.latestVersion];
     [[QuickFunctions sharedQuickFunctions] updateAlbums:latestAlbums];
     
-    sleep(sleepTime*3);
-	
     // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
 	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
 	HUD.mode = MBProgressHUDModeCustomView;
@@ -340,8 +333,6 @@
     [QuickFunctions sharedQuickFunctions].app.newItemsCount = 0;
     [self._tableView reloadData];
     
-	sleep(2);
-
     // Hide the HUD
     [HUD hide:YES];
     

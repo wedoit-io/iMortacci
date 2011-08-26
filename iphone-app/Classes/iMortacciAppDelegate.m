@@ -42,11 +42,6 @@
     
     firstPlay = YES;
     
-    // Let's sleep a little before doing anything else: this will assure that
-    // the user will see iMortacco launch image for at least given amount of
-    // seconds below
-    sleep(3);
-    
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
     
     // Register with the Apple Push Notification service ("push service")
