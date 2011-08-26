@@ -136,12 +136,12 @@
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [item valueForKey:@"album_id"]];
     NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
     if ([filtered count] > 0) {
-        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
-                                                                                                             AndSize:@"medium"]];
+        cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                      AndSize:@"medium"];
     }
     else {
-        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
-                                                                                                             AndSize:@"medium"]];
+        cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                      AndSize:@"medium"];
     }
 
     cell.titleTextLabel.text = [item valueForKey:@"title"];

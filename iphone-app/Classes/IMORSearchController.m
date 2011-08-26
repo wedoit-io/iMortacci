@@ -187,8 +187,8 @@
 
         // Configure the cell...
         
-        cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
-                                                                                                             AndSize:@"small"]];
+        cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[dict valueForKey:@"slug"]
+                                                                                      AndSize:@"small"];
         
         cell.titleTextLabel.text = [dict valueForKey:@"title"];
         
@@ -219,23 +219,21 @@
             NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"album_id"]];
             NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
             if ([filtered count] > 0) {
-                cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
-                                                                                                                     AndSize:@"small"]];
+                cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                              AndSize:@"small"];
             }
             else {
-                cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
-                                                                                                                     AndSize:@"small"]];
+                cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                              AndSize:@"small"];
             }
         }
         else {
             /*
              * Both albums and tracks are visible (master-detail)
              */
-            cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions]
-                                                           getAlbumArtworkWithSlug:[[filteredItems
-                                                                                     objectAtIndex:indexPath.section]
-                                                                                    valueForKey:@"slug"]
-                                                           AndSize:@"small"]];
+            cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:
+                                    [[filteredItems objectAtIndex:indexPath.section] valueForKey:@"slug"]
+                                                                                          AndSize:@"small"];
         }
         
         cell.titleTextLabel.text = [dict valueForKey:@"title"];

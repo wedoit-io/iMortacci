@@ -204,16 +204,16 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
     return [self getFileByName:[self getTrackNameWithId:trackId]];
 }
 
-- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size {
+- (UIImage *)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size {
     
     NSString *filename = [[NSString stringWithFormat:@"%@-%@", albumSlug, size]
                           stringByAppendingPathExtension:kAlbumArtworkFileExtension];
     
-    NSData *image = [self getFileByName:filename];
+    UIImage *image = [UIImage imageNamed:filename];
     if (image == nil) {
         filename = [[NSString stringWithFormat:@"default-%@", size]
                     stringByAppendingPathExtension:kAlbumArtworkFileExtension];
-        image = [self getFileByName:filename];
+        image = [UIImage imageNamed:filename];
     }
     
     return image;

@@ -41,7 +41,7 @@
 - (id)getFileByName:(NSString *)filename;
 - (NSString *)getTrackNameWithId:(NSUInteger)trackId;
 - (id)getTrackWithId:(NSUInteger)trackId;
-- (id)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size;
+- (UIImage *)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size;
 - (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId;
 
 @end
