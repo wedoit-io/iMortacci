@@ -307,6 +307,8 @@
 - (void)updateTask {
     // update albums in a new thread
     
+    usleep(kSleepTimeLoading);
+    
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
@@ -341,8 +343,6 @@
         }
     }
 
-    usleep(kSleepTimeLoading);
-    
     if ([self.queue requestsCount] > 0) {
         // Switch to determinate mode
         HUD.mode = MBProgressHUDModeDeterminate;
