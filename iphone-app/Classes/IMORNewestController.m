@@ -409,7 +409,9 @@
     [request startSynchronous];
     NSError *error = [request error];
     if (!error) {
-        latestAlbums = [[[request responseString] JSONValue] retain];
+        NSString *jsonString = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+        latestAlbums = [[jsonString JSONValue] retain];
+        [jsonString release];
     }
 }
 

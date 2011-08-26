@@ -333,7 +333,10 @@
     
     NSError *error = [request error];
     if (!error) {
-        latestVersion = [[[request responseString] JSONValue] retain];
+        NSString *jsonString = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+        latestVersion = [[jsonString JSONValue] retain];
+        [jsonString release];
+
         if (latestVersion != nil && ![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
             newItemsCount = [[latestVersion valueForKey:@"object_count"] intValue] - [[currentVersion valueForKey:@"object_count"] intValue];
             
@@ -368,7 +371,10 @@
 
     NSError *error = [request error];
     if (!error) {
-        NSArray *newCounters = [[request responseString] JSONValue];
+        NSString *jsonString = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+        NSArray *newCounters = [[jsonString JSONValue] retain];
+        [jsonString release];
+
         if (newCounters != nil) {
             [[QuickFunctions sharedQuickFunctions] updateCounters:newCounters];
             for (int i = 0; i < [localUserInfo count]; i++) {
