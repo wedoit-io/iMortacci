@@ -12,6 +12,7 @@
 
 @class IMORNewestCellController;
 @class Reachability;
+@class ASINetworkQueue;
 
 
 @interface IMORNewestController : UIViewController <AdWhirlDelegate, MBProgressHUDDelegate> {
@@ -28,6 +29,9 @@
     BOOL alertShowed;
     Reachability *internetReachable;
     Reachability *hostReachable;
+    
+    ASINetworkQueue *queue;
+    UIProgressView *progressView;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
@@ -38,6 +42,8 @@
 @property (nonatomic, assign) BOOL alertShowed;
 @property (nonatomic, retain) Reachability *internetReachable;
 @property (nonatomic, retain) Reachability *hostReachable;
+@property (retain) ASINetworkQueue *queue;
+@property (nonatomic, retain) UIProgressView *progressView;
 
 - (void)checkNetworkStatus:(NSNotification *)notice;
 - (void)updateTask;

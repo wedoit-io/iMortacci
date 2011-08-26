@@ -11,11 +11,41 @@
 #import "iMortacci.h"
 #import "QuickFunctions.h"
 #import "Reachability.h"
-#import "GTMHTTPFetcher.h"
 #import "JSON+Extensions.h"
 #import <unistd.h>
 #import "GANTracker.h"
+#import "ASIHTTPRequest.h"
+#import "ASINetworkQueue.h"
+#import "NSFileManager+Extensions.h"
 
+
+@interface IMORNewestController (internal)
+
+- (void)requestFinished:(ASINetworkQueue *)queue;
+- (void)queueFinished:(ASINetworkQueue *)queue;
+
+@end
+
+@implementation IMORNewestController (internal)
+
+- (void)requestFinished:(ASINetworkQueue *)queue;
+{
+    HUD.progress = [self.progressView progress];
+    HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
+}
+
+- (void)queueFinished:(ASINetworkQueue *)queue
+{
+	if ([self.queue requestsCount] == 0) {
+		[self setQueue:nil]; 
+	}
+    
+    HUD.progress = 1.0;
+    HUD.labelText = [NSString stringWithFormat:@"100%%"];
+    self.taskInProgress = NO;
+}
+
+@end
 
 @implementation IMORNewestController
 
@@ -27,6 +57,8 @@
 @synthesize alertShowed;
 @synthesize internetReachable;
 @synthesize hostReachable;
+@synthesize queue;
+@synthesize progressView;
 
 
 #pragma mark -
@@ -34,6 +66,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.progressView = [UIProgressView new];
     
     // $$$ Let's make some money! ;-) $$$
     [self.view addSubview:[AdWhirlView requestAdWhirlViewWithDelegate:self]];
@@ -218,6 +252,8 @@
     [tempCell release];
     [internetReachable release];
     [hostReachable release];
+    [queue release];
+    [progressView release];
     [super dealloc];
 }
 
@@ -275,35 +311,49 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     // Indeterminate mode
-    taskInProgress = YES;
-    [self performSelectorOnMainThread:@selector(downloadAlbums) withObject:nil waitUntilDone:NO];
-    while (taskInProgress) {
-        sleep(0.1);
+    [self downloadAlbums];
+
+    if (self.queue) {
+        [self.queue cancelAllOperations];
     }
-
-    // Switch to determinate mode
-    HUD.mode = MBProgressHUDModeDeterminate;
-    HUD.progress = 0.0f;
-    HUD.detailsLabelText = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 1
-    ? [NSString stringWithFormat:@"%d mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
-    : @"Un mortaccione";
-
-    float progressStep = 1.0f / [QuickFunctions sharedQuickFunctions].app.newItemsCount;
     
+    [self setQueue:[ASINetworkQueue queue]];
+    [self.queue setDownloadProgressDelegate:self.progressView];
+    [self.queue setDelegate:self];
+    [self.queue setRequestDidFinishSelector:@selector(requestFinished:)];
+    [self.queue setQueueDidFinishSelector:@selector(queueFinished:)];
+    [self.queue setShouldCancelAllRequestsOnFailure:NO];
+
     for (NSDictionary *album in latestAlbums) {
         for (NSDictionary *track in [album valueForKey:@"tracks"]) {
             // If track is not saved locally then we shall download and save it
             if ([[QuickFunctions sharedQuickFunctions] getTrackWithId:[[track valueForKey:@"id"] intValue]] == nil) {
-                taskInProgress = YES;
-                [self performSelectorOnMainThread:@selector(downloadItem:) withObject:track waitUntilDone:NO];
-                while (taskInProgress) {
-                    sleep(0.1);
-                }
 
-                [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
-                HUD.progress += progressStep;
-                HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
+                NSString *urlString = [NSString stringWithFormat:@"%@?consumer_key=%@", [track valueForKey:@"download_url"], kSoundCloudClientId];
+                NSURL *url = [NSURL URLWithString:urlString];
+                
+                ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+                NSString *filename = [[NSString stringWithFormat:@"%d", [[track valueForKey:@"id"] intValue]] stringByAppendingPathExtension:kTrackFileExtension];
+                NSString *destinationPath = [((NSString *)[[NSFileManager defaultManager] applicationSupportDirectory]) stringByAppendingPathComponent:filename];
+                [request setDownloadDestinationPath:destinationPath];
+                [queue addOperation:request];
             }
+        }
+    }
+
+    if ([self.queue requestsCount] > 0) {
+        // Switch to determinate mode
+        HUD.mode = MBProgressHUDModeDeterminate;
+        HUD.progress = 0;
+        HUD.labelText = [NSString stringWithFormat:@"0%%"];
+        HUD.detailsLabelText = [QuickFunctions sharedQuickFunctions].app.newItemsCount > 1
+        ? [NSString stringWithFormat:@"%d mortaccioni", [QuickFunctions sharedQuickFunctions].app.newItemsCount]
+        : @"Un mortaccione";
+        
+        self.taskInProgress = YES;
+        [self.queue go];
+        while (self.taskInProgress) {
+            usleep(100000); // 0.1 seconds
         }
     }
 
@@ -346,19 +396,15 @@
     
     NSString *urlString = [[QuickFunctions sharedQuickFunctions].app.latestVersion valueForKey:@"download_url"];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(downloadAlbumsFetcher:finishedWithData:error:)];
+    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request startSynchronous];
+    NSError *error = [request error];
+    if (!error) {
+        NSString *jsonString = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+        latestAlbums = [[jsonString JSONValue] retain];
+    }
 }
-
-- (void)downloadItem:(NSDictionary *)item {
-    NSString *urlString = [NSString stringWithFormat:@"%@?consumer_key=%@", [item valueForKey:@"download_url"], kSoundCloudClientId];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(downloadItemFetcher:finishedWithData:error:)];
-}
-
 
 #pragma mark -
 #pragma mark AdWhirl delegate methods
@@ -428,33 +474,4 @@
     [NSThread detachNewThreadSelector:@selector(updateTask) toTarget:self withObject:nil];
 }
 
-
-#pragma mark -
-#pragma mark GTMHTTPFetcher callback
-
-- (void)downloadAlbumsFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
-    
-    if (error == nil) {
-        // fetch succeeded
-        
-        NSString *jsonString = [[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding];
-        latestAlbums = [[jsonString JSONValue] retain];
-    }
-    
-    taskInProgress = NO;
-}
-
-- (void)downloadItemFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
-    
-    if (error == nil) {
-        // fetch succeeded
-        
-        downloadedItem = [retrievedData copy];
-    }
-    
-    taskInProgress = NO;
-}
-
-
 @end
-

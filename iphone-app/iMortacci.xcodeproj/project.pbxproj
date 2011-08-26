@@ -320,7 +320,6 @@
 		50ABA28B131CEC2B006BC4DB /* IMORTopChartController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50ABA289131CEC2B006BC4DB /* IMORTopChartController.xib */; };
 		50ABA28F131CEC32006BC4DB /* IMORCreditsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ABA28D131CEC32006BC4DB /* IMORCreditsController.m */; };
 		50ABA290131CEC32006BC4DB /* IMORCreditsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50ABA28E131CEC32006BC4DB /* IMORCreditsController.xib */; };
-		50B1D560132E27B20072E4B7 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B1D55F132E27B20072E4B7 /* GTMHTTPFetcher.m */; };
 		50B1D56F132E31880072E4B7 /* counters.json in Resources */ = {isa = PBXBuildFile; fileRef = 50B1D56E132E31880072E4B7 /* counters.json */; };
 		50B1D65A132E5AB10072E4B7 /* IMORNewestCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B1D658132E5AB10072E4B7 /* IMORNewestCellController.m */; };
 		50B1D65B132E5AB10072E4B7 /* IMORNewestCellController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50B1D659132E5AB10072E4B7 /* IMORNewestCellController.xib */; };
@@ -823,8 +822,6 @@
 		50ABA28C131CEC32006BC4DB /* IMORCreditsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMORCreditsController.h; sourceTree = "<group>"; };
 		50ABA28D131CEC32006BC4DB /* IMORCreditsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMORCreditsController.m; sourceTree = "<group>"; };
 		50ABA28E131CEC32006BC4DB /* IMORCreditsController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMORCreditsController.xib; sourceTree = "<group>"; };
-		50B1D55E132E27B20072E4B7 /* GTMHTTPFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMHTTPFetcher.h; sourceTree = "<group>"; };
-		50B1D55F132E27B20072E4B7 /* GTMHTTPFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMHTTPFetcher.m; sourceTree = "<group>"; };
 		50B1D56E132E31880072E4B7 /* counters.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = counters.json; sourceTree = "<group>"; };
 		50B1D657132E5AB10072E4B7 /* IMORNewestCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMORNewestCellController.h; sourceTree = "<group>"; };
 		50B1D658132E5AB10072E4B7 /* IMORNewestCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMORNewestCellController.m; sourceTree = "<group>"; };
@@ -1718,15 +1715,6 @@
 			path = tracks;
 			sourceTree = "<group>";
 		};
-		50B1D55D132E27B20072E4B7 /* gtm-http-fetcher */ = {
-			isa = PBXGroup;
-			children = (
-				50B1D55E132E27B20072E4B7 /* GTMHTTPFetcher.h */,
-				50B1D55F132E27B20072E4B7 /* GTMHTTPFetcher.m */,
-			);
-			path = "gtm-http-fetcher";
-			sourceTree = "<group>";
-		};
 		50B1D656132E5A7F0072E4B7 /* Newest */ = {
 			isa = PBXGroup;
 			children = (
@@ -1818,7 +1806,6 @@
 				509469E11328DE550042D81F /* TouchJSON */,
 				5094696F1328DDDB0042D81F /* AdWhirl */,
 				50946A101328E0650042D81F /* AdMob */,
-				50B1D55D132E27B20072E4B7 /* gtm-http-fetcher */,
 				50B1D75F132E6D520072E4B7 /* MBProgressHUD */,
 				50467E56133CB6CB006F4CA7 /* TDBadgedCell */,
 				50D200D21344ECE90068B9E6 /* Google Analytics SDK */,
@@ -2765,7 +2752,6 @@
 				50946A001328DE560042D81F /* CJSONSerializer.m in Sources */,
 				50946A011328DE560042D81F /* CSerializedJSONData.m in Sources */,
 				50947799132A1ABA0042D81F /* IMORPlayblackController.m in Sources */,
-				50B1D560132E27B20072E4B7 /* GTMHTTPFetcher.m in Sources */,
 				50B1D65A132E5AB10072E4B7 /* IMORNewestCellController.m in Sources */,
 				50B1D762132E6D520072E4B7 /* MBProgressHUD.m in Sources */,
 				50E701081338AB350062A4D1 /* NSFileManager+Extensions.m in Sources */,
