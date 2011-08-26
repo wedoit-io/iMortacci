@@ -578,6 +578,7 @@
 		505D5A5C133A3EAE00836A38 /* TopRated@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TopRated@2x.png"; sourceTree = "<group>"; };
 		50667A6413E1775B000CC8B6 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
 		50667A6513E1775B000CC8B6 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
+		50667BB213E2E671000CC8B6 /* it */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5066DC45134C665700BC0649 /* 12894731.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894731.mp3; sourceTree = "<group>"; };
 		5066DC46134C665700BC0649 /* 12894735.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894735.mp3; sourceTree = "<group>"; };
 		5066DC47134C665700BC0649 /* 12894738.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894738.mp3; sourceTree = "<group>"; };
@@ -2897,6 +2898,7 @@
 				9A0B36EC133FE82E008ACB88 /* nl */,
 				9A0B36ED133FE82E008ACB88 /* vi */,
 				9A0B36EE133FE82E008ACB88 /* zh_CN */,
+				50667BB213E2E671000CC8B6 /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
