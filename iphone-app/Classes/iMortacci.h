@@ -13,7 +13,7 @@
 #define kAppVersion         @"1.0"
 
 // Various urls
-#define kAppURL             @"http://www.imortacci.com"
+#define kSiteURL            @"http://www.imortacci.com"
 #define kPlayerURL          @"http://www.imortacci.com/it/player"
 #define kThumbnailURL       @"http://www.imortacci.com/public/imortacci/regioni"
 #define kICanDoBetterURL    @"http://www.imortacci.com/it/p/sai-fare-meglio"
@@ -22,11 +22,11 @@
 #define kApexNetURL         @"http://www.apexnet.it"
 
 // iMortacci API and reachability
-#define kAPIURL             @"http://imortacci.apexnet.it/api/v1"
+#define kAPIURL                 @"http://imortacci.apexnet.it/api/v1"
 #define kReachabilityHostName   @"google.com"
 
 // Push notifications api
-#define kAppServerUrl   @"http://notificatore.apexnet.it/Notificatore.aspx"
+#define kAppServerUrl           @"http://notificatore.apexnet.it/Notificatore.aspx"
 
 #if DEBUG
     #define kAppKey         @"IMORTACCI_DEV"

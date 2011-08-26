@@ -15,7 +15,7 @@
 // These values are used by any service that shows 'shared from XYZ'
 
 #define SHKMyAppName			kAppName
-#define SHKMyAppURL				kAppURL
+#define SHKMyAppURL				kSiteURL
 
 
 
