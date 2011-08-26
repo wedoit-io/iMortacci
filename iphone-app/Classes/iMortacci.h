@@ -23,7 +23,7 @@
 
 // iMortacci API
 #if DEBUG
-    #define kAPIURL             @"http://donmez.apex-net.it/imortacci/api/v2"
+    #define kAPIURL             @"http://donmez.apexnet.it/imortacci/api/v2"
 #else
     #define kAPIURL             @"http://imortacci.apexnet.it/api/v2"
 #endif
