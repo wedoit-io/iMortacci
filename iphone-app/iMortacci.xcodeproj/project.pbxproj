@@ -453,6 +453,10 @@
 		9A1FEB611392862800F529E5 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A1FEB571392862700F529E5 /* ASIInputStream.m */; };
 		9A1FEB621392862800F529E5 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A1FEB591392862700F529E5 /* ASINetworkQueue.m */; };
 		9A1FEB641392875D00F529E5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A1FEB631392875D00F529E5 /* MobileCoreServices.framework */; };
+		9A4FD40013AEBC49003B5DB8 /* reggiano-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A4FD3FC13AEBC49003B5DB8 /* reggiano-medium.png */; };
+		9A4FD40113AEBC49003B5DB8 /* reggiano-medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A4FD3FD13AEBC49003B5DB8 /* reggiano-medium@2x.png */; };
+		9A4FD40213AEBC49003B5DB8 /* reggiano-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A4FD3FE13AEBC49003B5DB8 /* reggiano-small.png */; };
+		9A4FD40313AEBC49003B5DB8 /* reggiano-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A4FD3FF13AEBC49003B5DB8 /* reggiano-small@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1076,6 +1080,10 @@
 		9A1FEB591392862700F529E5 /* ASINetworkQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASINetworkQueue.m; sourceTree = "<group>"; };
 		9A1FEB5A1392862700F529E5 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIProgressDelegate.h; sourceTree = "<group>"; };
 		9A1FEB631392875D00F529E5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		9A4FD3FC13AEBC49003B5DB8 /* reggiano-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reggiano-medium.png"; sourceTree = "<group>"; };
+		9A4FD3FD13AEBC49003B5DB8 /* reggiano-medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reggiano-medium@2x.png"; sourceTree = "<group>"; };
+		9A4FD3FE13AEBC49003B5DB8 /* reggiano-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reggiano-small.png"; sourceTree = "<group>"; };
+		9A4FD3FF13AEBC49003B5DB8 /* reggiano-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reggiano-small@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1351,6 +1359,10 @@
 				50270EE8134A0FFE004F3C2D /* puglia-medium@2x.png */,
 				50270EE9134A0FFE004F3C2D /* puglia-small.png */,
 				50270EEA134A0FFE004F3C2D /* puglia-small@2x.png */,
+				9A4FD3FC13AEBC49003B5DB8 /* reggiano-medium.png */,
+				9A4FD3FD13AEBC49003B5DB8 /* reggiano-medium@2x.png */,
+				9A4FD3FE13AEBC49003B5DB8 /* reggiano-small.png */,
+				9A4FD3FF13AEBC49003B5DB8 /* reggiano-small@2x.png */,
 				50270EEB134A0FFE004F3C2D /* sardegna-medium.png */,
 				50270EEC134A0FFE004F3C2D /* sardegna-medium@2x.png */,
 				50270EED134A0FFE004F3C2D /* sardegna-small.png */,
@@ -2699,6 +2711,10 @@
 				5066DD2E134C665700BC0649 /* 12898730.mp3 in Resources */,
 				5066DD2F134C665700BC0649 /* 12898734.mp3 in Resources */,
 				5066DD30134C665700BC0649 /* 12898745.mp3 in Resources */,
+				9A4FD40013AEBC49003B5DB8 /* reggiano-medium.png in Resources */,
+				9A4FD40113AEBC49003B5DB8 /* reggiano-medium@2x.png in Resources */,
+				9A4FD40213AEBC49003B5DB8 /* reggiano-small.png in Resources */,
+				9A4FD40313AEBC49003B5DB8 /* reggiano-small@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
