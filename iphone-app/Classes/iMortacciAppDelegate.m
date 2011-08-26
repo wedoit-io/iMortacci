@@ -59,7 +59,13 @@
                                      label:kAppVersion
                                      value:-1
                                  withError:nil];
-
+    
+    [[GANTracker sharedTracker] trackEvent:@"App"
+                                    action:@"SystemVersion"
+                                     label:[[UIDevice currentDevice] systemVersion]
+                                     value:-1
+                                 withError:nil];
+    
     if ([self applicationWillLaunchFirstTime]) {
         // This will copy initial data from bundle
         [[QuickFunctions sharedQuickFunctions] saveCurrentVersion:nil];
