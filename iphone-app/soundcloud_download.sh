@@ -8,7 +8,7 @@
 CONSUMER_KEY="7Eo3B0odlpK5FvOVUKDnQ"
 
 # Latest JSON file URLs
-BASE_URL="http://imortacci.apexnet.it/api/v1"
+BASE_URL="http://imortacci.apexnet.it/api/v2"
 
 DOWNLOAD_DIR=./tracks/
 
