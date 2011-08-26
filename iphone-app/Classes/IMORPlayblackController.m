@@ -487,11 +487,19 @@
                                          value:-1
                                      withError:nil];
         
-        player = [[AVAudioPlayer alloc] initWithData:[[QuickFunctions sharedQuickFunctions]
-                                                      getTrackWithId:[[item valueForKey:@"id"] intValue]]
-                                               error:nil];
-        player.delegate = self;
-        [player play];
+        NSError *error = nil;
+        NSURL *url = [NSURL fileURLWithPath:[[QuickFunctions sharedQuickFunctions] getPathForFile:
+                                             [[QuickFunctions sharedQuickFunctions] getTrackNameWithId:
+                                              [[item valueForKey:@"id"] intValue]]]];
+        player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+
+        if (!error && player) {
+            player.delegate = self;
+            [player play];
+        }
+        else if (error) {
+            NSLog(@"Error (%d): %@", [error code], [error localizedDescription]);
+        }
     }
 }
 
