@@ -14,6 +14,56 @@
 #import "GANTracker.h"
 
 
+@interface IMORSearchController (private)
+
+- (void)loadCounters;
+
+@end
+
+@implementation IMORSearchController (private)
+
+- (void)loadCounters
+{
+    if (tracksOnly) {
+        NSMutableArray *newTracks = [NSMutableArray array];
+        NSMutableArray *oldTracks = [NSMutableArray array];
+        
+        for (NSDictionary *track in self.items) {
+            int playbackCount = 0;
+            int likeCount = 0;
+            
+            NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [track valueForKey:@"id"]];
+
+            NSArray *filteredCounters = [[QuickFunctions sharedQuickFunctions].app.counters filteredArrayUsingPredicate:pred];
+            if ([filteredCounters count] > 0) {
+                playbackCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"playback_count"] intValue];
+                likeCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"like_count"] intValue];
+            }
+            
+            NSArray *filteredLocalUserInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:pred];
+            if ([filteredLocalUserInfo count] > 0) {
+                playbackCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"user_playback_count"] intValue];
+                likeCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"like_status"] intValue] > 0 ? 1 : 0;
+                [track setValue:[NSNumber numberWithInt:2] forKey:@"status"];
+            }
+            
+            [track setValue:[NSNumber numberWithInt:playbackCount] forKey:@"playback_count"];
+            [track setValue:[NSNumber numberWithInt:likeCount] forKey:@"like_count"];
+
+            if ([[track valueForKey:@"status"] intValue] == 1) {
+                [newTracks addObject:track];
+            }
+            else {
+                [oldTracks addObject:track];
+            }
+        }
+        
+        self.items = [newTracks arrayByAddingObjectsFromArray:oldTracks];
+    }
+}
+
+@end
+
 @implementation IMORSearchController
 
 @synthesize _tableView;
@@ -24,6 +74,7 @@
 @synthesize savedScopeButtonIndex;
 @synthesize searchWasActive;
 @synthesize tempCell;
+@synthesize albumImage;
 
 
 #pragma mark -
@@ -43,6 +94,17 @@
     
     if (tracksOnly) {
         self.searchDisplayController.searchBar.placeholder = [NSString stringWithFormat:@"Cerca in %@", self.title];
+
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [[self.items objectAtIndex:0] valueForKey:@"album_id"]];
+        NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
+        if ([filtered count] > 0) {
+            self.albumImage = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
+                                                                                     AndSize:@"small"];
+        }
+        else {
+            self.albumImage = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
+                                                                                     AndSize:@"small"];
+        }
     }
     else {
         self.searchDisplayController.searchBar.placeholder = @"Cerca tra i dialetti";
@@ -80,6 +142,8 @@
     self.searchDisplayController.searchResultsTableView.rowHeight = kSearchTableRowHeight;
     self.searchDisplayController.searchResultsTableView.backgroundColor = kIMORColorWhite;
     self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor whiteColor];
+    
+    [self loadCounters];
     
     [self._tableView reloadData];
 }
@@ -205,16 +269,7 @@
             /*
              * All tracks of a single album are listed (detail only)
              */
-            NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"album_id"]];
-            NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
-            if ([filtered count] > 0) {
-                cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:[[filtered objectAtIndex:0] valueForKey:@"slug"]
-                                                                                              AndSize:@"small"];
-            }
-            else {
-                cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:@"default"
-                                                                                              AndSize:@"small"];
-            }
+            cell.imageView.image = self.albumImage;
         }
         else {
             /*
@@ -223,6 +278,12 @@
             cell.imageView.image = [[QuickFunctions sharedQuickFunctions] getAlbumArtworkWithSlug:
                                     [[filteredItems objectAtIndex:indexPath.section] valueForKey:@"slug"]
                                                                                           AndSize:@"small"];
+            
+            cell.playbackCountTextLabel.hidden = YES;
+            cell.titleTextLabel.frame = CGRectMake(cell.titleTextLabel.frame.origin.x,
+                                                   cell.titleTextLabel.frame.origin.y + 8.0,
+                                                   cell.titleTextLabel.frame.size.width,
+                                                   cell.titleTextLabel.frame.size.height);
         }
         
         cell.titleTextLabel.text = [dict valueForKey:@"title"];
@@ -232,29 +293,16 @@
             cell.descriptionTextLabel.text = [dict valueForKey:@"description"];
         }
         
-        int playbackCount = 0;
-        int likeCount = 0;
+        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%@ ascolti", [dict objectForKey:@"playback_count"]];
+        cell.likesTextLabel.text = [NSString stringWithFormat:@"%@ voti", [dict objectForKey:@"like_count"]];
         
-        NSPredicate *predCounters = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
-        NSArray *filteredCounters = [[QuickFunctions sharedQuickFunctions].app.counters filteredArrayUsingPredicate:predCounters];
-        if ([filteredCounters count] > 0) {
-            playbackCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"playback_count"] intValue];
-            likeCount += [(NSNumber *)[[filteredCounters objectAtIndex:0] valueForKey:@"like_count"] intValue];
-        }
-        
-        NSPredicate *predLocalUserInfo = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"id"]];
-        NSArray *filteredLocalUserInfo = [[QuickFunctions sharedQuickFunctions].app.localUserInfo filteredArrayUsingPredicate:predLocalUserInfo];
-        if ([filteredLocalUserInfo count] > 0) {
-            playbackCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"user_playback_count"] intValue];
-            likeCount += [(NSNumber *)[[filteredLocalUserInfo objectAtIndex:0] valueForKey:@"like_status"] intValue] > 0 ? 1 : 0;
-        }
-        
-        cell.playbackCountTextLabel.text = [NSString stringWithFormat:@"%d ascolti", playbackCount];
-        cell.likesTextLabel.text = [NSString stringWithFormat:@"%d voti", likeCount];
-        
-        if ([filteredLocalUserInfo count] == 0) {
-            cell.badgeString = @"nuovo";
+        if ([[dict objectForKey:@"status"] intValue] == 0) {
+            cell.badgeString = @"ascolta";
             cell.badgeColor = kIMORColorGreen;
+        }
+        else if ([[dict objectForKey:@"status"] intValue] == 1) {
+            cell.badgeString = @"nuovo";
+            cell.badgeColor = kIMORColorOrange;
         }
         
         return cell;
@@ -379,6 +427,7 @@
     [_tableView release];
     [items release];
     [filteredItems release];
+    [albumImage release];
     [super dealloc];
 }
 
@@ -454,4 +503,3 @@
 }
 
 @end
-

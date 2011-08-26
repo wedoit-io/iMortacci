@@ -28,6 +28,8 @@
     
     // UI elements
     IMORSearchCellController *tempCell;
+    
+    UIImage *albumImage;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *_tableView;
@@ -38,5 +40,6 @@
 @property (nonatomic) NSInteger savedScopeButtonIndex;
 @property (nonatomic) BOOL searchWasActive;
 @property (nonatomic, assign) IBOutlet IMORSearchCellController *tempCell;
+@property (nonatomic, retain) UIImage *albumImage;
 
 @end
