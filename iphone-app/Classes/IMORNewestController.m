@@ -370,6 +370,8 @@
     [[QuickFunctions sharedQuickFunctions] updateCurrentVersion:[QuickFunctions sharedQuickFunctions].app.latestVersion];
     [[QuickFunctions sharedQuickFunctions] updateAlbums:latestAlbums];
     
+    usleep(kSleepTimeOK);
+    
     // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
 	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Checkmark.png"]] autorelease];
 	HUD.mode = MBProgressHUDModeCustomView;
@@ -382,6 +384,8 @@
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [QuickFunctions sharedQuickFunctions].app.newItemsCount = 0;
     [self._tableView reloadData];
+    
+    usleep(kSleepTimeOK);
     
     // Hide the HUD
     [HUD hide:YES];

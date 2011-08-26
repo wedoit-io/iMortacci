@@ -296,7 +296,7 @@
             HUD.mode = MBProgressHUDModeCustomView;
             HUD.labelText = @"Grazie";
             
-            sleep(kSleepTimeOK);
+            usleep(kSleepTimeOK);
         }
         else {
             
@@ -305,7 +305,7 @@
             HUD.mode = MBProgressHUDModeCustomView;
             HUD.labelText = @"Hai già votato";
             
-            sleep(kSleepTimeError);
+            usleep(kSleepTimeError);
         }
     }
     
@@ -334,7 +334,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Aggiunto ai Preferiti";
         
-        sleep(kSleepTimeOK);
+        usleep(kSleepTimeOK);
     }
     else {
         
@@ -343,7 +343,7 @@
         HUD.mode = MBProgressHUDModeCustomView;
         HUD.labelText = @"Già nei preferiti";
         
-        sleep(kSleepTimeError);
+        usleep(kSleepTimeError);
     }
 
     // Hide the HUD
