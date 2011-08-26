@@ -16,6 +16,7 @@
 #import "ASIHTTPRequest.h"
 #import "SHKFacebook.h"
 #import "GANTracker.h"
+#import "UIDevice-Hardware.h"
 
 @implementation iMortacciAppDelegate
 
@@ -57,6 +58,12 @@
     [[GANTracker sharedTracker] trackEvent:@"App"
                                     action:@"Launch"
                                      label:kAppVersion
+                                     value:-1
+                                 withError:nil];
+    
+    [[GANTracker sharedTracker] trackEvent:@"App"
+                                    action:@"DevicePlatform"
+                                     label:[[UIDevice currentDevice] platformString]
                                      value:-1
                                  withError:nil];
     

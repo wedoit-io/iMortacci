@@ -117,6 +117,7 @@
 		505D5A58133A362500836A38 /* ShareButtonDefaultState@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A54133A362500836A38 /* ShareButtonDefaultState@2x.png */; };
 		505D5A5D133A3EAE00836A38 /* TopRated.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A5B133A3EAE00836A38 /* TopRated.png */; };
 		505D5A5E133A3EAE00836A38 /* TopRated@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505D5A5C133A3EAE00836A38 /* TopRated@2x.png */; };
+		50667A6613E1775B000CC8B6 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 50667A6513E1775B000CC8B6 /* UIDevice-Hardware.m */; };
 		5066DCBB134C665700BC0649 /* 12894731.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5066DC45134C665700BC0649 /* 12894731.mp3 */; };
 		5066DCBC134C665700BC0649 /* 12894735.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5066DC46134C665700BC0649 /* 12894735.mp3 */; };
 		5066DCBD134C665700BC0649 /* 12894738.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5066DC47134C665700BC0649 /* 12894738.mp3 */; };
@@ -575,6 +576,8 @@
 		505D5A54133A362500836A38 /* ShareButtonDefaultState@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ShareButtonDefaultState@2x.png"; sourceTree = "<group>"; };
 		505D5A5B133A3EAE00836A38 /* TopRated.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TopRated.png; sourceTree = "<group>"; };
 		505D5A5C133A3EAE00836A38 /* TopRated@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TopRated@2x.png"; sourceTree = "<group>"; };
+		50667A6413E1775B000CC8B6 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
+		50667A6513E1775B000CC8B6 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
 		5066DC45134C665700BC0649 /* 12894731.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894731.mp3; sourceTree = "<group>"; };
 		5066DC46134C665700BC0649 /* 12894735.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894735.mp3; sourceTree = "<group>"; };
 		5066DC47134C665700BC0649 /* 12894738.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12894738.mp3; sourceTree = "<group>"; };
@@ -1160,6 +1163,7 @@
 				509466A71327C8CE0042D81F /* Custom NavigationBar */,
 				50E701091338AB410062A4D1 /* Extensions */,
 				50E2BE611326422E008EAD29 /* External Sources */,
+				50667A6313E1775A000CC8B6 /* uidevice-extension */,
 				50ABA35A131D0921006BC4DB /* tracks */,
 				5094677F1327DC090042D81F /* album_artworks */,
 				50AB9E3613180743006BC4DB /* version.json */,
@@ -1228,6 +1232,16 @@
 				50E03227133A4A95009217F6 /* DownloadButtonHighlightedState@2x.png */,
 			);
 			name = Newest;
+			sourceTree = "<group>";
+		};
+		50667A6313E1775A000CC8B6 /* uidevice-extension */ = {
+			isa = PBXGroup;
+			children = (
+				50667A6413E1775B000CC8B6 /* UIDevice-Hardware.h */,
+				50667A6513E1775B000CC8B6 /* UIDevice-Hardware.m */,
+			);
+			name = "uidevice-extension";
+			path = "Classes/uidevice-extension";
 			sourceTree = "<group>";
 		};
 		507BC4EF1341D80D00E6436E /* Navigation bar background */ = {
@@ -2864,6 +2878,7 @@
 				9A1FEB601392862800F529E5 /* ASIHTTPRequest.m in Sources */,
 				9A1FEB611392862800F529E5 /* ASIInputStream.m in Sources */,
 				9A1FEB621392862800F529E5 /* ASINetworkQueue.m in Sources */,
+				50667A6613E1775B000CC8B6 /* UIDevice-Hardware.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
