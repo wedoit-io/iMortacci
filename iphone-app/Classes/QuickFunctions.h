@@ -37,7 +37,9 @@
 - (void)saveCounters:(NSArray *)counters;
 - (void)saveFavorites:(NSArray *)favorites;
 
+- (NSString *)getPathForFile:(NSString *)filename;
 - (id)getFileByName:(NSString *)filename;
+- (NSString *)getTrackNameWithId:(NSUInteger)trackId;
 - (id)getTrackWithId:(NSUInteger)trackId;
 - (id)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size;
 - (void)saveTrack:(NSData*)data WithId:(NSUInteger)trackId;

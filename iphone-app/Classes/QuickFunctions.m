@@ -173,7 +173,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
 #pragma mark -
 #pragma mark Other methods
 
-- (id)getFileByName:(NSString *)filename {
+- (NSString *)getPathForFile:(NSString *)filename
+{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     // First read from app bundle
@@ -186,13 +187,21 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(QuickFunctions);
         path = [((NSString *)[fileManager applicationSupportDirectory]) stringByAppendingPathComponent:filename];
     }
     
+    return path;
+}
+
+- (id)getFileByName:(NSString *)filename {
     // Returns a data object by reading every byte from the file specified by path
     // or nil if the data object could not be created.
-    return [NSData dataWithContentsOfFile:path];
+    return [NSData dataWithContentsOfFile:[self getPathForFile:filename]];
+}
+
+- (NSString *)getTrackNameWithId:(NSUInteger)trackId {
+    return [[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension];
 }
 
 - (id)getTrackWithId:(NSUInteger)trackId {
-    return [self getFileByName:[[NSString stringWithFormat:@"%d", trackId] stringByAppendingPathExtension:kTrackFileExtension]];
+    return [self getFileByName:[self getTrackNameWithId:trackId]];
 }
 
 - (id)getAlbumArtworkWithSlug:(NSString *)albumSlug AndSize:(NSString *)size {
