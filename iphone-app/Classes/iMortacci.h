@@ -81,5 +81,6 @@
 #define kSingleRowTableRowHeight        317.0
 
 // Pre-defined sleep times
+#define kSleepTimeLoading   2000000 // 2 second
 #define kSleepTimeOK        1000000 // 1 second
 #define kSleepTimeError     1500000 // 1.5 seconds

@@ -341,6 +341,8 @@
         }
     }
 
+    usleep(kSleepTimeLoading);
+    
     if ([self.queue requestsCount] > 0) {
         // Switch to determinate mode
         HUD.mode = MBProgressHUDModeDeterminate;
@@ -357,6 +359,8 @@
         }
     }
 
+    usleep(kSleepTimeLoading);
+    
     // Back to indeterminate mode
     HUD.mode = MBProgressHUDModeIndeterminate;
     HUD.labelText = @"Aspetta un attimo...";

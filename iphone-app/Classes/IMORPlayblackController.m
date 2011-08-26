@@ -270,6 +270,8 @@
 - (void)likeItTask {
     // mark as liked in a new thread
     
+    usleep(kSleepTimeLoading);
+    
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
@@ -299,7 +301,6 @@
             usleep(kSleepTimeOK);
         }
         else {
-            
             // Make the customViews 37 by 37 pixels for best results (those are the bounds of the build-in progress indicators)
             HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Error.png"]] autorelease];
             HUD.mode = MBProgressHUDModeCustomView;
@@ -319,6 +320,8 @@
 
 - (void)addToFavoritesTask {
     // add to favorites in a new thread
+    
+    usleep(kSleepTimeLoading);
     
     // Must always specify a NSAutoreleasePool and release it for each thread you run
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -474,7 +477,7 @@
             HUD.animationType = MBProgressHUDAnimationZoom;
             
             HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
-            HUD.labelText = @"Alza il volume al massimo!";
+            HUD.labelText = @"Alza il volume!";
             HUD.mode = MBProgressHUDModeCustomView;
             
             // Show the HUD
@@ -565,6 +568,8 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
     HUD.opacity = 0.6;
     HUD.animationType = MBProgressHUDAnimationZoom;
 
+    HUD.labelText = @"Aspetta un attimo...";
+	
     // Show the HUD
     [HUD show:YES];
 
