@@ -10,7 +10,7 @@
 
 // App settings
 #define kAppName            @"iMortacci"
-#define kAppVersion         @"1.0"
+#define kAppVersion         @"1.1"
 
 // Various urls
 #define kSiteURL            @"http://www.imortacci.com"
