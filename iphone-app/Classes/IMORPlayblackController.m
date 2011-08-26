@@ -474,7 +474,7 @@
             
             HUD.minShowTime = 3.0;
             HUD.opacity = 0.6;
-            HUD.animationType = MBProgressHUDAnimationZoom;
+            HUD.animationType = MBProgressHUDAnimationZoomOut;
             
             HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Playback.png"]] autorelease];
             HUD.labelText = @"Alza il volume!";
@@ -566,7 +566,7 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
     HUD.delegate = self;
     
     HUD.opacity = 0.6;
-    HUD.animationType = MBProgressHUDAnimationZoom;
+    HUD.animationType = MBProgressHUDAnimationZoomOut;
 
     HUD.labelText = @"Aspetta un attimo...";
 	
@@ -593,7 +593,7 @@ agli amici le più belle espressioni, imprecazioni e modi di dire dei dialetti i
     HUD.delegate = self;
     
     HUD.opacity = 0.6;
-    HUD.animationType = MBProgressHUDAnimationZoom;
+    HUD.animationType = MBProgressHUDAnimationZoomOut;
     
     HUD.labelText = @"Aspetta un attimo...";
 	

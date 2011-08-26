@@ -473,7 +473,7 @@
     HUD.delegate = self;
 	
     HUD.opacity = 0.6;
-    HUD.animationType = MBProgressHUDAnimationZoom;
+    HUD.animationType = MBProgressHUDAnimationZoomOut;
     
     HUD.labelText = @"Aspetta un attimo...";
 	
