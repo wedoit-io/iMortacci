@@ -13,7 +13,7 @@
 #import "JSON+Extensions.h"
 #import "SHK.h"
 #import "Reachability.h"
-#import "GTMHTTPFetcher.h"
+#import "ASIHTTPRequest.h"
 #import "SHKFacebook.h"
 #import "GANTracker.h"
 
@@ -183,10 +183,10 @@
     
     NSString *urlString = [NSString stringWithFormat:@"%@?CMD=initapp&appkey=%@&devtoken=%@", kAppServerUrl, kAppKey, myToken];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    GTMHTTPFetcher* fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [fetcher beginFetchWithDelegate:nil didFinishSelector:nil];
-
+    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request startAsynchronous];
+    
     [[GANTracker sharedTracker] trackEvent:@"APNS"
                                     action:@"Register"
                                      label:myToken
@@ -326,36 +326,13 @@
     // checks latest version and update badge accordingly
     NSString *urlString = [NSString stringWithFormat:@"%@/latest", kAPIURL];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-//    [itemsFetcher.fetchHistory removeCachedDataForRequest:request];
-    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(checkLatestFetcher:finishedWithData:error:)];
-}
-
-- (void)sendAndReceiveCounters {
-    [[GANTracker sharedTracker] trackPageview:@"/api/counters" withError:nil];
-
-    // send&receive 'like_status' and 'user_playback_count' information
-    NSString *urlString = [NSString stringWithFormat:@"%@/counters", kAPIURL];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setHTTPMethod:@"PUT"];
-    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    GTMHTTPFetcher* itemsFetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    [itemsFetcher setPostData:[[localUserInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
-    [itemsFetcher beginFetchWithDelegate:self didFinishSelector:@selector(sendAndReceiveCountersFetcher:finishedWithData:error:)];
-}
-
-
-#pragma mark -
-#pragma mark GTMHTTPFetcher callback
-
-- (void)checkLatestFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
     
-    if (error == nil) {
-        // fetch succeeded
-        
-        latestVersion = [[[[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding] JSONValue] retain];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request startSynchronous];
+    
+    NSError *error = [request error];
+    if (!error) {
+        latestVersion = [[[[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding] JSONValue] retain];
         
         if (latestVersion != nil && ![[latestVersion valueForKey:@"hash"] isEqualToString:[currentVersion valueForKey:@"hash"]]) {
             newItemsCount = [[latestVersion valueForKey:@"object_count"] intValue] - [[currentVersion valueForKey:@"object_count"] intValue];
@@ -375,19 +352,30 @@
     }
 }
 
-- (void)sendAndReceiveCountersFetcher:(GTMHTTPFetcher *)fetcher finishedWithData:(NSData *)retrievedData error:(NSError *)error {
+- (void)sendAndReceiveCounters {
+    [[GANTracker sharedTracker] trackPageview:@"/api/counters" withError:nil];
+
+    // send&receive 'like_status' and 'user_playback_count' information
+    NSString *urlString = [NSString stringWithFormat:@"%@/counters", kAPIURL];
+    NSURL *url = [NSURL URLWithString:urlString];
     
-    if (error == nil) {
-        // fetch succeeded
-        
-        NSArray *newCounters = [[[[NSString alloc] initWithData:retrievedData encoding:NSUTF8StringEncoding] JSONValue] retain];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request addRequestHeader:@"application/json" value:@"Content-Type"];
+    [request appendPostData:[[localUserInfo JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
+    // Default becomes POST when you use appendPostData: / appendPostDataFromFile: / setPostBody:
+    [request setRequestMethod:@"PUT"];
+    [request startSynchronous];
+
+    NSError *error = [request error];
+    if (!error) {
+        NSArray *newCounters = [[[[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding] JSONValue] retain];
         if (newCounters != nil) {
             [[QuickFunctions sharedQuickFunctions] updateCounters:newCounters];
             for (int i = 0; i < [localUserInfo count]; i++) {
                 NSNumber *newLikeStatus = [[[localUserInfo objectAtIndex:i] valueForKey:@"like_status"] isEqualToNumber:[NSNumber numberWithInt:1]]
                 ? [NSNumber numberWithInt:2]
                 : [[localUserInfo objectAtIndex:i] valueForKey:@"like_status"];
-
+                
                 [localUserInfo replaceObjectAtIndex:i withObject:[NSDictionary dictionaryWithObjects:
                                                                   [NSArray arrayWithObjects:
                                                                    [[localUserInfo objectAtIndex:i] valueForKey:@"id"],
