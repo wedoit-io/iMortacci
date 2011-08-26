@@ -10,7 +10,7 @@
 
 // App settings
 #define kAppName            @"iMortacci"
-#define kAppVersion         @"1.1"
+#define kAppVersion         @"1.7"
 
 // Various urls
 #define kSiteURL            @"http://www.imortacci.com"
@@ -21,8 +21,14 @@
 #define k2mlabURL           @"http://www.2mlab.com"
 #define kApexNetURL         @"http://www.apexnet.it"
 
-// iMortacci API and reachability
-#define kAPIURL                 @"http://imortacci.apexnet.it/api/v1"
+// iMortacci API
+#if DEBUG
+    #define kAPIURL             @"http://donmez.apex-net.it/imortacci/api/v2"
+#else
+    #define kAPIURL             @"http://imortacci.apexnet.it/api/v2"
+#endif
+
+// Reachability
 #define kReachabilityHostName   @"google.com"
 
 // Push notifications api
