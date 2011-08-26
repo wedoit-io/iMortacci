@@ -173,6 +173,9 @@
     }
     
     if (!tracksOnly && tableView == self._tableView) {
+        /*
+         * All albums are listed (master only)
+         */
         static NSString *CellIdentifier = @"IMORSearchCellController";
         
         IMORSearchCellController *cell = (IMORSearchCellController *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -210,6 +213,9 @@
         // Configure the cell...
         
         if (tracksOnly) {
+            /*
+             * All tracks of a single album are listed (detail only)
+             */
             NSPredicate *pred = [NSPredicate predicateWithFormat:@"id = %@", [dict valueForKey:@"album_id"]];
             NSArray *filtered = [[QuickFunctions sharedQuickFunctions].app.currentAlbums filteredArrayUsingPredicate:pred];
             if ([filtered count] > 0) {
@@ -222,6 +228,9 @@
             }
         }
         else {
+            /*
+             * Both albums and tracks are visible (master-detail)
+             */
             cell.imageView.image = [UIImage imageWithData:[[QuickFunctions sharedQuickFunctions]
                                                            getAlbumArtworkWithSlug:[[filteredItems
                                                                                      objectAtIndex:indexPath.section]
