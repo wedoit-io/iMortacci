@@ -306,9 +306,9 @@
                 }
 
                 [[QuickFunctions sharedQuickFunctions] saveTrack:downloadedItem WithId:[[track valueForKey:@"id"] intValue]];
+                HUD.progress += progressStep;
+                HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
             }
-            HUD.progress += progressStep;
-            HUD.labelText = [NSString stringWithFormat:@"%d%%", (int)(HUD.progress * 100)];
         }
     }
 
